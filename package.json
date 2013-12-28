@@ -1,0 +1,15 @@
+{
+  "name": "workrooms",
+  "version": "0.0.0",
+  "description": "A workroom is a place to collaborate online, just like if you were in person.",
+  "scripts": {
+    "start": "watchify -t coffeeify -o ./build/background.js ./src/background.coffee"
+  },
+  "author": "",
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "watchify": "~0.5.0",
+    "coffeeify": "~0.5.2",
+    "jquery-browserify": "~1.8.1"
+  }
+}
