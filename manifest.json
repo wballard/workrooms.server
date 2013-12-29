@@ -8,8 +8,6 @@
   "background": {
     "scripts": ["build/background.js"]
   },
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
-
   "permissions": [
     "storage",
     "background",

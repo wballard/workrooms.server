@@ -4,6 +4,8 @@ that can tell when code changes and will hot reload.
 ###
 
 $ = require('jquery-browserify')
+icon = require('./script/icon.coffee')
+require('./less/main.less')
 
 ###
 Check all the referenced background scripts, and see if they have changed. This
@@ -33,5 +35,6 @@ poll = ->
 
 poll()
 
-
-
+$ ->
+  icon.prepare()
+  icon.update()

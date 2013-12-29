@@ -22,6 +22,17 @@ That's it, no registration required.
   Github)
 
 # Architecture
+This uses browserify and a bootstrap shim to hot reload during
+development. All you need to do is:
+
+```
+npm install
+npm start
+```
+
+See that it is doing, then you can fire up and load this directory as a
+bare Chrome extension. If you watch in the background page, you'll see a
+message flash when new code is detected and a hot load is needed.
 
 ## Client
 Client is a browser extension, this is to give you presence without
