@@ -40,3 +40,14 @@ icon = new ExtensionIcon()
 bean.on icon, 'change', ->
   console.log 'changed'
 document.body.appendChild icon
+
+#of course, chrome events don't follow the pattern for dom elements
+chrome.browserAction.onClicked.addListener ->
+  conferenceURL = chrome.runtime.getURL('build/tabs/conference.html')
+  chrome.tabs.query url: conferenceURL, (tabs) ->
+    if tabs.length
+      tabs.forEach (tab) -> tab.reload()
+    else
+      chrome.tabs.create
+        url: 'build/tabs/conference.html'
+        index: 0

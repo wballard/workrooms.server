@@ -15,6 +15,7 @@
     "identity",
     "pushMessaging",
     "tabCapture",
+    "tabs",
     "notifications",
     "http://*/",
     "https://*/"
