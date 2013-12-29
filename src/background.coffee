@@ -4,6 +4,7 @@ that can tell when code changes and will hot reload.
 ###
 
 ajax = require('component-ajax')
+bean = require('bean')
 ExtensionIcon = require('./script/extension-icon.coffee')
 require('./less/main.less')
 
@@ -35,4 +36,7 @@ poll = ->
 
 poll()
 
-document.body.appendChild(new ExtensionIcon())
+icon = new ExtensionIcon()
+bean.on icon, 'change', ->
+  console.log 'changed'
+document.body.appendChild icon

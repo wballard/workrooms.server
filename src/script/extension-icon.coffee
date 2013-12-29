@@ -6,17 +6,19 @@ This is implemented as a custom element, using webcomponents.
 ###
 
 Platform = require('polyfill-webcomponents')
-
+bean = require('bean')
 
 #I know this seems odd for me, but elements are in fact quite 'objecty'
 class ExtensionIcon extends HTMLElement
   createdCallback: ->
-    size = 16
+    size = @size = 16
     shadow = @.createShadowRoot()
     shadow.innerHTML = """
     <canvas id="extensionIcon" width="#{size}" height="#{size}"></canvas>
     """
     @.appendChild shadow
+  enteredViewCallback: ->
+    size = @size
     canvas = @.querySelector('#extensionIcon')
     context = canvas.getContext('2d')
     context.font = "#{size}px GLGlyphs"
@@ -24,6 +26,7 @@ class ExtensionIcon extends HTMLElement
     context.fillText(String.fromCharCode(0x51), 0, 0)
     image = context.getImageData(0, 0, size, size)
     chrome.browserAction.setIcon imageData: image
+    bean.fire(@, 'change')
 
 module.exports = document.register 'extension-icon',
   prototype: ExtensionIcon.prototype

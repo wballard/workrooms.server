@@ -13,6 +13,7 @@
     "node-lessify": "0.0.3",
     "getusermedia": "~0.2.1",
     "component-ajax": "0.0.2",
-    "polyfill-webcomponents": "0.0.8"
+    "polyfill-webcomponents": "0.0.8",
+    "bean": "~1.0.6"
   }
 }
