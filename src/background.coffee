@@ -14,19 +14,20 @@ uses local storage to 'diff' the code of the background scripts, and on
 a difference, reloads.
 ###
 reloadIfChanged = ->
-  for script in chrome.runtime.getManifest()?.background?.scripts
-    codeURL = chrome.runtime.getURL(script)
-    ajax.get codeURL, (code) ->
-      chrome.storage.local.get codeURL, (storedCode) ->
-        if storedCode[codeURL] isnt code
-          console.log "new code! let's reload"
-          reload = true
-        else
-          reload = false
-        save = {}
-        save[codeURL] = code
-        chrome.storage.local.set save, ->
-          chrome.runtime.reload() if reload
+  for script in chrome.runtime.getManifest()?.web_accessible_resources
+    do ->
+      codeURL = chrome.runtime.getURL(script)
+      ajax.get codeURL, (code) ->
+        chrome.storage.local.get codeURL, (storedCode) ->
+          if storedCode[codeURL] isnt code
+            console.log "new code! let's reload"
+            reload = true
+          else
+            reload = false
+          save = {}
+          save[codeURL] = code
+          chrome.storage.local.set save, ->
+            chrome.runtime.reload() if reload
 
 poll = ->
   setTimeout ->
@@ -41,13 +42,27 @@ bean.on icon, 'change', ->
   console.log 'changed'
 document.body.appendChild icon
 
-#of course, chrome events don't follow the pattern for dom elements
-chrome.browserAction.onClicked.addListener ->
+showConferenceTab = ->
   conferenceURL = chrome.runtime.getURL('build/tabs/conference.html')
+  remember = (tab) ->
+    chrome.tabs.update tab.id, active: true
+    chrome.storage.local.set conference: true
+    chrome.tabs.onRemoved.addListener (id) ->
+      chrome.storage.local.set conference: false
+
   chrome.tabs.query url: conferenceURL, (tabs) ->
     if tabs.length
-      tabs.forEach (tab) -> tab.reload()
+      tabs.forEach remember
     else
       chrome.tabs.create
         url: 'build/tabs/conference.html'
         index: 0
+      , remember
+
+#of course, chrome events don't follow the pattern for dom elements
+chrome.browserAction.onClicked.addListener ->
+  showConferenceTab()
+
+chrome.storage.local.get 'conference', (conference) ->
+  if conference.conference
+    showConferenceTab()

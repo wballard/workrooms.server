@@ -2,9 +2,17 @@ module.exports = (grunt) ->
   grunt.initConfig
     pkg: grunt.file.readJSON('package.json')
     browserify:
-      build:
-        src: ['src/background.coffee']
-        dest: 'build/background.js'
+      background:
+        expand: true
+        src: ['src/*.coffee']
+        dest: 'build/'
+        ext: '.js'
+        flatten: true
+        options:
+          transform: ['coffeeify', 'node-lessify']
+      conference:
+        src: ['src/conference.coffee']
+        dest: 'build/conference.js'
         options:
           transform: ['coffeeify', 'node-lessify']
     copy:

@@ -9,6 +9,7 @@
   "background": {
     "scripts": ["build/background.js"]
   },
+  "web_accessible_resources": ["build/background.js", "build/conference.js"],
   "permissions": [
     "storage",
     "background",
