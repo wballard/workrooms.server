@@ -15,6 +15,12 @@
     "component-ajax": "0.0.2",
     "polyfill-webcomponents": "0.0.8",
     "bean": "~1.0.6",
-    "grunt-contrib-copy": "~0.5.0"
+    "grunt-contrib-copy": "~0.5.0",
+    "attachmediastream": "~1.0.1",
+    "brfs": "0.0.8",
+    "domready": "~0.2.13",
+    "blissify": "~1.0.0",
+    "hark": "~0.1.1",
+    "bonzo": "~1.3.7"
   }
 }

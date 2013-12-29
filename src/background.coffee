@@ -7,6 +7,7 @@ ajax = require('component-ajax')
 bean = require('bean')
 ExtensionIcon = require('./script/extension-icon.coffee')
 require('./less/main.less')
+domready = require('domready')
 
 ###
 Check all the referenced background scripts, and see if they have changed. This
@@ -28,19 +29,9 @@ reloadIfChanged = ->
           save[codeURL] = code
           chrome.storage.local.set save, ->
             chrome.runtime.reload() if reload
+  setTimeout reloadIfChanged, 1000
+reloadIfChanged()
 
-poll = ->
-  setTimeout ->
-    reloadIfChanged()
-    poll()
-  , 1000
-
-poll()
-
-icon = new ExtensionIcon()
-bean.on icon, 'change', ->
-  console.log 'changed'
-document.body.appendChild icon
 
 showConferenceTab = ->
   conferenceURL = chrome.runtime.getURL('build/tabs/conference.html')
@@ -66,3 +57,7 @@ chrome.browserAction.onClicked.addListener ->
 chrome.storage.local.get 'conference', (conference) ->
   if conference.conference
     showConferenceTab()
+
+domready ->
+  #using the custom tag, easy enough, but feels oopy
+  document.body.appendChild new ExtensionIcon()

@@ -2,13 +2,9 @@
 Build and control the entire conference page
 ###
 
-getUserMedia = require('getusermedia')
+SelfVideoAvatar = require('./elements/video/video-avatar.coffee').SelfVideoAvatar
+domready = require('domready')
 
-console.log 'conference tab'
-
-getUserMedia (err, stream) ->
-  console.log arguments
-  if err
-    console.log err
-  else
-    console.log stream
+domready ->
+  console.log 'conference tab'
+  document.body.appendChild new SelfVideoAvatar()

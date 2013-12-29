@@ -9,7 +9,7 @@ module.exports = (grunt) ->
         ext: '.js'
         flatten: true
         options:
-          transform: ['coffeeify', 'node-lessify']
+          transform: ['coffeeify', 'node-lessify', 'blissify']
       conference:
         src: ['src/conference.coffee']
         dest: 'build/conference.js'
