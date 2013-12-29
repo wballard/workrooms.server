@@ -3,8 +3,8 @@ Basic idea here is to have exactly one entry point, built up by browserify, but
 that can tell when code changes and will hot reload.
 ###
 
-$ = require('jquery-browserify')
-icon = require('./script/icon.coffee')
+ajax = require('component-ajax')
+ExtensionIcon = require('./script/extension-icon.coffee')
 require('./less/main.less')
 
 ###
@@ -15,7 +15,7 @@ a difference, reloads.
 reloadIfChanged = ->
   for script in chrome.runtime.getManifest()?.background?.scripts
     codeURL = chrome.runtime.getURL(script)
-    $.get codeURL, (code) ->
+    ajax.get codeURL, (code) ->
       chrome.storage.local.get codeURL, (storedCode) ->
         if storedCode[codeURL] isnt code
           console.log "new code! let's reload"
@@ -35,6 +35,4 @@ poll = ->
 
 poll()
 
-$ ->
-  icon.prepare()
-  icon.update()
+document.body.appendChild(new ExtensionIcon())
