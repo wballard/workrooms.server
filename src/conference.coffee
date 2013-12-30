@@ -1,10 +1,6 @@
 ###
-Build and control the entire conference page
+Bootstrap the conference room tab.
 ###
 
-SelfVideoAvatar = require('./elements/video/video-avatar.coffee').SelfVideoAvatar
-domready = require('domready')
-
-domready ->
-  console.log 'conference tab'
-  document.body.appendChild new SelfVideoAvatar()
+#require custom elements so that they are registered
+require('./elements/conference/conference-room.coffee')
