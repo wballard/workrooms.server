@@ -7,7 +7,7 @@
     "default_title": "Workrooms"
   },
   "background": {
-    "scripts": ["build/background.js"]
+    "page": "/build/background.html"
   },
   "web_accessible_resources": ["build/background.js", "build/conference.js"],
   "permissions": [

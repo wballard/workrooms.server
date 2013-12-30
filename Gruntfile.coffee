@@ -9,7 +9,7 @@ module.exports = (grunt) ->
         ext: '.js'
         flatten: true
         options:
-          transform: ['coffeeify', 'node-lessify', 'blissify']
+          transform: ['coffeeify', 'node-lessify']
       conference:
         src: ['src/conference.coffee']
         dest: 'build/conference.js'
@@ -18,7 +18,7 @@ module.exports = (grunt) ->
     copy:
       tabs:
         files: [
-          src: ['src/tabs/*'], dest: 'build/tabs/', expand: true, flatten: true
+          {src: ['**/*.html'], dest: 'build/', expand: true, cwd: 'src/'}
         ]
     watch:
       files: ['src/**/*.coffee', 'src/**/*.js', 'src/**/*.less', 'src/**/*.css', 'src/**/*.html']

@@ -4,7 +4,6 @@ require('./style.less')
 getUserMedia = require('getusermedia')
 attachMediaStream = require('attachmediastream')
 hark = require('hark')
-bonzo = require('bonzo')
 
 ###
 Video for yourself, this will get your local stream and show it.
@@ -41,9 +40,9 @@ class LocalVideo extends HTMLElement
         attachMediaStream stream, display, muted: true
         speech = hark stream, {}
         speech.on 'speaking', ->
-          bonzo(display).addClass('highlight')
+          display.classList.add('highlight')
         speech.on 'stopped_speaking', ->
-          bonzo(display).removeClass('highlight')
+          display.classList.remove('highlight')
 
 
 module.exports =

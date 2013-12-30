@@ -13,16 +13,22 @@ require('../video/local-video.coffee')
 mixin = require('../mixin.coffee')
 
 ###
-A ConferenceRoom brins together multiple video stream elements, giving you
-a place to collaborate.
+A `ConferenceRoom` brings together multiple video stream elements, giving you
+a place to collaborate. The main benefit is that the conference room will deal
+with `RTCPeerConnection` negotiation and signalling by talking to a web
+socket based signalling server for you.
 ###
 class ConferenceRoom extends HTMLElement
   createdCallback: ->
     mixin @
     @defineCustomElementProperty 'localVideo'
     @shadow = @.createShadowRoot()
-    @shadow.innerHTML = '<local-video> </local-video>'
+    @shadow.innerHTML = """
+    <local-video></local-video>
+    <outbound-video-call></outbound-video-call>
+    """
   enteredViewCallback: =>
+    console.log @.getAttribute 'server'
     bean.on @, 'localvideostream', (evt) =>
       console.log 'stream', evt, arguments
       @localVideo = evt.detail.stream

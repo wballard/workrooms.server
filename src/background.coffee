@@ -4,10 +4,8 @@ that can tell when code changes and will hot reload.
 ###
 
 ajax = require('component-ajax')
-bean = require('bean')
 ExtensionIcon = require('./script/extension-icon.coffee')
 require('./less/main.less')
-domready = require('domready')
 
 ###
 Check all the referenced background scripts, and see if they have changed. This
@@ -57,7 +55,3 @@ chrome.browserAction.onClicked.addListener ->
 chrome.storage.local.get 'conference', (conference) ->
   if conference.conference
     showConferenceTab()
-
-domready ->
-  #using the custom tag, easy enough, but feels oopy
-  document.body.appendChild new ExtensionIcon()

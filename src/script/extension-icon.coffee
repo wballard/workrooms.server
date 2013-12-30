@@ -1,14 +1,13 @@
+Platform = require('polyfill-webcomponents')
+bean = require('bean')
+
 ###
 Maintain a dynamic extension icon with here, this will show a default from our
 glyphs, and then replace it with an image capture mini avatar. A really tiny avatar.
 
-This is implemented as a custom element, using webcomponents.
+TODO: use the tiny avatar instead of the icon
+TODO: hook up badges to indicate the number of folks in your conference
 ###
-
-Platform = require('polyfill-webcomponents')
-bean = require('bean')
-
-#I know this seems odd for me, but elements are in fact quite 'objecty'
 class ExtensionIcon extends HTMLElement
   createdCallback: ->
     size = @size = 16
