@@ -9,15 +9,23 @@ if it is easy enough to just make a containing element.
 Platform = require('polyfill-webcomponents')
 bean = require('bean')
 #other custom elements at least need to be loaded and registered
-require('../video/video-avatar.coffee')
+require('../video/local-video.coffee')
+mixin = require('../mixin.coffee')
 
+###
+A ConferenceRoom brins together multiple video stream elements, giving you
+a place to collaborate.
+###
 class ConferenceRoom extends HTMLElement
   createdCallback: ->
+    mixin @
+    @defineCustomElementProperty 'localVideo'
     @shadow = @.createShadowRoot()
-    @shadow.innerHTML = '<self-video-avatar> </self-video-avatar>'
+    @shadow.innerHTML = '<local-video> </local-video>'
   enteredViewCallback: =>
-    bean.on @, 'selfvideostream', (evt) ->
+    bean.on @, 'localvideostream', (evt) =>
       console.log 'stream', evt, arguments
+      @localVideo = evt.detail.stream
 
 module.exports =
   ConferenceRoom: document.register 'conference-room', prototype: ConferenceRoom.prototype

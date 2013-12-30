@@ -1,6 +1,3 @@
-###
-Video avatars, so you can talk to one another.
-###
 
 Platform = require('polyfill-webcomponents')
 require('./style.less')
@@ -9,9 +6,13 @@ attachMediaStream = require('attachmediastream')
 hark = require('hark')
 bonzo = require('bonzo')
 
+###
+Video for yourself, this will get your local stream and show it.
 
-#Video for yourself, this will get your local stream and show it
-class SelfVideoAvatar extends HTMLElement
+#Events
+selfvideostream: event.details.stream contains the local stream
+###
+class LocalVideo extends HTMLElement
   mediaConstraints:
     audio: true
     video:
@@ -32,12 +33,12 @@ class SelfVideoAvatar extends HTMLElement
             error: err
         )
       else
-        @.dispatchEvent new CustomEvent('selfvideostream',
+        @.dispatchEvent new CustomEvent('localvideostream',
           bubbles: true
           detail:
             stream: stream
         )
-        attachMediaStream stream, display
+        attachMediaStream stream, display, muted: true
         speech = hark stream, {}
         speech.on 'speaking', ->
           bonzo(display).addClass('highlight')
@@ -45,6 +46,5 @@ class SelfVideoAvatar extends HTMLElement
           bonzo(display).removeClass('highlight')
 
 
-
 module.exports =
-  SelfVideoAvatar: document.register 'self-video-avatar', prototype: SelfVideoAvatar.prototype
+  LocalVideo: document.register 'local-video', prototype: LocalVideo.prototype
