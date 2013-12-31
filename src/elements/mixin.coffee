@@ -2,7 +2,7 @@
 This is a mixin method that adds utilities directly to a custom element, just
 call it inside of `createdCallback(this)` and the methods will be attached.
 ###
-
+bean = require('bean')
 
 #Patch NodeList to be useful like an Array
 arrayMethods = Object.getOwnPropertyNames(Array.prototype)
@@ -29,3 +29,8 @@ module.exports = (object) ->
       bubbles: true
       detail: data
     )
+  ###
+  Node syntax event handling.
+  ###
+  object.on = (name, handler) ->
+    bean.on object, name, handler
