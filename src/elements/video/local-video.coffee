@@ -1,9 +1,10 @@
-
 Platform = require('polyfill-webcomponents')
+#TODO: make this a function you hook on to an element, ShadowDom-y
 require('./style.less')
 getUserMedia = require('getusermedia')
 attachMediaStream = require('attachmediastream')
-hark = require('hark')
+webrtcSupport = require('webrtcsupport')
+mixin = require('../mixin.coffee')
 
 ###
 Video for yourself, this will get your local stream and show it.
@@ -19,30 +20,20 @@ class LocalVideo extends HTMLElement
         maxWidth: 320
         maxHeight: 240
   createdCallback: ->
+    mixin @
     @shadow = @.createShadowRoot()
     @shadow.innerHTML = '<video id="display"></video>'
   enteredViewCallback: =>
     display = @shadow.querySelector('#display')
     getUserMedia @mediaConstraints, (err, stream) =>
       if err
-        @.dispatchEvent new CustomEvent('error',
-          bubbles: true
-          detail:
-            stream: stream
-            error: err
-        )
+        $.fire 'error',
+          stream: stream
+          error: err
       else
-        @.dispatchEvent new CustomEvent('localvideostream',
-          bubbles: true
-          detail:
-            stream: stream
-        )
+        @.fire 'localvideostream',
+          stream: stream
         attachMediaStream stream, display, muted: true
-        speech = hark stream, {}
-        speech.on 'speaking', ->
-          display.classList.add('highlight')
-        speech.on 'stopped_speaking', ->
-          display.classList.remove('highlight')
 
 
 module.exports =
