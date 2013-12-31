@@ -1,5 +1,5 @@
 Platform = require('polyfill-webcomponents')
-bean = require('bean')
+mixin = require('./mixin.coffee')
 
 ###
 Maintain a dynamic extension icon with here, this will show a default from our
@@ -10,8 +10,9 @@ TODO: hook up badges to indicate the number of folks in your conference
 ###
 class ExtensionIcon extends HTMLElement
   createdCallback: ->
+    mixin @
     size = @size = 16
-    @shadow = @.createShadowRoot()
+    @shadow = @createShadowRoot()
     @shadow.innerHTML = """
     <canvas id="extensionIcon" width="#{size}" height="#{size}"></canvas>
     """
@@ -25,7 +26,7 @@ class ExtensionIcon extends HTMLElement
     context.fillText(String.fromCharCode(0xf0c0), 0, 0)
     image = context.getImageData(0, -1, size, size)
     chrome.browserAction.setIcon imageData: image
-    bean.fire(@, 'change')
+    @fire(@, 'change')
 
 module.exports = document.register 'extension-icon',
   prototype: ExtensionIcon.prototype

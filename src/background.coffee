@@ -4,7 +4,8 @@ that can tell when code changes and will hot reload.
 ###
 
 ajax = require('component-ajax')
-ExtensionIcon = require('./script/extension-icon.coffee')
+require('./elements/extension-icon.coffee')
+require('./elements/github-oauth.coffee')
 require('./less/main.less')
 
 ###
@@ -30,7 +31,6 @@ reloadIfChanged = ->
   setTimeout reloadIfChanged, 1000
 reloadIfChanged()
 
-
 showConferenceTab = ->
   conferenceURL = chrome.runtime.getURL('build/tabs/conference.html')
   remember = (tab) ->
@@ -55,3 +55,5 @@ chrome.browserAction.onClicked.addListener ->
 chrome.storage.local.get 'conference', (conference) ->
   if conference.conference
     showConferenceTab()
+
+
