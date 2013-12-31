@@ -77,7 +77,6 @@ class ConferenceRoom extends HTMLElement
     @on 'ice', (evt) =>
       signalling evt.detail
     @on 'sdp', (evt) =>
-      console.log 'sdp', evt.detail
       signalling evt.detail
 
 module.exports =

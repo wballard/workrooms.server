@@ -6,7 +6,17 @@ mixin = require('../mixin.coffee')
 bean = require('bean')
 uuid = require('node-uuid')
 
-#Oh man, I'm making a base class, the copy paste was just getting to me
+###
+Oh man, I'm making a base class, the copy paste was just getting to me
+
+#Events
+sdp: a session message for WebRTC, used in signalling
+ice: a NAT traversal message for WebRTC, sent to peers via signalling
+
+#HTML Attributes
+from: your identity string
+to: identity string you are calling
+###
 class VideoCall extends HTMLElement
   createdCallback: ->
     mixin @

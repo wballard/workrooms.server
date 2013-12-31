@@ -6,16 +6,9 @@ WebRTC is very directional, with callers and callees. So, when you want to
 talk to someone, you don't meet in the middle. Somebody calls somebody else.
 
 This element listens for an incoming call from another user.
-
-#Events
-
-#HTML Attributes
-from: identity string making the call, i.e. not you
-to: your identity string
 ###
 class InboundVideoCall extends VideoCall
-  #listen for and incoming call, this sets up state and sends along messages
-  #to the signalling server
+  #listen for and incoming call with a local video stream
   listen: (localStream) ->
     @peerConnection.addStream(localStream)
   #Handle an inbound signal message, this is either an ice message, or an sdp
@@ -25,6 +18,8 @@ class InboundVideoCall extends VideoCall
   signal: (message) ->
     if message.ice
       @peerConnection.addIceCandidate(new rtc.IceCandidate(message.ice.candidate))
+    #inbound calls answer the offer, this matches up with the negotiation on
+    #the outbound side
     if message.sdp
       @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), =>
         @peerConnection.createAnswer (description) =>
