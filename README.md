@@ -1,47 +1,29 @@
+# What's the Problem?
+Video conference and screen share isn't as simple as dropping someone's
+desk.
+
 # What is It?
-A workroom is a place to collaborate online, just like if you were in
-person.
+One click video conference, just click on any GitHub gravatar and start
+working together.
 
 # How does it Work?
-People drop by each other, just like dropping by your desk. If multiple
-folks drop by, you are all together.
+With an always on Chrome plugin, a simple WebSocket
+[server](https://github.com/wballard/workrooms.server), and WebRTC, you
+can pair program and collaborate with one click.
 
-# How do I get Started?
-
-1. Install the plugin
-2. Click the icon
-3. Invite someone by email address
-
-That's it, no registration required.
-
-# Features
-
-* Video / Audio / Text Chat (with markdown!)
-* Screen and Window sharing
-* Highlighting and presence Gravatars (perfect for StackOverflow and
-  Github)
-
-# Architecture
+# Build
 This uses browserify and a bootstrap shim to hot reload during
 development. All you need to do is:
 
 ```
 npm install
-npm start
+grunt watch
 ```
 
 See that it is doing, then you can fire up and load this directory as a
 bare Chrome extension. If you watch in the background page, you'll see a
 message flash when new code is detected and a hot load is needed.
 
-## Client
-Client is a browser extension, this is to give you presence without
-requiring you to go to a place.
+You will also need the
+[server](https://github.com/wballard/workrooms.server).
 
-## Server
-Server provides:
-
-* Signalling, to set up chats
-* Presence, seeing who is on
-* Invitations, checks presence, then fails back to email
-* Plugin auto update and delivery
