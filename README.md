@@ -20,10 +20,12 @@ npm install
 grunt watch
 ```
 
-See that it is doing, then you can fire up and load this directory as a
-bare Chrome extension. If you watch in the background page, you'll see a
-message flash when new code is detected and a hot load is needed.
+This is a [Chrome Extension](chrome://extensions/), so you will need to
+*Load unpacked extension...* pointed at this checkout.
+
 
 You will also need the
 [server](https://github.com/wballard/workrooms.server).
+
+And -- poof, you will get videos of yourself.
 
