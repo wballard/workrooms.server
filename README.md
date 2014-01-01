@@ -20,7 +20,7 @@ npm install
 grunt watch
 ```
 
-This is a [Chrome Extension](chrome://extensions/), so you will need to
+This is a Chrome Extension (chrome://extensions/), so you will need to
 *Load unpacked extension...* pointed at this checkout.
 
 
