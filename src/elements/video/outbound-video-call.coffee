@@ -9,15 +9,15 @@ This element sets up a call from 'you' to another user.
 ###
 class OutboundVideoCall extends VideoCall
   #start the call with a video stream
-  call: (localStream) ->
+  localStream: (localStream) ->
     #the outbound call is in charge or starting the negotiation by making an offer
     @peerConnection.onnegotiationneeded = =>
       @peerConnection.createOffer (description) =>
         @peerConnection.setLocalDescription description, =>
           @fire 'sdp',
             offer: true
-            from: @.getAttribute('from')
-            to: @.getAttribute('to')
+            callid: @getAttribute('callid')
+            peerid: @getAttribute('peerid')
             sdp: description
     #this actually kicks off the process
     @peerConnection.addStream(localStream)

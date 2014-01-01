@@ -19,6 +19,7 @@
     "attachmediastream": "~1.0.1",
     "brfs": "0.0.8",
     "webrtcsupport": "~0.7.1",
-    "node-uuid": "~1.4.1"
+    "node-uuid": "~1.4.1",
+    "bonzo": "~1.3.7"
   }
 }

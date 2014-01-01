@@ -21,14 +21,13 @@ error: when bad things happen
 
 class GithubOAuth extends HTMLElement
   createdCallback: ->
-    mixin @
   enteredViewCallback: =>
     github.login @getAttribute('clientid'), @getAttribute('clientsecret'), (error, info) =>
       if error
         @fire 'error', error
       else
+        info.profile_source = 'github'
         @userProfile = info
-        console.log "I AM", info
         @fire 'userprofile', info
 
 module.exports = document.register 'github-oauth',

@@ -9,7 +9,7 @@ This element listens for an incoming call from another user.
 ###
 class InboundVideoCall extends VideoCall
   #listen for and incoming call with a local video stream
-  listen: (localStream) ->
+  localStream: (localStream) ->
     @peerConnection.addStream(localStream)
   #Handle an inbound signal message, this is either an ice message, or an sdp
   #message -- ice is easy, you just add it, sdp has an offer/answer mechanism
@@ -26,8 +26,8 @@ class InboundVideoCall extends VideoCall
           @peerConnection.setLocalDescription description, =>
             @fire 'sdp',
               answer: true
-              from: @.getAttribute('from')
-              to: @.getAttribute('to')
+              callid: @getAttribute('callid')
+              peerid: @getAttribute('peerid')
               sdp: description
 
 module.exports =

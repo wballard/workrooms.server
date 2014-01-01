@@ -14,12 +14,10 @@ sdp: a session message for WebRTC, used in signalling
 ice: a NAT traversal message for WebRTC, sent to peers via signalling
 
 #HTML Attributes
-from: your identity string
-to: identity string you are calling
+callid: this is the identifier of the running call
 ###
 class VideoCall extends HTMLElement
   createdCallback: ->
-    mixin @
     @shadow = @.createShadowRoot()
     @shadow.innerHTML = '<video id="display"></video>'
   enteredViewCallback: =>
@@ -40,8 +38,7 @@ class VideoCall extends HTMLElement
     #ice candidates just need to be shared with peers
     @peerConnection.onicecandidate = (evt) =>
       @fire 'ice',
-        from: @getAttribute('from')
-        to: @getAttribute('to')
+        callid: @getAttribute('callid')
         peerid: @getAttribute('peerid')
         ice:
           candidate: evt.candidate
@@ -52,6 +49,7 @@ class VideoCall extends HTMLElement
     @peerConnection.onremovestream = (evt) =>
       display = @shadow.querySelector('#display')
       display.src = ''
+    @fire 'needlocalstream', @
 
 module.exports =
   VideoCall = VideoCall

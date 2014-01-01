@@ -20,19 +20,19 @@ class LocalVideo extends HTMLElement
         maxWidth: 320
         maxHeight: 240
   createdCallback: ->
-    mixin @
     @shadow = @.createShadowRoot()
     @shadow.innerHTML = '<video id="display"></video>'
   enteredViewCallback: =>
     display = @shadow.querySelector('#display')
     getUserMedia @mediaConstraints, (err, stream) =>
       if err
-        $.fire 'error',
+        @fire 'error',
           stream: stream
           error: err
       else
-        @.fire 'localvideostream',
+        @fire 'localvideostream',
           stream: stream
+        @stream = stream
         attachMediaStream stream, display, muted: true
 
 

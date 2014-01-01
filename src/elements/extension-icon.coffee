@@ -10,7 +10,6 @@ TODO: hook up badges to indicate the number of folks in your conference
 ###
 class ExtensionIcon extends HTMLElement
   createdCallback: ->
-    mixin @
     size = @size = 16
     @shadow = @createShadowRoot()
     @shadow.innerHTML = """
