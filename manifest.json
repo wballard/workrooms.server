@@ -9,7 +9,12 @@
   "background": {
     "page": "/build/background.html"
   },
-  "web_accessible_resources": ["build/background.js", "build/conference.js"],
+  "web_accessible_resources": [
+    "build/background.js",
+    "build/conference.js",
+    "build/gravatars.css",
+    "build/gravatars.js"
+  ],
   "permissions": [
     "storage",
     "background",

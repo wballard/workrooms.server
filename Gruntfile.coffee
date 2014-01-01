@@ -2,19 +2,22 @@ module.exports = (grunt) ->
   grunt.initConfig
     pkg: grunt.file.readJSON('package.json')
     browserify:
-      background:
+      build:
         expand: true
-        src: ['src/*.coffee']
-        dest: 'build/'
-        ext: '.js'
-        flatten: true
+        files:
+          './build/background.js': './src/background.coffee'
+          './build/conference.js': './src/conference.coffee'
+          './build/gravatars.js': './src/gravatars.coffee'
         options:
           transform: ['coffeeify', 'node-lessify']
-      conference:
-        src: ['src/conference.coffee']
-        dest: 'build/conference.js'
-        options:
-          transform: ['coffeeify', 'node-lessify']
+          shim:
+            MutationSummary:
+              path: './src/mutation-summary.js'
+              exports: 'MutationSummary'
+    less:
+      build:
+        files:
+          './build/gravatars.css': './src/less/gravatars.less'
     copy:
       tabs:
         files: [
@@ -28,5 +31,6 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-browserify'
   grunt.loadNpmTasks 'grunt-contrib-watch'
   grunt.loadNpmTasks 'grunt-contrib-copy'
+  grunt.loadNpmTasks 'grunt-contrib-less'
 
-  grunt.registerTask 'build', ['browserify', 'copy']
+  grunt.registerTask 'build', ['browserify', 'less', 'copy']

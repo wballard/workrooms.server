@@ -18,6 +18,24 @@ Ability to append html content as a string, jQuery style
 Element.prototype.appendHtml = (html) ->
   bonzo(this).append(html)
 
+Element.prototype.before = (html) ->
+  bonzo(this).before(html)
+
+Element.prototype.after = (html) ->
+  bonzo(this).after(html)
+
+Element.prototype.previous = () ->
+  bonzo(this).previous()
+
+Element.prototype.next = () ->
+  bonzo(this).next()
+
+Element.prototype.addClass = (style) ->
+  bonzo(this).addClass(style)
+
+Element.prototype.hasClass = (style) ->
+  bonzo(this).hasClass(style)
+
 ###
 Macro to define a property that will fire off the `attributeChangedCallback`
 as defined in WebComponents.
