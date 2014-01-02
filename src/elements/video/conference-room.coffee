@@ -25,8 +25,10 @@ socket based signalling server for you.
 server: websocket url pointing to the signalling server
 
 #Methods
-call(identifier): lets you call someone by an identifier, currently use
-  email address
+call(identifier): lets you call someone by an identifier
+  currently this identifier is an object that allows multiple properties:
+  - email
+  - gravatar
 ###
 class ConferenceRoom extends HTMLElement
   createdCallback: ->
@@ -47,7 +49,6 @@ class ConferenceRoom extends HTMLElement
     socket.onmessage = (evt) =>
       try
         message = JSON.parse(evt.data)
-        console.log message
         if message.inboundcall
           @fire 'inboundcall', message
         if message.outboundcall
@@ -68,6 +69,19 @@ class ConferenceRoom extends HTMLElement
         outbound.localStream evt.detail.stream
       @shadow.querySelectorAll('inbound-video-call').forEach (inbound) =>
         inbound.localStream evt.detail.stream
+      #hook up to chrome now that we have video and can be useful
+      #there are two possible states -- we were already running this tab
+      #and the tab was asynchronously launched by a call request, so
+      #we'll deal with it by asking to dequeue if we see a call and
+      #when we 'start up' video
+      chrome.runtime.onMessage.addListener (message, sender, respond) =>
+        if message.call
+          chrome.runtime.sendMessage
+            dequeueCalls: true
+        if message.makeCalls
+          message.makeCalls.forEach (x) => @call(x)
+      chrome.runtime.sendMessage
+        dequeueCalls: true
     @on 'ice', (evt) =>
       signalling evt.detail
     @on 'sdp', (evt) =>
@@ -76,7 +90,7 @@ class ConferenceRoom extends HTMLElement
       @userprofiles[evt.detail.profile_source] = evt.detail
       signalling userprofiles: @userprofiles
       #test hack to call yourself
-      @call(evt.detail.email)
+      @call(email: evt.detail.email)
     @on 'outboundcall', (evt) ->
       @shadow
         .querySelector('#calls')
@@ -107,7 +121,8 @@ class ConferenceRoom extends HTMLElement
   # All calls have a .id which is unique to each call, and is used
   # as the correlation key between the inbound and outbound side
   # to set up peer-peer traffic
-  call: (identifier) ->
+  call: (identifier) =>
+    console.log 'calling', identifier, @
     @signalling
       call: true
       to: identifier

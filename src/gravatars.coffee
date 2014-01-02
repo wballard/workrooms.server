@@ -31,8 +31,6 @@ processImageForGravatar = (img) ->
         chrome.runtime.sendMessage
           call: true
           gravatar: gravatarToCall
-        , (response) ->
-          console.log response
 
 #everything on start, and look for mutation
 document.querySelectorAll('img').forEach processImageForGravatar

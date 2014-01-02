@@ -75,10 +75,18 @@ chrome.tabs.onUpdated.addListener (tabid, change, tab) ->
     inject tab
 
 ###
-Messages from content injection do the call start.
+Messages from content injection do the call start. This will launch
+the call tab, which is asynchronous for sure. So, queue up a call request
+such that the conference tab can get a chance to consume it
 ###
+callQueue = []
 chrome.runtime.onMessage.addListener (message, sender, respond) ->
-  respond
-    calling: true
+  if message.call
+    callQueue.push(message)
+    showConferenceTab()
+  if message.dequeueCalls and callQueue.length
+    chrome.runtime.sendMessage
+      makeCalls: callQueue
+    callQueue = []
 
 
