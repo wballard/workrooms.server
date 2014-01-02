@@ -4,46 +4,45 @@ call it inside of `createdCallback(this)` and the methods will be attached.
 ###
 bean = require('bean')
 bonzo = require('bonzo')
+bonzo = require('bonzo')
 
 #Patch NodeList to be useful like an Array
 arrayMethods = Object.getOwnPropertyNames(Array.prototype)
 arrayMethods.forEach (methodName) ->
   NodeList.prototype[methodName] = Array.prototype[methodName]
 
-#Patch Element to be friendlier
-
 ###
-Ability to append html content as a string, jQuery style
+Pull in methods from bonzo as single actions.
 ###
 Element.prototype.appendHtml = (html) ->
-  bonzo(this).append(html)
+  bonzo(this).append(html).get(0)
 
 Element.prototype.before = (html) ->
-  bonzo(this).before(html)
+  bonzo(this).before(html).get(0)
 
 Element.prototype.after = (html) ->
-  bonzo(this).after(html)
+  bonzo(this).after(html).get(0)
 
 Element.prototype.previous = () ->
-  bonzo(this).previous()
+  bonzo(this).previous().get(0)
 
 Element.prototype.next = () ->
-  bonzo(this).next()
+  bonzo(this).next().get(0)
 
 Element.prototype.parent = () ->
-  bonzo(this).parent()
+  bonzo(this).parent().get(0)
 
 Element.prototype.addClass = (style) ->
-  bonzo(this).addClass(style)
+  bonzo(this).addClass(style).get(0)
 
 Element.prototype.hasClass = (style) ->
   bonzo(this).hasClass(style)
 
 Element.prototype.replaceWith = (html) ->
-  bonzo(this).replaceWith(html)
+  bonzo(this).replaceWith(html).get(0)
 
 Element.prototype.css = (object) ->
-  bonzo(this).css(object)
+  bonzo(this).css(object).get(0)
 
 ###
 Macro to define a property that will fire off the `attributeChangedCallback`

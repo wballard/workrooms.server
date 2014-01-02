@@ -74,4 +74,11 @@ chrome.tabs.onUpdated.addListener (tabid, change, tab) ->
   if change.status is 'complete'
     inject tab
 
+###
+Messages from content injection do the call start.
+###
+chrome.runtime.onMessage.addListener (message, sender, respond) ->
+  respond
+    calling: true
+
 
