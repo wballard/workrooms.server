@@ -30,11 +30,20 @@ Element.prototype.previous = () ->
 Element.prototype.next = () ->
   bonzo(this).next()
 
+Element.prototype.parent = () ->
+  bonzo(this).parent()
+
 Element.prototype.addClass = (style) ->
   bonzo(this).addClass(style)
 
 Element.prototype.hasClass = (style) ->
   bonzo(this).hasClass(style)
+
+Element.prototype.replaceWith = (html) ->
+  bonzo(this).replaceWith(html)
+
+Element.prototype.css = (object) ->
+  bonzo(this).css(object)
 
 ###
 Macro to define a property that will fire off the `attributeChangedCallback`

@@ -1,7 +1,6 @@
 Platform = require('polyfill-webcomponents')
 attachMediaStream = require('attachmediastream')
 rtc = require('webrtcsupport')
-require('./style.less')
 mixin = require('../mixin.coffee')
 bean = require('bean')
 uuid = require('node-uuid')

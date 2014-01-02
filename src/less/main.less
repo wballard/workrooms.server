@@ -1,3 +1,31 @@
 //Start from here and include all your other modules
 @import "normalize";
+@import "variables";
 @import "font-awesome/font-awesome";
+
+.font-face (@family, @file-base, @weight: normal, @style: normal) {
+  @font-face {
+    font-family: @family;
+    src: url("@{file-base}.eot");
+    font-weight: @weight;
+    font-style: @style;
+  }
+}
+.font-face("FontAwesome", "fonts/fontawesome-webfont", "normal", "normal");
+
+.background {
+  border: @border;
+  display: inline-block;
+}
+
+.highlight {
+  background: @highlightBorderColor;
+  display: inline-block;
+}
+
+video {
+ padding: @pad;
+ border: @border;
+ background: @borderColor;
+}
+

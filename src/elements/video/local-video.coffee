@@ -1,6 +1,4 @@
 Platform = require('polyfill-webcomponents')
-#TODO: make this a function you hook on to an element, ShadowDom-y
-require('./style.less')
 getUserMedia = require('getusermedia')
 attachMediaStream = require('attachmediastream')
 webrtcSupport = require('webrtcsupport')

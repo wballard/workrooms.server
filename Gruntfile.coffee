@@ -18,6 +18,7 @@ module.exports = (grunt) ->
       build:
         files:
           './build/gravatars.css': './src/less/gravatars.less'
+          './build/main.css': './src/less/main.less'
     copy:
       tabs:
         files: [

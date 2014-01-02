@@ -12,6 +12,7 @@
   "web_accessible_resources": [
     "build/background.js",
     "build/conference.js",
+    "build/main.css",
     "build/gravatars.css",
     "build/gravatars.js"
   ],

@@ -1,15 +1,24 @@
 //Styles that will be tacked on to detected gravatars
+@import "variables";
 @import "font-awesome/font-awesome";
-@black: #111111;
-@lessblack: #666666;
 
-.callable {
+.video-call {
+  display: inline;
   background: transparent;
   color: @black;
-  font-size: 1.1em;
   transition: color 0.2s ease;
-  margin: 1px;
+  font-size: 18px;
+  margin: 2px;
   &:hover {
    color: @lessblack;
   }
+}
+
+.callable {
+  position: relative;
+}
+
+.called {
+  float: none !important;
+  position: relative;
 }

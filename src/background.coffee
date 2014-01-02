@@ -6,7 +6,6 @@ that can tell when code changes and will hot reload.
 ajax = require('component-ajax')
 require('./elements/extension-icon.coffee')
 require('./elements/github-oauth.coffee')
-require('./less/main.less')
 
 ###
 Check all the referenced background scripts, and see if they have changed. This
@@ -62,13 +61,17 @@ chrome.storage.local.get 'conference', (conference) ->
 ###
 Hook up every tab to content injection and monitoring.
 ###
+inject = (tab) ->
+  chrome.tabs.executeScript tab.id,
+    file: './build/gravatars.js'
+    allFrames: true
+  chrome.tabs.insertCSS tab.id,
+    file: './build/gravatars.css'
+    allFrames: true
 chrome.tabs.query {}, (tabs) ->
-  tabs.forEach (tab) ->
-    chrome.tabs.executeScript tab.id,
-      file: './build/gravatars.js'
-      allFrames: true
-    chrome.tabs.insertCSS tab.id,
-      file: './build/gravatars.css'
-      allFrames: true
+  tabs.forEach inject
+chrome.tabs.onUpdated.addListener (tabid, change, tab) ->
+  if change.status is 'complete'
+    inject tab
 
-console.log 'a'
+
