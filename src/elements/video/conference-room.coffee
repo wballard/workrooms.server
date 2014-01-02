@@ -32,11 +32,11 @@ call(identifier): lets you call someone by an identifier
 ###
 class ConferenceRoom extends HTMLElement
   createdCallback: ->
-    @shadow = @.createShadowRoot()
+    @shadow = @createShadowRoot()
     @shadow.innerHTML = """
     <local-video></local-video>
     <github-oauth clientid="eda98e0fee66b8573312" clientsecret="8dc00cee1647aab2a2e926bf45914759e26f7632"></github-oauth>
-    <section id="calls"></section>
+    <section class="calls"></section>
     """
     #keep track of user profiles from OAuth partners here
     @userprofiles = {}
@@ -93,11 +93,11 @@ class ConferenceRoom extends HTMLElement
       @call(email: evt.detail.email)
     @on 'outboundcall', (evt) ->
       @shadow
-        .querySelector('#calls')
+        .querySelector('.calls')
         .appendHtml("""<outbound-video-call callid="#{evt.detail.callid}"></outbound-video-call>""")
     @on 'inboundcall', (evt) ->
       @shadow
-        .querySelector('#calls')
+        .querySelector('.calls')
         .appendHtml("""<inbound-video-call callid="#{evt.detail.callid}"></inbound-video-call>""")
     @on 'needlocalstream', (evt) ->
       evt.detail.localStream(@shadow

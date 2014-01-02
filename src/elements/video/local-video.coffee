@@ -3,6 +3,7 @@ getUserMedia = require('getusermedia')
 attachMediaStream = require('attachmediastream')
 webrtcSupport = require('webrtcsupport')
 mixin = require('../mixin.coffee')
+require = require('./video-tool-bar.coffee')
 
 ###
 Video for yourself, this will get your local stream and show it.
@@ -18,8 +19,15 @@ class LocalVideo extends HTMLElement
         maxWidth: 320
         maxHeight: 240
   createdCallback: ->
-    @shadow = @.createShadowRoot()
-    @shadow.innerHTML = '<video id="display"></video>'
+    @shadow = @createShadowRoot()
+    @shadow.innerHTML = """
+    <div class="tile video">
+      <div>
+        <video id="display"></video>
+        <video-tool-bar></video-tool-bar>
+      </div>
+    </div>
+    """
   enteredViewCallback: =>
     display = @shadow.querySelector('#display')
     getUserMedia @mediaConstraints, (err, stream) =>

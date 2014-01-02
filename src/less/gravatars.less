@@ -5,12 +5,12 @@
 .video-call {
   display: inline;
   background: transparent;
-  color: @black;
+  color: @tileBackgroundColor;
   transition: color 0.2s ease;
   font-size: 18px;
-  margin: 2px;
+  margin: .2rem;
   &:hover {
-   color: @lessblack;
+   color: lighten(@tileBackgroundColor, 25%);
   }
 }
 

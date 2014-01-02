@@ -11,7 +11,7 @@ TODO: hook up badges to indicate the number of folks in your conference
 class ExtensionIcon extends HTMLElement
   createdCallback: ->
     size = @size = 16
-    @shadow = @createShadowRoot()
+    @shadow = @
     @shadow.innerHTML = """
     <canvas id="extensionIcon" width="#{size}" height="#{size}"></canvas>
     """

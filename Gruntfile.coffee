@@ -12,7 +12,7 @@ module.exports = (grunt) ->
           transform: ['coffeeify', 'node-lessify']
           shim:
             MutationSummary:
-              path: './src/mutation-summary.js'
+              path: './vendor/mutation-summary.js'
               exports: 'MutationSummary'
     less:
       build:

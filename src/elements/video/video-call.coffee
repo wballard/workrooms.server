@@ -2,23 +2,30 @@ Platform = require('polyfill-webcomponents')
 attachMediaStream = require('attachmediastream')
 rtc = require('webrtcsupport')
 mixin = require('../mixin.coffee')
-bean = require('bean')
 uuid = require('node-uuid')
+require = require('./video-tool-bar.coffee')
 
 ###
 Oh man, I'm making a base class, the copy paste was just getting to me
 
-#Events
+# Events
 sdp: a session message for WebRTC, used in signalling
 ice: a NAT traversal message for WebRTC, sent to peers via signalling
 
-#HTML Attributes
+# HTML Attributes
 callid: this is the identifier of the running call
 ###
 class VideoCall extends HTMLElement
   createdCallback: ->
-    @shadow = @.createShadowRoot()
-    @shadow.innerHTML = '<video id="display"></video>'
+    @shadow = @createShadowRoot()
+    @shadow.innerHTML = """
+    <div class="tile video">
+      <div>
+        <video id="display"></video>
+        <video-tool-bar></video-tool-bar>
+      </div>
+    </div>
+    """
   enteredViewCallback: =>
     @setAttribute 'peerid', uuid.v1()
     #hook up a connection, using google's public NAT busting

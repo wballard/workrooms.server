@@ -2,6 +2,7 @@
 @import "normalize";
 @import "variables";
 @import "font-awesome/font-awesome";
+@import '../../vendor/semantic-ui/less/collections/menu.less';
 
 .font-face (@family, @file-base, @weight: normal, @style: normal) {
   @font-face {
@@ -13,19 +14,38 @@
 }
 .font-face("FontAwesome", "fonts/fontawesome-webfont", "normal", "normal");
 
-.background {
-  border: @border;
-  display: inline-block;
+html,
+body {
+  margin:0;
+  padding:0;
+  height:100%;
 }
 
-.highlight {
-  background: @highlightBorderColor;
-  display: inline-block;
+.tile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: @tileBackgroundColor;
+  border-radius: @borderRadius;
+  padding: @padding;
+  margin: @margin;
+}
+
+.video {
+  max-width: 326px;
 }
 
 video {
- padding: @pad;
- border: @border;
- background: @borderColor;
+  display: block;
+  border-radius: @borderRadius;
 }
 
+conference-room {
+  background-color: @roomBackgroundColor;
+  display: flex;
+  min-height: 100%;
+
+  .calls {
+    display: flex;
+  }
+}
