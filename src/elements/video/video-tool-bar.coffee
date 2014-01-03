@@ -13,22 +13,24 @@ class VideoTool extends HTMLElement
         <i class="fa #{@getAttribute('icon')}"></i>
       </a>
     """
+    @defineCustomElementProperty 'active'
   enteredViewCallback: =>
-    @on 'click', (evt) =>
+    @addEventListener 'click', (evt) =>
       console.log 'click', @getAttribute('action')
       @fire @getAttribute('action')
+  attributeChangedCallback: () =>
+    console.log arguments
 
 ###
 Standard tools for video calls.
 ###
 class VideoToolBar extends HTMLElement
   createdCallback: ->
+    transclude = @innerHTML
     @shadow = @createShadowRoot()
     @shadow.innerHTML = """
     <div class="ui menu inverted">
-      <video-tool icon="fa-phone" action="hangup"></video-tool>
-      <video-tool icon="fa-video-camera" action="mutevideo"></video-tool>
-      <video-tool icon="fa-microphone" action="muteaudio"></video-tool>
+      #{transclude}
     </div>
     """
   enteredViewCallback: =>

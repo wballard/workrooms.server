@@ -6,28 +6,33 @@ to allow calling.
 MutationSummary = require('MutationSummary')
 require('./elements/mixin.coffee')
 urlparse = require('urlparse')
+bonzo = require('bonzo')
 
 gravatarRegex = new RegExp('gravatar')
 
 processImageForGravatar = (img) ->
   if img?.src?.match(gravatarRegex)
+    #capture original style
+    marginRight = getComputedStyle(img)['margin-right']
+    marginTop = getComputedStyle(img)['margin-top']
+    float = getComputedStyle(img)['float']
+    display = getComputedStyle(img)['display']
+    html = img.outerHTML
+    gravatarToCall = urlparse(img.src).path.split('/')?[2]
+    #and now build up the replacement
+    img = bonzo(img)
     if not img.parent().hasClass('callable')
       parent = img.parent()
       img.addClass('called')
-      marginRight = getComputedStyle(img)['margin-right']
-      marginTop = getComputedStyle(img)['margin-top']
-      float = getComputedStyle(img)['float']
-      display = getComputedStyle(img)['display']
       img.css('margin-right': 0, 'margin-top': 0, 'float': 'none', 'display': 'inline')
       elem = img.replaceWith("""
       <span class="callable" style="display: #{display}; margin-right: #{marginRight}; margin-top: #{marginTop}; float: #{float};">
-        #{img.outerHTML}
+        #{html}
         <i class="fa fa-video-camera video-call"></i>
       </span>
       """)
-      parent.querySelector('.video-call').on 'click', (evt) ->
+      parent[0].querySelector('.video-call').addEventListener 'click', (evt) ->
         evt.preventDefault()
-        gravatarToCall = urlparse(img.src).path.split('/')?[2]
         chrome.runtime.sendMessage
           call: true
           gravatar: gravatarToCall

@@ -24,7 +24,10 @@ class LocalVideo extends HTMLElement
     <div class="tile video">
       <div>
         <video id="display"></video>
-        <video-tool-bar></video-tool-bar>
+        <video-tool-bar>
+          <video-tool icon="fa-video-camera" action="mutevideo"></video-tool>
+          <video-tool icon="fa-microphone" action="muteaudio"></video-tool>
+        </video-tool-bar>
       </div>
     </div>
     """

@@ -34,9 +34,10 @@ class ConferenceRoom extends HTMLElement
   createdCallback: ->
     @shadow = @createShadowRoot()
     @shadow.innerHTML = """
-    <local-video></local-video>
     <github-oauth clientid="eda98e0fee66b8573312" clientsecret="8dc00cee1647aab2a2e926bf45914759e26f7632"></github-oauth>
-    <section class="calls"></section>
+    <span class="calls">
+      <local-video></local-video>
+    </span>
     """
     #keep track of user profiles from OAuth partners here
     @userprofiles = {}
@@ -64,7 +65,7 @@ class ConferenceRoom extends HTMLElement
       catch err
         @fire 'error', error: err
     #all the webrtc process relies on their being a local video stream
-    @on 'localvideostream', (evt) =>
+    @addEventListener 'localvideostream', (evt) =>
       @shadow.querySelectorAll('outbound-video-call').forEach (outbound) =>
         outbound.localStream evt.detail.stream
       @shadow.querySelectorAll('inbound-video-call').forEach (inbound) =>
@@ -82,24 +83,23 @@ class ConferenceRoom extends HTMLElement
           message.makeCalls.forEach (x) => @call(x)
       chrome.runtime.sendMessage
         dequeueCalls: true
-    @on 'ice', (evt) =>
+    @addEventListener 'hangup', (evt) =>
+      @$("outbound-video-call[callid='#{evt.detail.callid}'", @shadow).remove()
+      @$("inbound-video-call[callid='#{evt.detail.callid}'", @shadow).remove()
+    @addEventListener 'signal', (evt) =>
       signalling evt.detail
-    @on 'sdp', (evt) =>
-      signalling evt.detail
-    @on 'userprofile', (evt) ->
+    @addEventListener 'userprofile', (evt) ->
       @userprofiles[evt.detail.profile_source] = evt.detail
       signalling userprofiles: @userprofiles
       #test hack to call yourself
       @call(email: evt.detail.email)
-    @on 'outboundcall', (evt) ->
-      @shadow
-        .querySelector('.calls')
-        .appendHtml("""<outbound-video-call callid="#{evt.detail.callid}"></outbound-video-call>""")
-    @on 'inboundcall', (evt) ->
-      @shadow
-        .querySelector('.calls')
-        .appendHtml("""<inbound-video-call callid="#{evt.detail.callid}"></inbound-video-call>""")
-    @on 'needlocalstream', (evt) ->
+    @addEventListener 'outboundcall', (evt) ->
+      @$('.calls', @shadow)
+        .append("""<outbound-video-call callid="#{evt.detail.callid}"></outbound-video-call>""")
+    @addEventListener 'inboundcall', (evt) ->
+      @$('.calls', @shadow)
+        .append("""<inbound-video-call callid="#{evt.detail.callid}"></inbound-video-call>""")
+    @addEventListener 'needlocalstream', (evt) ->
       evt.detail.localStream(@shadow
         .querySelector('local-video')
         .stream

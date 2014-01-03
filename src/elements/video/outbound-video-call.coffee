@@ -14,7 +14,7 @@ class OutboundVideoCall extends VideoCall
     @peerConnection.onnegotiationneeded = =>
       @peerConnection.createOffer (description) =>
         @peerConnection.setLocalDescription description, =>
-          @fire 'sdp',
+          @fire 'signal',
             offer: true
             callid: @getAttribute('callid')
             peerid: @getAttribute('peerid')
@@ -26,6 +26,7 @@ class OutboundVideoCall extends VideoCall
       @peerConnection.addIceCandidate(new rtc.IceCandidate(message.ice.candidate))
     if message.sdp
       @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp)
+    super message
 
 module.exports =
   OutboundVideoCall: document.register 'outbound-video-call', prototype: OutboundVideoCall.prototype

@@ -4,7 +4,6 @@ rtc = require('webrtcsupport')
 mixin = require('../mixin.coffee')
 uuid = require('node-uuid')
 require = require('./video-tool-bar.coffee')
-
 ###
 Oh man, I'm making a base class, the copy paste was just getting to me
 
@@ -22,7 +21,9 @@ class VideoCall extends HTMLElement
     <div class="tile video">
       <div>
         <video id="display"></video>
-        <video-tool-bar></video-tool-bar>
+        <video-tool-bar>
+          <video-tool icon="fa-phone fa-rotate-135" action="hangup"></video-tool>
+        </video-tool-bar>
       </div>
     </div>
     """
@@ -43,7 +44,7 @@ class VideoCall extends HTMLElement
         config.peerConnectionContraints)
     #ice candidates just need to be shared with peers
     @peerConnection.onicecandidate = (evt) =>
-      @fire 'ice',
+      @fire 'signal',
         callid: @getAttribute('callid')
         peerid: @getAttribute('peerid')
         ice:
@@ -55,7 +56,22 @@ class VideoCall extends HTMLElement
     @peerConnection.onremovestream = (evt) =>
       display = @shadow.querySelector('#display')
       display.src = ''
+    #tack on call details to make a useful message
+    @shadow.addEventListener 'hangup', (evt) =>
+      evt.stopPropagation()
+      @fire 'signal',
+        hangup: true
+        callid: @getAttribute('callid')
+        peerid: @getAttribute('peerid')
+    #kick it off, asking for a local stream
     @fire 'needlocalstream', @
+  signal: (message) ->
+    if message.hangup
+      @peerConnection.close()
+      @fire 'hangup',
+        hangup: true
+        callid: @getAttribute('callid')
+        peerid: @getAttribute('peerid')
 
 module.exports =
   VideoCall = VideoCall

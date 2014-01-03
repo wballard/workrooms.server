@@ -24,11 +24,11 @@ class InboundVideoCall extends VideoCall
       @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), =>
         @peerConnection.createAnswer (description) =>
           @peerConnection.setLocalDescription description, =>
-            @fire 'sdp',
+            @fire 'signal',
               answer: true
               callid: @getAttribute('callid')
               peerid: @getAttribute('peerid')
               sdp: description
-
+    super message
 module.exports =
   InboundVideoCall: document.register 'inbound-video-call', prototype: InboundVideoCall.prototype

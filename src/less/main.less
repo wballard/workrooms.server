@@ -13,6 +13,7 @@
   }
 }
 .font-face("FontAwesome", "fonts/fontawesome-webfont", "normal", "normal");
+.@{fa-css-prefix}-rotate-135 { .fa-icon-rotate(135deg, 2); }
 
 html,
 body {
@@ -31,16 +32,16 @@ body {
   margin: @margin;
   border: 1px solid;
   border-color: darken(@tileBackgroundColor, 2%);
+  video {
+    display: block;
+    margin-bottom: @margin;
+  }
 }
 
 .video {
   max-width: 326px;
 }
 
-video {
-  display: block;
-  border-radius: @borderRadius;
-}
 
 conference-room {
   background-color: @roomBackgroundColor;
@@ -49,5 +50,7 @@ conference-room {
 
   .calls {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 }
