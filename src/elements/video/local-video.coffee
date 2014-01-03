@@ -1,9 +1,8 @@
 Platform = require('polyfill-webcomponents')
 getUserMedia = require('getusermedia')
-attachMediaStream = require('attachmediastream')
 webrtcSupport = require('webrtcsupport')
 mixin = require('../mixin.coffee')
-require('./video-tool-bar.coffee')
+require('./ui-video-toolbar.coffee')
 require('./ui-video-stream.coffee')
 
 ###
@@ -24,11 +23,15 @@ class LocalVideo extends HTMLElement
     @shadow.innerHTML = """
     <div class="tile video">
       <div>
-        <ui-video-stream></ui-video-stream>
-        <video-tool-bar>
-          <video-tool icon="fa-video-camera" action="mutevideo"></video-tool>
-          <video-tool icon="fa-microphone" action="muteaudio"></video-tool>
-        </video-tool-bar>
+        <video-control>
+          <audio-control>
+            <ui-video-stream></ui-video-stream>
+            <ui-video-toolbar>
+              <ui-video-toggle icon="fa-video-camera" action="video" active="true"></ui-video-toggle>
+              <ui-video-toggle icon="fa-microphone" action="audio" active="true"></ui-video-toggle>
+            </ui-video-toolbar>
+          </audio-control>
+        </video-control>
       </div>
     </div>
     """
@@ -43,7 +46,9 @@ class LocalVideo extends HTMLElement
           error: err
       else
         @stream = stream
-        @shadow.querySelector('ui-video-stream').display stream, muted: true
+        @shadow.querySelector('ui-video-stream').display stream,
+          muted: true
+          mirror: true
 
 module.exports =
   LocalVideo: document.register 'local-video', prototype: LocalVideo.prototype

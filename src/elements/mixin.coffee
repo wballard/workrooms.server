@@ -24,6 +24,8 @@ Element.prototype.defineCustomElementProperty = (name) ->
     set: (value) -> object.setAttribute(name, value)
     configurable: true
     enumerable: true
+  #and an intial firing
+  object.attributeChangedCallback name, undefined, object.getAttribute(name)
 ###
 Fire off a custom event with the supplied detail. This is a full on bubbling
 DOM event.

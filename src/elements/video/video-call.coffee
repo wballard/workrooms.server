@@ -2,8 +2,8 @@ platform = require('polyfill-webcomponents')
 rtc = require('webrtcsupport')
 mixin = require('../mixin.coffee')
 uuid = require('node-uuid')
-require('./video-tool-bar.coffee')
 require('./ui-video-stream.coffee')
+require('./ui-video-toolbar.coffee')
 
 ###
 Oh man, I'm making a base class, the copy paste was just getting to me
@@ -22,9 +22,9 @@ class VideoCall extends HTMLElement
     <div class="tile video">
       <div>
         <ui-video-stream></ui-video-stream>
-        <video-tool-bar>
-          <video-tool icon="fa-phone fa-rotate-135" action="hangup"></video-tool>
-        </video-tool-bar>
+        <ui-video-toolbar>
+          <ui-video-tool icon="fa-phone fa-rotate-135" action="hangup"></video-tool>
+        </ui-video-toolbar>
       </div>
     </div>
     """
@@ -52,7 +52,7 @@ class VideoCall extends HTMLElement
           candidate: evt.candidate
     #display hookup and removal
     @peerConnection.onaddstream = (evt) =>
-      @shadow.querySelector('ui-video-stream').display evt.stream, muted: true
+      @shadow.querySelector('ui-video-stream').display evt.stream, muted: false
     @peerConnection.onremovestream = (evt) =>
       @shadow.querySelector('ui-video-stream').display null, muted: true
     #tack on call details to make a useful message
