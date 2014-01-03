@@ -1,9 +1,10 @@
-Platform = require('polyfill-webcomponents')
-attachMediaStream = require('attachmediastream')
+platform = require('polyfill-webcomponents')
 rtc = require('webrtcsupport')
 mixin = require('../mixin.coffee')
 uuid = require('node-uuid')
-require = require('./video-tool-bar.coffee')
+require('./video-tool-bar.coffee')
+require('./ui-video-stream.coffee')
+
 ###
 Oh man, I'm making a base class, the copy paste was just getting to me
 
@@ -20,7 +21,7 @@ class VideoCall extends HTMLElement
     @shadow.innerHTML = """
     <div class="tile video">
       <div>
-        <video id="display"></video>
+        <ui-video-stream></ui-video-stream>
         <video-tool-bar>
           <video-tool icon="fa-phone fa-rotate-135" action="hangup"></video-tool>
         </video-tool-bar>
@@ -51,11 +52,9 @@ class VideoCall extends HTMLElement
           candidate: evt.candidate
     #display hookup and removal
     @peerConnection.onaddstream = (evt) =>
-      display = @shadow.querySelector('#display')
-      attachMediaStream evt.stream, display
+      @shadow.querySelector('ui-video-stream').display evt.stream, muted: true
     @peerConnection.onremovestream = (evt) =>
-      display = @shadow.querySelector('#display')
-      display.src = ''
+      @shadow.querySelector('ui-video-stream').display null, muted: true
     #tack on call details to make a useful message
     @shadow.addEventListener 'hangup', (evt) =>
       evt.stopPropagation()

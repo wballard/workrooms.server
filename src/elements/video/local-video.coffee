@@ -3,7 +3,8 @@ getUserMedia = require('getusermedia')
 attachMediaStream = require('attachmediastream')
 webrtcSupport = require('webrtcsupport')
 mixin = require('../mixin.coffee')
-require = require('./video-tool-bar.coffee')
+require('./video-tool-bar.coffee')
+require('./ui-video-stream.coffee')
 
 ###
 Video for yourself, this will get your local stream and show it.
@@ -23,7 +24,7 @@ class LocalVideo extends HTMLElement
     @shadow.innerHTML = """
     <div class="tile video">
       <div>
-        <video id="display"></video>
+        <ui-video-stream></ui-video-stream>
         <video-tool-bar>
           <video-tool icon="fa-video-camera" action="mutevideo"></video-tool>
           <video-tool icon="fa-microphone" action="muteaudio"></video-tool>
@@ -32,18 +33,17 @@ class LocalVideo extends HTMLElement
     </div>
     """
   enteredViewCallback: =>
-    display = @shadow.querySelector('#display')
+    @addEventListener 'stream', (evt) ->
+        @fire 'localvideostream',
+          stream: evt.detail.stream
     getUserMedia @mediaConstraints, (err, stream) =>
       if err
         @fire 'error',
           stream: stream
           error: err
       else
-        @fire 'localvideostream',
-          stream: stream
         @stream = stream
-        attachMediaStream stream, display, muted: true
-
+        @shadow.querySelector('ui-video-stream').display stream, muted: true
 
 module.exports =
   LocalVideo: document.register 'local-video', prototype: LocalVideo.prototype

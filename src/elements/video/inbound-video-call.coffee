@@ -10,7 +10,8 @@ This element listens for an incoming call from another user.
 class InboundVideoCall extends VideoCall
   #listen for and incoming call with a local video stream
   localStream: (localStream) ->
-    @peerConnection.addStream(localStream)
+    if localStream
+      @peerConnection.addStream(localStream)
   #Handle an inbound signal message, this is either an ice message, or an sdp
   #message -- ice is easy, you just add it, sdp has an offer/answer mechanism
   #that makes a bit of a callback pyramid, and you need to make sure to send

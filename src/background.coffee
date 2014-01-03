@@ -85,8 +85,9 @@ chrome.runtime.onMessage.addListener (message, sender, respond) ->
     callQueue.push(message)
     showConferenceTab()
   if message.dequeueCalls and callQueue.length
-    chrome.runtime.sendMessage
-      makeCalls: callQueue
+    calls = callQueue
     callQueue = []
+    chrome.runtime.sendMessage
+      makeCalls: calls
 
 

@@ -33,6 +33,7 @@ processImageForGravatar = (img) ->
       """)
       parent[0].querySelector('.video-call').addEventListener 'click', (evt) ->
         evt.preventDefault()
+        console.log 'gravatar call', gravatarToCall
         chrome.runtime.sendMessage
           call: true
           gravatar: gravatarToCall

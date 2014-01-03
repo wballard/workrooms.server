@@ -75,12 +75,14 @@ class ConferenceRoom extends HTMLElement
       #and the tab was asynchronously launched by a call request, so
       #we'll deal with it by asking to dequeue if we see a call and
       #when we 'start up' video
-      chrome.runtime.onMessage.addListener (message, sender, respond) =>
-        if message.call
-          chrome.runtime.sendMessage
-            dequeueCalls: true
-        if message.makeCalls
-          message.makeCalls.forEach (x) => @call(x)
+      if not @_connected_to_chrome
+        chrome.runtime.onMessage.addListener (message, sender, respond) =>
+          if message.call
+            chrome.runtime.sendMessage
+              dequeueCalls: true
+          if message.makeCalls
+            message.makeCalls.forEach (x) => @call(x)
+        @_connected_to_chrome = true
       chrome.runtime.sendMessage
         dequeueCalls: true
     @addEventListener 'hangup', (evt) =>
@@ -94,6 +96,7 @@ class ConferenceRoom extends HTMLElement
       #test hack to call yourself
       @call(email: evt.detail.email)
     @addEventListener 'outboundcall', (evt) ->
+      console.log 'outbound', evt
       @$('.calls', @shadow)
         .append("""<outbound-video-call callid="#{evt.detail.callid}"></outbound-video-call>""")
     @addEventListener 'inboundcall', (evt) ->
