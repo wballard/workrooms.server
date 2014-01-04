@@ -20,8 +20,18 @@ class UIVideoStream extends HTMLElement
   createdCallback: ->
     @shadow = @createShadowRoot()
     @shadow.innerHTML = """
-        <video></video>
+      <span id="sourcemutedaudio" class="like ui corner label">
+        <i class="icon fa fa-microphone-slash"></i>
+      </span>
+      <video></video>
     """
+    @defineCustomElementProperty 'sourcemutedaudio'
+  attributeChangedCallback: (name, oldValue, newValue) =>
+    if name is 'sourcemutedaudio'
+      if newValue is 'true'
+        @$('#sourcemutedaudio', @shadow).show()
+      else
+        @$('#sourcemutedaudio', @shadow).hide()
   display: (stream, options) ->
     options = _.extend
       muted: false
@@ -29,6 +39,7 @@ class UIVideoStream extends HTMLElement
     @$('video', @shadow)
       .attr('src', URL.createObjectURL(stream) if stream)
       .attr('autoplay', true)
+    #this is local playback mute, not source mute
     if options.muted
       @$('video', @shadow)
         .attr('muted', '')

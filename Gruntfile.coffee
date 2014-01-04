@@ -14,6 +14,12 @@ module.exports = (grunt) ->
             MutationSummary:
               path: './vendor/mutation-summary.js'
               exports: 'MutationSummary'
+            PathObserver:
+              path: './vendor/observe.js'
+              exports: 'PathObserver'
+            'polyfill-webcomponents':
+              path: './vendor/platform.js'
+              exports: null
     less:
       build:
         files:

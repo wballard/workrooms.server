@@ -3,6 +3,7 @@
 @import "variables";
 @import "font-awesome/font-awesome";
 @import '../../vendor/semantic-ui/less/collections/menu.less';
+@import '../../vendor/semantic-ui/less/elements/label.less';
 
 .font-face (@family, @file-base, @weight: normal, @style: normal) {
   @font-face {
@@ -38,8 +39,12 @@ body {
   }
 }
 
-.video {
-  max-width: 326px;
+ui-video-stream {
+  position: relative;
+  display: block;
+  .video {
+    max-width: 326px;
+  }
 }
 
 

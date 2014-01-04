@@ -42,17 +42,20 @@ class ConferenceRoom extends HTMLElement
     #keep track of user profiles from OAuth partners here
     @userprofiles = {}
   enteredViewCallback: =>
+    #using a websocket to talk to the signalling server via peer identified
+    #JSON messages
     @setAttribute('sessionid', uuid.v1())
-    socket = @socket = new WebSocket(@getAttribute('server'))
-    signalling = @signalling = (message) =>
+    socket = new WebSocket(@getAttribute('server'))
+    @signalling = signalling = (message) =>
       message.sessionid = @getAttribute('sessionid')
       socket.send(JSON.stringify(message))
+    #handle all the messages back from the signalling server here
     socket.onmessage = (evt) =>
       try
         message = JSON.parse(evt.data)
-        if message.inboundcall
+        if message.inboundcall?
           @fire 'inboundcall', message
-        if message.outboundcall
+        if message.outboundcall?
           @fire 'outboundcall', message
         #forward signal messages along to the video elements and give them a chance
         #to process, assuming they 'match' at all
@@ -85,28 +88,49 @@ class ConferenceRoom extends HTMLElement
         @_connected_to_chrome = true
       chrome.runtime.sendMessage
         dequeueCalls: true
-    @addEventListener 'hangup', (evt) =>
-      @$("outbound-video-call[callid='#{evt.detail.callid}'", @shadow).remove()
-      @$("inbound-video-call[callid='#{evt.detail.callid}'", @shadow).remove()
+    #relay signal control through to the server
     @addEventListener 'signal', (evt) =>
       signalling evt.detail
+    #an SSO system provided a profile, send it along to the server in order to
+    #build up a directory
     @addEventListener 'userprofile', (evt) ->
       @userprofiles[evt.detail.profile_source] = evt.detail
       signalling userprofiles: @userprofiles
       #test hack to call yourself
       @call(email: evt.detail.email)
+    #you are calling, set up an outbound call element to send it
     @addEventListener 'outboundcall', (evt) ->
-      console.log 'outbound', evt
       @$('.calls', @shadow)
         .append("""<outbound-video-call callid="#{evt.detail.callid}"></outbound-video-call>""")
+    #someone called out, set up an inbound call element to receive it
     @addEventListener 'inboundcall', (evt) ->
       @$('.calls', @shadow)
         .append("""<inbound-video-call callid="#{evt.detail.callid}"></inbound-video-call>""")
+    #video streams show up asynchronously, so supply calls peers -- both
+    #inbound and outbound -- with the local video so it can share it
     @addEventListener 'needlocalstream', (evt) ->
       evt.detail.localStream(@shadow
         .querySelector('local-video')
         .stream
       )
+    #signal every outbound call that we are muted, so all peer inbound calls
+    #will get the signal and indicate mute
+    @addEventListener 'audio.on', (evt) ->
+      @$('outbound-video-call', @shadow).each (call) ->
+        signalling
+          sourcemutedaudio: false
+          callid: call.getAttribute('callid')
+          peerid: call.getAttribute('peerid')
+    @addEventListener 'audio.off', (evt) ->
+      @$('outbound-video-call', @shadow).each (call) ->
+        signalling
+          sourcemutedaudio: true
+          callid: call.getAttribute('callid')
+          peerid: call.getAttribute('peerid')
+    #goodbye -- clean out the UI elements
+    @addEventListener 'hangup', (evt) =>
+      @$("outbound-video-call[callid='#{evt.detail.callid}'", @shadow).remove()
+      @$("inbound-video-call[callid='#{evt.detail.callid}'", @shadow).remove()
     #keep alive, as well as presence -- this keeps the WebSocket up with
     #nginx in front, keeps the server refreshed
     setInterval ->
@@ -125,12 +149,10 @@ class ConferenceRoom extends HTMLElement
   # as the correlation key between the inbound and outbound side
   # to set up peer-peer traffic
   call: (identifier) =>
-    console.log 'calling', identifier, @
     @signalling
       call: true
       to: identifier
       callid: uuid.v1()
-
 
 module.exports =
   ConferenceRoom: document.register 'conference-room', prototype: ConferenceRoom.prototype

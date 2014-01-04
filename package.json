@@ -13,7 +13,6 @@
     "node-lessify": "git+https://github.com/wballard/node-lessify.git",
     "getusermedia": "~0.2.1",
     "component-ajax": "0.0.2",
-    "polyfill-webcomponents": "0.0.8",
     "bean": "~1.0.6",
     "grunt-contrib-copy": "~0.5.0",
     "brfs": "0.0.8",

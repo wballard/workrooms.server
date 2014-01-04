@@ -52,9 +52,12 @@ class VideoCall extends HTMLElement
           candidate: evt.candidate
     #display hookup and removal
     @peerConnection.onaddstream = (evt) =>
-      @shadow.querySelector('ui-video-stream').display evt.stream, muted: false
+      #need to add these properties so they can be bound
+      evt.stream.sourcemutedaudio = false
+      evt.stream.sourcemutedvideo = false
+      @shadow.querySelector('ui-video-stream').display evt.stream
     @peerConnection.onremovestream = (evt) =>
-      @shadow.querySelector('ui-video-stream').display null, muted: true
+      @shadow.querySelector('ui-video-stream').display null
     #tack on call details to make a useful message
     @shadow.addEventListener 'hangup', (evt) =>
       evt.stopPropagation()
@@ -65,12 +68,21 @@ class VideoCall extends HTMLElement
     #kick it off, asking for a local stream
     @fire 'needlocalstream', @
   signal: (message) ->
+    #signal turned into a DOM event for this element, handling it here
+    #to have a 'proper' rtc connection close and be nice to any TURN/STUN
+    #along the path to the remote peer
     if message.hangup
       @peerConnection.close()
       @fire 'hangup',
         hangup: true
         callid: @getAttribute('callid')
         peerid: @getAttribute('peerid')
+    #track the remote stream state here, too bad this isn't available
+    #from the RTCPeerConnection media streams itself, but they only show
+    #the stream state on 'this receiving side' and 'this sending side' not
+    #'that sending side' piping us their video
+    if message.sourcemutedaudio?
+      console.log @shadow.querySelector('ui-video-stream').sourcemutedaudio = message.sourcemutedaudio
 
 module.exports =
   VideoCall = VideoCall
