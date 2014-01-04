@@ -14,10 +14,7 @@ selfvideostream: event.details.stream contains the local stream
 class LocalVideo extends HTMLElement
   mediaConstraints:
     audio: true
-    video:
-      mandatory:
-        maxWidth: 320
-        maxHeight: 240
+    video: true
   createdCallback: ->
     @shadow = @createShadowRoot()
     @shadow.innerHTML = """

@@ -127,6 +127,18 @@ class ConferenceRoom extends HTMLElement
           sourcemutedaudio: true
           callid: call.getAttribute('callid')
           peerid: call.getAttribute('peerid')
+    @addEventListener 'video.on', (evt) ->
+      @$('outbound-video-call', @shadow).each (call) ->
+        signalling
+          sourcemutedvideo: false
+          callid: call.getAttribute('callid')
+          peerid: call.getAttribute('peerid')
+    @addEventListener 'video.off', (evt) ->
+      @$('outbound-video-call', @shadow).each (call) ->
+        signalling
+          sourcemutedvideo: true
+          callid: call.getAttribute('callid')
+          peerid: call.getAttribute('peerid')
     #goodbye -- clean out the UI elements
     @addEventListener 'hangup', (evt) =>
       @$("outbound-video-call[callid='#{evt.detail.callid}'", @shadow).remove()

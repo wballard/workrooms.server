@@ -33,18 +33,23 @@ body {
   margin: @margin;
   border: 1px solid;
   border-color: darken(@tileBackgroundColor, 2%);
-  video {
-    display: block;
-    margin-bottom: @margin;
-    -webkit-mask-image: url('images/avatar-mask.svg');
-  }
 }
 
 ui-video-stream {
   position: relative;
   display: block;
-  .video {
-    max-width: 326px;
+  video {
+    display: block;
+    margin-bottom: @margin;
+    -webkit-mask-image: url('images/avatar-mask.svg');
+    width: 20em;
+  }
+  canvas {
+    display: none;
+  }
+  img {
+    -webkit-mask-image: url('images/avatar-mask.svg');
+    -webkit-filter: grayscale(1.0) blur(0.25px);
   }
 }
 

@@ -83,6 +83,8 @@ class VideoCall extends HTMLElement
     #'that sending side' piping us their video
     if message.sourcemutedaudio?
       console.log @shadow.querySelector('ui-video-stream').sourcemutedaudio = message.sourcemutedaudio
+    if message.sourcemutedvideo?
+      console.log @shadow.querySelector('ui-video-stream').sourcemutedvideo = message.sourcemutedvideo
 
 module.exports =
   VideoCall = VideoCall

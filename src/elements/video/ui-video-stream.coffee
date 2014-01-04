@@ -2,6 +2,8 @@ platform = require('polyfill-webcomponents')
 _ = require('lodash')
 mixin = require('../mixin.coffee')
 
+SNAPSHOT_TIMEOUT = 30 * 1000
+
 ###
 Displays a stream type video.
 
@@ -24,33 +26,65 @@ class UIVideoStream extends HTMLElement
         <i class="icon fa fa-microphone-slash"></i>
       </span>
       <video></video>
+      <canvas></canvas>
+      <img></img>
     """
     @defineCustomElementProperty 'sourcemutedaudio'
+    @defineCustomElementProperty 'sourcemutedvideo'
   attributeChangedCallback: (name, oldValue, newValue) =>
     if name is 'sourcemutedaudio'
       if newValue is 'true'
         @$('#sourcemutedaudio', @shadow).show()
       else
         @$('#sourcemutedaudio', @shadow).hide()
+    if name is 'sourcemutedvideo'
+      if newValue is 'true'
+        @$('video', @shadow).hide()
+        @$('img', @shadow).show()
+      else
+        @$('video', @shadow).show()
+        @$('img', @shadow).hide()
   display: (stream, options) ->
     options = _.extend
       muted: false
     , options
-    @$('video', @shadow)
-      .attr('src', URL.createObjectURL(stream) if stream)
-      .attr('autoplay', true)
+    video = @shadow.querySelector('video')
+    width = parseInt(getComputedStyle(video).getPropertyValue('width').replace('px',''))
+    height = 0
+    streaming = false
+    #components
+    snapshot = @shadow.querySelector('canvas')
+    takeSnapshot = ->
+      ctx = snapshot.getContext('2d')
+      ctx.drawImage(video, 0, 0, width, height)
+      image.setAttribute('src', snapshot.toDataURL('image/png'))
+    image = @shadow.querySelector('img')
+    @$(image).hide()
     #this is local playback mute, not source mute
     if options.muted
-      @$('video', @shadow)
-        .attr('muted', '')
+      video.setAttribute('muted', '')
     else
-      @$('video', @shadow)
-        .removeAttr('muted')
+      video.removeAttribute('muted')
     if options.mirror
       element = @$('video', @shadow)
         .css('-webkit-transform', 'scaleX(-1)')
-    @fire 'stream',
-      stream: stream
+    #size up when the video starts
+    video.addEventListener 'canplay', ->
+      if not streaming
+        height = video.videoHeight / (video.videoWidth/width)
+        video.setAttribute('width', width)
+        video.setAttribute('height', height)
+        snapshot.setAttribute('width', width)
+        snapshot.setAttribute('height', height)
+        streaming = true
+        takeSnapshot()
+        #good to go -- let everyone up the DOM know
+        @fire 'stream',
+          stream: stream
+    #play that video
+    video.src = URL.createObjectURL(stream)
+    video.play()
+    setInterval takeSnapshot, SNAPSHOT_TIMEOUT
 
 ###
 This one is a non-visual element.
