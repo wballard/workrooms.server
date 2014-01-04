@@ -28,10 +28,11 @@ module.exports = (grunt) ->
     copy:
       tabs:
         files: [
-          {src: ['**/*.html'], dest: 'build/', expand: true, cwd: 'src/'}
+          {src: ['**/*.html'], dest: 'build/', expand: true, cwd: 'src/'},
+          {src: ['**/*.svg'], dest: 'build/', expand: true, cwd: 'src/'}
         ]
     watch:
-      files: ['src/**/*.coffee', 'src/**/*.js', 'src/**/*.less', 'src/**/*.css', 'src/**/*.html']
+      files: ['src/**/*.coffee', 'src/**/*.js', 'src/**/*.less', 'src/**/*.css', 'src/**/*.html', 'src/**/*.svg']
       tasks: ['build']
 
 
