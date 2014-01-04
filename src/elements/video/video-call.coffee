@@ -19,15 +19,20 @@ class VideoCall extends HTMLElement
   createdCallback: ->
     @shadow = @createShadowRoot()
     @shadow.innerHTML = """
-    <div class="tile video">
-      <div>
+    <div class="ui tile">
+      <section>
         <ui-video-stream></ui-video-stream>
+        <img class="gravatar"></img>
         <ui-video-toolbar>
           <ui-video-tool icon="fa-phone fa-rotate-135" action="hangup"></video-tool>
         </ui-video-toolbar>
-      </div>
+      </section>
     </div>
     """
+    @defineCustomElementProperty 'gravatarurl'
+  attributeChangedCallback: (name, oldValue, newValue) =>
+    if name is 'gravatarurl'
+      @shadow.querySelector('.gravatar').src = newValue
   enteredViewCallback: =>
     @setAttribute 'peerid', uuid.v1()
     #hook up a connection, using google's public NAT busting
@@ -65,6 +70,8 @@ class VideoCall extends HTMLElement
         hangup: true
         callid: @getAttribute('callid')
         peerid: @getAttribute('peerid')
+    @shadow.addEventListener 'stream', (evt) =>
+      @$('.gravatar', @shadow).hide()
     #kick it off, asking for a local stream
     @fire 'needlocalstream', @
   signal: (message) ->
@@ -82,9 +89,13 @@ class VideoCall extends HTMLElement
     #the stream state on 'this receiving side' and 'this sending side' not
     #'that sending side' piping us their video
     if message.sourcemutedaudio?
-      console.log @shadow.querySelector('ui-video-stream').sourcemutedaudio = message.sourcemutedaudio
+      @shadow.querySelector('ui-video-stream').sourcemutedaudio = message.sourcemutedaudio
     if message.sourcemutedvideo?
-      console.log @shadow.querySelector('ui-video-stream').sourcemutedvideo = message.sourcemutedvideo
+      @shadow.querySelector('ui-video-stream').sourcemutedvideo = message.sourcemutedvideo
+      if message.sourcemutedvideo
+        @$('.gravatar', @shadow).show()
+      else
+        @$('.gravatar', @shadow).hide()
 
 module.exports =
   VideoCall = VideoCall

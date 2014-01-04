@@ -15,6 +15,8 @@ require('./inbound-video-call.coffee')
 mixin = require('../mixin.coffee')
 uuid = require('node-uuid')
 
+HEARTBEAT = 10 * 1000
+
 ###
 A `ConferenceRoom` brings together multiple video stream elements, giving you
 a place to collaborate. The main benefit is that the conference room will deal
@@ -100,12 +102,24 @@ class ConferenceRoom extends HTMLElement
       @call(email: evt.detail.email)
     #you are calling, set up an outbound call element to send it
     @addEventListener 'outboundcall', (evt) ->
+      url = evt?.detail?.userprofiles?.github?.avatar_url
       @$('.calls', @shadow)
-        .append("""<outbound-video-call callid="#{evt.detail.callid}"></outbound-video-call>""")
+        .append("""<outbound-video-call gravatarurl="#{url}" callid="#{evt.detail.callid}"></outbound-video-call>""")
     #someone called out, set up an inbound call element to receive it
     @addEventListener 'inboundcall', (evt) ->
+      #notice how there is no 'answer' -- this is the core of always
+      #on video conferencing, just like dropping by a person's desk -- if you
+      #are 'working' i.e. on -- you are available, period
+
+      #visual nag, really want to get people to take the calls
+      url = evt?.detail?.userprofiles?.github?.avatar_url
+      callToast = webkitNotifications.createNotification url, 'Call From', evt.detail.userprofiles.github.name
+      callToast.onclick = ->
+        chrome.runtime.sendMessage
+          showConference: true
+      callToast.show()
       @$('.calls', @shadow)
-        .append("""<inbound-video-call callid="#{evt.detail.callid}"></inbound-video-call>""")
+        .append("""<inbound-video-call gravatarurl="#{url}" callid="#{evt.detail.callid}"></inbound-video-call>""")
     #video streams show up asynchronously, so supply calls peers -- both
     #inbound and outbound -- with the local video so it can share it
     @addEventListener 'needlocalstream', (evt) ->
@@ -114,31 +128,31 @@ class ConferenceRoom extends HTMLElement
         .stream
       )
     #signal every outbound call that we are muted, so all peer inbound calls
-    #will get the signal and indicate mute
+    #will get the signal and indicate mute, this strobes as a keepalive
+    #and to deal with calls that start when the video or audio is muted
+    muteStatus =
+      sourcemutedvideo: false
+      sourcemutedaudio: false
+    signalMuteStatus = =>
+      @$('outbound-video-call', @shadow).each (call) ->
+        signalling
+          sourcemutedaudio: muteStatus.sourcemutedaudio
+          sourcemutedvideo: muteStatus.sourcemutedvideo
+          callid: call.getAttribute('callid')
+          peerid: call.getAttribute('peerid')
+    setInterval signalMuteStatus, HEARTBEAT
     @addEventListener 'audio.on', (evt) ->
-      @$('outbound-video-call', @shadow).each (call) ->
-        signalling
-          sourcemutedaudio: false
-          callid: call.getAttribute('callid')
-          peerid: call.getAttribute('peerid')
+      muteStatus.sourcemutedaudio = false
+      signalMuteStatus()
     @addEventListener 'audio.off', (evt) ->
-      @$('outbound-video-call', @shadow).each (call) ->
-        signalling
-          sourcemutedaudio: true
-          callid: call.getAttribute('callid')
-          peerid: call.getAttribute('peerid')
+      muteStatus.sourcemutedaudio = true
+      signalMuteStatus()
     @addEventListener 'video.on', (evt) ->
-      @$('outbound-video-call', @shadow).each (call) ->
-        signalling
-          sourcemutedvideo: false
-          callid: call.getAttribute('callid')
-          peerid: call.getAttribute('peerid')
+      muteStatus.sourcemutedvideo = false
+      signalMuteStatus()
     @addEventListener 'video.off', (evt) ->
-      @$('outbound-video-call', @shadow).each (call) ->
-        signalling
-          sourcemutedvideo: true
-          callid: call.getAttribute('callid')
-          peerid: call.getAttribute('peerid')
+      muteStatus.sourcemutedvideo = true
+      signalMuteStatus()
     #goodbye -- clean out the UI elements
     @addEventListener 'hangup', (evt) =>
       @$("outbound-video-call[callid='#{evt.detail.callid}'", @shadow).remove()

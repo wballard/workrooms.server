@@ -84,7 +84,10 @@ class UIVideoStream extends HTMLElement
     #play that video
     video.src = URL.createObjectURL(stream)
     video.play()
-    setInterval takeSnapshot, SNAPSHOT_TIMEOUT
+    setInterval =>
+      if not @hasAttribute('sourcemutedvideo') or @getAttribute('sourcemutedvideo') is 'false'
+        takeSnapshot()
+    , SNAPSHOT_TIMEOUT
 
 ###
 This one is a non-visual element.

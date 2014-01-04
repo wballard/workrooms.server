@@ -23,6 +23,11 @@ body {
   height:100%;
 }
 
+body {
+  background-color: @roomBackgroundColor;
+  min-height: 100%;
+}
+
 .tile {
   display: flex;
   align-items: center;
@@ -36,7 +41,6 @@ body {
 }
 
 ui-video-stream {
-  position: relative;
   display: block;
   video {
     display: block;
@@ -53,15 +57,28 @@ ui-video-stream {
   }
 }
 
-
 conference-room {
-  background-color: @roomBackgroundColor;
-  display: flex;
-  min-height: 100%;
-
   .calls {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+  }
+}
+
+local-video {
+  display: block;
+}
+
+inbound-video-call, outbound-video-call {
+  display: block;
+  .gravatar {
+    margin: @margin;
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-radius: @borderRadius;
+  }
+  section {
+    position: relative;
   }
 }

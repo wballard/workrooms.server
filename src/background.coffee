@@ -89,5 +89,7 @@ chrome.runtime.onMessage.addListener (message, sender, respond) ->
     callQueue = []
     chrome.runtime.sendMessage
       makeCalls: calls
+  if message.showConference
+    showConferenceTab()
 
 
