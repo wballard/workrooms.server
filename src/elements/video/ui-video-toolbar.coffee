@@ -58,11 +58,10 @@ Standard toolbar for video controls.
 ###
 class UIVideoToolBar extends HTMLElement
   createdCallback: ->
-    transclude = @innerHTML
     @shadow = @createShadowRoot()
     @shadow.innerHTML = """
     <div class="ui menu inverted">
-      #{transclude}
+      <content></content>
     </div>
     """
   enteredViewCallback: =>
