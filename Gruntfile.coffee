@@ -6,7 +6,7 @@ module.exports = (grunt) ->
         expand: true
         files:
           './build/background.js': './src/background.coffee'
-          './build/conference.js': './src/conference.coffee'
+          './build/tabs/conference.js': './src/conference.coffee'
           './build/gravatars.js': './src/gravatars.coffee'
         options:
           transform: ['coffeeify', 'node-lessify']
@@ -30,9 +30,10 @@ module.exports = (grunt) ->
         files: [
           {src: ['**/*.html'], dest: 'build/', expand: true, cwd: 'src/'},
           {src: ['**/*.svg'], dest: 'build/', expand: true, cwd: 'src/'}
+          {src: 'manifest.json', dest: 'build/', expand: true, cwd: 'src/'}
         ]
     watch:
-      files: ['src/**/*.coffee', 'src/**/*.js', 'src/**/*.less', 'src/**/*.css', 'src/**/*.html', 'src/**/*.svg']
+      files: ['src/**/*.coffee', 'src/**/*.js', 'src/**/*.less', 'src/**/*.css', 'src/**/*.html', 'src/**/*.svg', 'src/**/*.json']
       tasks: ['build']
 
 
@@ -42,3 +43,4 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-less'
 
   grunt.registerTask 'build', ['browserify', 'less', 'copy']
+  grunt.registerTask 'publish', ['build', 'crx']

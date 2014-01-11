@@ -53,6 +53,7 @@ class ConferenceRoom extends HTMLElement
       socket.send(JSON.stringify(message))
     #handle all the messages back from the signalling server here
     socket.onmessage = (evt) =>
+      console.log 'signal', evt
       try
         message = JSON.parse(evt.data)
         if message.inboundcall?
@@ -82,6 +83,7 @@ class ConferenceRoom extends HTMLElement
       #when we 'start up' video
       if not @_connected_to_chrome
         chrome.runtime.onMessage.addListener (message, sender, respond) =>
+          console.log 'message', message
           if message.call
             chrome.runtime.sendMessage
               dequeueCalls: true
@@ -153,6 +155,8 @@ class ConferenceRoom extends HTMLElement
     @addEventListener 'video.off', (evt) ->
       muteStatus.sourcemutedvideo = true
       signalMuteStatus()
+    @addEventListener 'error', (error) ->
+      console.error error
     #goodbye -- clean out the UI elements
     @addEventListener 'hangup', (evt) =>
       @$("outbound-video-call[callid='#{evt.detail.callid}'", @shadow).remove()

@@ -34,7 +34,7 @@ reloadIfChanged()
 Restore the state of the conference tab after a hotload.
 ###
 showConferenceTab = ->
-  conferenceURL = chrome.runtime.getURL('build/tabs/conference.html')
+  conferenceURL = chrome.runtime.getURL('tabs/conference.html')
   remember = (tab) ->
     chrome.tabs.update tab.id, active: true
     chrome.storage.local.set conference: true
@@ -46,7 +46,7 @@ showConferenceTab = ->
       tabs.forEach remember
     else
       chrome.tabs.create
-        url: 'build/tabs/conference.html'
+        url: 'tabs/conference.html'
         index: 0
       , remember
 
@@ -63,10 +63,10 @@ Hook up every tab to content injection and monitoring.
 ###
 inject = (tab) ->
   chrome.tabs.executeScript tab.id,
-    file: './build/gravatars.js'
+    file: './gravatars.js'
     allFrames: true
   chrome.tabs.insertCSS tab.id,
-    file: './build/gravatars.css'
+    file: './gravatars.css'
     allFrames: true
 chrome.tabs.query {}, (tabs) ->
   tabs.forEach inject
@@ -81,6 +81,7 @@ such that the conference tab can get a chance to consume it
 ###
 callQueue = []
 chrome.runtime.onMessage.addListener (message, sender, respond) ->
+  console.log 'background', message
   if message.call
     callQueue.push(message)
     showConferenceTab()

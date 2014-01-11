@@ -7,14 +7,14 @@
     "default_title": "Workrooms"
   },
   "background": {
-    "page": "/build/background.html"
+    "page": "background.html"
   },
   "web_accessible_resources": [
-    "build/background.js",
-    "build/conference.js",
-    "build/main.css",
-    "build/gravatars.css",
-    "build/gravatars.js"
+    "background.js",
+    "tabs/conference.js",
+    "main.css",
+    "gravatars.css",
+    "gravatars.js"
   ],
   "permissions": [
     "storage",

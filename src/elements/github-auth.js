@@ -4,8 +4,9 @@ var gh = (function() {
 
   var tokenFetcher = (function() {
     var redirectUri = 'https://' +
-    chrome.runtime.id +
+      chrome.runtime.id +
       '.chromiumapp.org/provider_cb';
+    console.log(redirectUri);
     var redirectRe = new RegExp(redirectUri + '[#\?](.*)');
     var access_token = null;
 
@@ -26,14 +27,14 @@ var gh = (function() {
         }
         chrome.identity.launchWebAuthFlow(options, function(redirectUri) {
           if (chrome.runtime.lastError) {
-            callback(new Error(chrome.runtime.lastError));
+            callback(JSON.stringify(chrome.runtime.lastError));
             return;
           }
           var matches = redirectUri.match(redirectRe);
           if (matches && matches.length > 1)
             handleProviderResponse(parseRedirectFragment(matches[1]));
           else
-            callback(new Error('Invalid redirect URI'));
+            callback('Invalid redirect URI');
         });
 
         function parseRedirectFragment(fragment) {
@@ -54,7 +55,7 @@ var gh = (function() {
           else if (values.hasOwnProperty('code'))
             exchangeCodeForToken(values.code);
           else
-            callback(new Error('Neither access_token nor code avialable.'));
+            callback('Neither access_token nor code avialable.');
         }
 
         function exchangeCodeForToken(code) {
@@ -75,10 +76,10 @@ var gh = (function() {
                        if (response.hasOwnProperty('access_token')) {
                          setAccessToken(response.access_token);
                        } else {
-                         callback(new Error('Cannot obtain access_token from code.'));
+                         callback('Cannot obtain access_token from code.');
                        }
                      } else {
-                       callback(new Error('Code exchange failed'));
+                       callback('Code exchange failed');
                      }
                    };
                    xhr.send();
@@ -153,6 +154,7 @@ var gh = (function() {
   return {
     login: function(clientId, clientSecret, callback) {
       tokenFetcher.getToken(clientId, clientSecret, function(error, access_token) {
+        console.log('logged in', error, access_token);
         if (error) callback(error);
         else getUserInfo(clientId, clientSecret, callback);
       })
