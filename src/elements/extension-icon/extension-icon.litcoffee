@@ -2,6 +2,10 @@ Maintain a dynamic extension icon with here, this draws the chrome extension
 icon rather than just using an image. This way is it possible to draw with
 web tech, not using a graphics program.
 
+#Attributes
+##size
+Pixels, as an integer.
+
 * TODO: use the tiny avatar instead of the icon?
 * TODO: hook up badges to indicate the number of folks in your conference
 
