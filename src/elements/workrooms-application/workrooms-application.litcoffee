@@ -17,3 +17,10 @@ elements that actually do work!
         console.log 'application starting', config
         @config = config
 
+Make user profiles from nested OAuth elements available to the chrome app
+so that we can get at it in tabs.
+
+        @addEventListener 'userprofile', (evt) ->
+          chrome.runtime.sendMessage
+            userprofile: evt.detail
+

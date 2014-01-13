@@ -3,7 +3,7 @@
 #but, a small convenience for debug local with a local server vs
 #production with a live server
 
-#root key is the chrom extension runtime id
+#root key is the chrome extension runtime id
 omakialnodpjhdmhalkeffbndhjemlmo:
   reload: true
   signallingServer: ws://localhost:9000

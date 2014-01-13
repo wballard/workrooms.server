@@ -28,9 +28,7 @@ module.exports = (grunt) ->
       tabs:
         files: [
           {src: ['**/*.html'], dest: 'build/', expand: true, cwd: 'src/'}
-          {src: ['**/*.svg'], dest: 'build/', expand: true, cwd: 'src/'}
           {src: ['**/*.eot'], dest: 'build/fonts', expand: true, flatten: true, exclude: 'build/'}
-          {src: ['**/*.svg'], dest: 'build/fonts', expand: true, flatten: true, exclude: 'build/'}
           {src: ['**/*.ttf'], dest: 'build/fonts', expand: true, flatten: true, exclude: 'build/'}
           {src: ['**/*.woff'], dest: 'build/fonts', expand: true, flatten: true, exclude: 'build/'}
           {src: ['**/*.otf'], dest: 'build/fonts', expand: true, flatten: true, exclude: 'build/'}
@@ -42,6 +40,7 @@ module.exports = (grunt) ->
           #html component definitions, let's just pretend that local ones are
           #bower components
           {src: '**/*.html', dest: 'build/bower_components/', expand: true, cwd: 'src/elements'}
+          {src: '**/*.svg', dest: 'build/bower_components/', expand: true, cwd: 'src/elements'}
           #actual bower components just copy over, need these to make elements work
           {src: 'bower_components/**', dest: 'build/', expand: true}
         ]

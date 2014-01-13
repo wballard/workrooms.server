@@ -1,0 +1,14 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="stylesheet" type="text/css" href="./ui-video-stream.css">
+
+<polymer-element name="ui-video-stream" attributes="sourcemutedaudio sourcemutedvideo mutedaudio mirror">
+<template>
+  <span id="sourcemutedaudio" class="like ui corner label">
+    <i class="icon fa fa-microphone-slash"></i>
+  </span>
+  <video id="video"></video>
+  <canvas id="takesnapshot"></canvas>
+  <img id="snapshot"></img>
+</template>
+<script src="./ui-video-stream.js"></script>
+</polymer-element>

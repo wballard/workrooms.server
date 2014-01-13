@@ -1,0 +1,13 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="/bower_components/local-stream/local-stream.html">
+<link rel="import" href="/bower_components/ui-local-video/ui-local-video.html">
+
+<polymer-element name="conference-room" attributes="sessionid signallingserver">
+<template>
+  <local-stream audio video></local-stream>
+  <span class="calls">
+    <ui-local-video></ui-local-video>
+  </span>
+</template>
+<script src="./conference-room.js"></script>
+</polymer-element>

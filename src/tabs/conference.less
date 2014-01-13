@@ -40,33 +40,12 @@ body {
   border-color: darken(@tileBackgroundColor, 2%);
 }
 
-ui-video-stream {
-  display: block;
-  video {
-    display: block;
-    margin-bottom: @margin;
-    -webkit-mask-image: url('images/avatar-mask.svg');
-    width: 20em;
-  }
-  canvas {
-    display: none;
-  }
-  img {
-    -webkit-mask-image: url('images/avatar-mask.svg');
-    -webkit-filter: grayscale(1.0) blur(0.25px);
-  }
-}
-
 conference-room {
   .calls {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
   }
-}
-
-local-video {
-  display: block;
 }
 
 inbound-video-call, outbound-video-call {

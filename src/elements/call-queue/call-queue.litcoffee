@@ -10,13 +10,17 @@ tab becomes available, you get all the pending calls and set them up. This
 is driven by needing the `RTCPeerConnection` in the tab page so you can
 get a reference to it and hook into the media streams.
 
+    _ = require('lodash')
+
     Polymer 'call-queue',
       callQueue: []
       attached: ->
         chrome.runtime.onMessage.addListener (message, sender, respond) =>
           console.log 'background', message
           if message.call
-            @callQueue.push(message)
+            cleaned = _.clone(message)
+            delete cleaned.call
+            @callQueue.push(cleaned)
             chrome.runtime.sendMessage
               showConferenceTab: true
           if message.dequeueCalls
