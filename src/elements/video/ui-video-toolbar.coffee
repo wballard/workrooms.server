@@ -53,20 +53,7 @@ class UIVideoToggle extends HTMLElement
         @$('a', @shadow).removeClass('active')
         @fire "#{@getAttribute('action')}.off"
 
-###
-Standard toolbar for video controls.
-###
-class UIVideoToolBar extends HTMLElement
-  createdCallback: ->
-    @shadow = @createShadowRoot()
-    @shadow.innerHTML = """
-    <div class="ui menu inverted">
-      <content></content>
-    </div>
-    """
-  enteredViewCallback: =>
 
 module.exports =
-  UIVideoToolBar: document.register 'ui-video-toolbar', prototype: UIVideoToolBar.prototype
   UIVideoTool: document.register 'ui-video-tool', prototype: UIVideoTool.prototype
   UIVideoToggle: document.register 'ui-video-toggle', prototype: UIVideoToggle.prototype

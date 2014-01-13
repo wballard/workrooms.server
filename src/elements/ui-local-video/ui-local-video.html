@@ -1,5 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="/bower_components/ui-video-stream/ui-video-stream.html">
+<link rel="import" href="/bower_components/ui-toolbar/ui-toolbar.html">
 <link rel="stylesheet" type="text/css" href="./ui-local-video.css">
 
 <polymer-element name="ui-local-video" attributes="stream">
@@ -9,10 +10,10 @@
         <video-control>
           <audio-control>
             <ui-video-stream id="player" mutedaudio mirror></ui-video-stream>
-            <ui-video-toolbar>
-              <ui-video-toggle icon="fa-video-camera" action="video" active="true"></ui-video-toggle>
-              <ui-video-toggle icon="fa-microphone" action="audio" active="true"></ui-video-toggle>
-            </ui-video-toolbar>
+            <ui-toolbar>
+              <ui-toggle icon="fa-video-camera" action="video" active="true"></ui-toggle>
+              <ui-toggle icon="fa-microphone" action="audio" active="true"></ui-toggle>
+            </ui-toolbar>
           </audio-control>
         </video-control>
       </div>
