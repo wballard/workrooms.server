@@ -8,9 +8,6 @@ module.exports = (grunt) ->
         ]
         options:
           transform: ['coffeeify', 'browserify-data']
-      pages:
-        options:
-          transform: ['coffeeify', 'browserify-data']
           shim:
             MutationSummary:
               path: './vendor/mutation-summary.js'

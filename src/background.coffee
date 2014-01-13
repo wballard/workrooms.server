@@ -43,22 +43,6 @@ chrome.storage.local.get 'conference', (conference) ->
     showConferenceTab()
 
 ###
-Hook up every tab to content injection and monitoring.
-###
-inject = (tab) ->
-  chrome.tabs.executeScript tab.id,
-    file: './gravatars.js'
-    allFrames: true
-  chrome.tabs.insertCSS tab.id,
-    file: './gravatars.css'
-    allFrames: true
-chrome.tabs.query {}, (tabs) ->
-  tabs.forEach inject
-chrome.tabs.onUpdated.addListener (tabid, change, tab) ->
-  if change.status is 'complete'
-    inject tab
-
-###
 Messages from content injection do the call start. This will launch
 the call tab, which is asynchronous for sure. So, queue up a call request
 such that the conference tab can get a chance to consume it

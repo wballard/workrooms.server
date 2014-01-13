@@ -1,6 +1,11 @@
 This is a fun one -- keep an eye on `web_accessible_resources`
 and if there is a change, trigger a chrome extension reload.
 
+#Attributes
+##config
+Object with settings, this is going to look for a property
+`reload`.
+
     ajax = require('component-ajax')
 
     Polymer 'chrome-devreloader',
