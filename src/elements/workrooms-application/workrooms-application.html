@@ -4,6 +4,7 @@
 <link rel="import" href="../github-oauth/github-oauth.html">
 <link rel="import" href="/bower_components/gravatar-detector/gravatar-detector.html">
 <link rel="import" href="/bower_components/call-queue/call-queue.html">
+<link rel="import" href="/bower_components/conference-tab/conference-tab.html">
 
 <polymer-element name="workrooms-application" attributes="config">
 <template>
@@ -12,6 +13,7 @@
   <github-oauth clientid="{{ config.github.clientid }}" clientsecret="{{ config.github.clientsecret }}"></github-oauth>
   <gravatar-detector></gravatar-detector>
   <call-queue></call-queue>
+  <conference-tab></conference-tab>
 </template>
 <script src="./workrooms-application.js"></script>
 </polymer-element>

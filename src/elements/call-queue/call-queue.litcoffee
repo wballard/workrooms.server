@@ -11,15 +11,16 @@ is driven by needing the `RTCPeerConnection` in the tab page so you can
 get a reference to it and hook into the media streams.
 
     Polymer 'call-queue',
+      callQueue: []
       attached: ->
-        chrome.runtime.onMessage.addListener (message, sender, respond) ->
+        chrome.runtime.onMessage.addListener (message, sender, respond) =>
           console.log 'background', message
           if message.call
-            callQueue.push(message)
+            @callQueue.push(message)
             chrome.runtime.sendMessage
               showConferenceTab: true
-          if message.dequeueCalls and callQueue.length
-            calls = callQueue
-            callQueue = []
+          if message.dequeueCalls
+            calls = @callQueue
+            @callQueue = []
             chrome.runtime.sendMessage
               makeCalls: calls
