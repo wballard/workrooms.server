@@ -21,7 +21,9 @@ error: when bad things happen
 
 class GithubOAuth extends HTMLElement
   createdCallback: ->
+    console.log 'oam'
   enteredViewCallback: =>
+    console.log 'oamx'
     github.login @getAttribute('clientid'), @getAttribute('clientsecret'), (error, info) =>
       if error
         @fire 'error', error

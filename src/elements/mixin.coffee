@@ -26,6 +26,7 @@ Element.prototype.defineCustomElementProperty = (name) ->
     enumerable: true
   #and an intial firing
   object.attributeChangedCallback name, undefined, object.getAttribute(name)
+
 ###
 Fire off a custom event with the supplied detail. This is a full on bubbling
 DOM event.

@@ -6,7 +6,6 @@ var gh = (function() {
     var redirectUri = 'https://' +
       chrome.runtime.id +
       '.chromiumapp.org/provider_cb';
-    console.log(redirectUri);
     var redirectRe = new RegExp(redirectUri + '[#\?](.*)');
     var access_token = null;
 
@@ -154,7 +153,6 @@ var gh = (function() {
   return {
     login: function(clientId, clientSecret, callback) {
       tokenFetcher.getToken(clientId, clientSecret, function(error, access_token) {
-        console.log('logged in', error, access_token);
         if (error) callback(error);
         else getUserInfo(clientId, clientSecret, callback);
       })

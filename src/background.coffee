@@ -3,32 +3,16 @@ Basic idea here is to have exactly one entry point, built up by browserify, but
 that can tell when code changes and will hot reload.
 ###
 
-ajax = require('component-ajax')
 require('./elements/extension-icon.coffee')
 require('./elements/github-oauth.coffee')
+require('./elements/mixin.coffee')
+config = require('./config.yaml')?[chrome.runtime.id]
 
 ###
 Check all the referenced background scripts, and see if they have changed. This
 uses local storage to 'diff' the code of the background scripts, and on
 a difference, reloads.
 ###
-reloadIfChanged = ->
-  for script in chrome.runtime.getManifest()?.web_accessible_resources
-    do ->
-      codeURL = chrome.runtime.getURL(script)
-      ajax.get codeURL, (code) ->
-        chrome.storage.local.get codeURL, (storedCode) ->
-          if storedCode[codeURL] isnt code
-            console.log "new code! let's reload"
-            reload = true
-          else
-            reload = false
-          save = {}
-          save[codeURL] = code
-          chrome.storage.local.set save, ->
-            chrome.runtime.reload() if reload
-  setTimeout reloadIfChanged, 1000
-reloadIfChanged()
 
 ###
 Restore the state of the conference tab after a hotload.
@@ -92,5 +76,4 @@ chrome.runtime.onMessage.addListener (message, sender, respond) ->
       makeCalls: calls
   if message.showConference
     showConferenceTab()
-
 

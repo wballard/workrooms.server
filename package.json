@@ -4,13 +4,12 @@
   "description": "A workroom is a place to collaborate online, just like if you were in person.",
   "author": "Will Ballard",
   "repository": "https://github.com/wballard/workrooms.chrome.git",
-  "license": "BSD-2-Clause",
+  "license": "MIT",
   "dependencies": {
     "coffeeify": "~0.5.2",
     "grunt": "~0.4.2",
     "grunt-browserify": "~1.3.0",
     "grunt-contrib-watch": "~0.5.3",
-    "node-lessify": "git+https://github.com/wballard/node-lessify.git",
     "getusermedia": "~0.2.1",
     "component-ajax": "0.0.2",
     "bean": "~1.0.6",
@@ -22,6 +21,11 @@
     "grunt-contrib-less": "~0.8.3",
     "qwery": "~3.4.1",
     "urlparse": "0.0.1",
-    "lodash": "~2.4.1"
+    "lodash": "~2.4.1",
+    "browserify-data": "~0.1.0",
+    "grunt-contrib-concat": "~0.3.0"
+  },
+  "scripts": {
+    "install": "bower install"
   }
 }

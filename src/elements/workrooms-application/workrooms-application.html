@@ -1,0 +1,12 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../extension-icon/extension-icon.html">
+<link rel="import" href="../chrome-devreloader/chrome-devreloader.html">
+
+<polymer-element name="workrooms-application" attributes="config">
+<template>
+  <chrome-devreloader config="{{ config }}"></chrome-devreloader>
+  <extension-icon></extension-icon>
+  <github-oauth clientid="{{ config.github.clientid }}" clientsecret="{{ config.github.clientsecret }}"></github-oauth>
+</template>
+<script src="./workrooms-application.js"></script>
+</polymer-element>
