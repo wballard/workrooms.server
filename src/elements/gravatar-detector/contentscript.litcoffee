@@ -10,6 +10,10 @@ with video calls.
 
     processImageForGravatar = (img) ->
       if img?.src?.match(gravatarRegex)
+
+Try to capture the original styling and then build up a similarly styled
+replacement.
+
         #capture original style
         marginRight = getComputedStyle(img)['margin-right']
         marginTop = getComputedStyle(img)['margin-top']
@@ -32,6 +36,10 @@ with video calls.
           parent[0].querySelector('.video-call').addEventListener 'click', (evt) ->
             evt.preventDefault()
             console.log 'gravatar call', gravatarToCall
+
+Here is the result, sending a message to `call` with a `gravatar` id, this
+is the *click to dial*.
+
             chrome.runtime.sendMessage
               call: true
               gravatar: gravatarToCall

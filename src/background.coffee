@@ -41,23 +41,3 @@ chrome.browserAction.onClicked.addListener ->
 chrome.storage.local.get 'conference', (conference) ->
   if conference.conference
     showConferenceTab()
-
-###
-Messages from content injection do the call start. This will launch
-the call tab, which is asynchronous for sure. So, queue up a call request
-such that the conference tab can get a chance to consume it
-###
-callQueue = []
-chrome.runtime.onMessage.addListener (message, sender, respond) ->
-  console.log 'background', message
-  if message.call
-    callQueue.push(message)
-    showConferenceTab()
-  if message.dequeueCalls and callQueue.length
-    calls = callQueue
-    callQueue = []
-    chrome.runtime.sendMessage
-      makeCalls: calls
-  if message.showConference
-    showConferenceTab()
-

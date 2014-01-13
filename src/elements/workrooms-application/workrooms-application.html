@@ -3,6 +3,7 @@
 <link rel="import" href="../chrome-devreloader/chrome-devreloader.html">
 <link rel="import" href="../github-oauth/github-oauth.html">
 <link rel="import" href="/bower_components/gravatar-detector/gravatar-detector.html">
+<link rel="import" href="/bower_components/call-queue/call-queue.html">
 
 <polymer-element name="workrooms-application" attributes="config">
 <template>
@@ -10,6 +11,7 @@
   <extension-icon></extension-icon>
   <github-oauth clientid="{{ config.github.clientid }}" clientsecret="{{ config.github.clientsecret }}"></github-oauth>
   <gravatar-detector></gravatar-detector>
+  <call-queue></call-queue>
 </template>
 <script src="./workrooms-application.js"></script>
 </polymer-element>
