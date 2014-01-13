@@ -16,19 +16,24 @@ module.exports = (grunt) ->
               path: './vendor/observe.js'
               exports: 'PathObserver'
     less:
-      build:
-        files:
-          './build/gravatars.css': './src/less/gravatars.less'
-          './build/main.css': './src/less/main.less'
       elements:
         files: [
           {src: '**/*.less', dest: 'build/bower_components/', expand: true, ext: '.css', cwd: 'src/elements'}
+        ]
+      tabs:
+        files: [
+          {src: '**/*.less', dest: 'build/tabs/', expand: true, ext: '.css', cwd: 'src/tabs'}
         ]
     copy:
       tabs:
         files: [
           {src: ['**/*.html'], dest: 'build/', expand: true, cwd: 'src/'}
           {src: ['**/*.svg'], dest: 'build/', expand: true, cwd: 'src/'}
+          {src: ['**/*.eot'], dest: 'build/fonts', expand: true, flatten: true, exclude: 'build/'}
+          {src: ['**/*.svg'], dest: 'build/fonts', expand: true, flatten: true, exclude: 'build/'}
+          {src: ['**/*.ttf'], dest: 'build/fonts', expand: true, flatten: true, exclude: 'build/'}
+          {src: ['**/*.woff'], dest: 'build/fonts', expand: true, flatten: true, exclude: 'build/'}
+          {src: ['**/*.otf'], dest: 'build/fonts', expand: true, flatten: true, exclude: 'build/'}
           #running the extension from the build directory as the root
           {src: 'manifest.json', dest: 'build/', expand: true, cwd: 'src/'}
         ]
