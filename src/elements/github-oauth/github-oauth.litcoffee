@@ -44,7 +44,6 @@ are set typically in sequence.
 
 **HACK**
 
-            console.log info
             chrome.runtime.sendMessage
               call: true
               to:

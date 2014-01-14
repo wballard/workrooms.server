@@ -25,15 +25,18 @@ module.exports = (grunt) ->
           {src: '**/*.less', dest: 'build/tabs/', expand: true, ext: '.css', cwd: 'src/tabs'}
         ]
     copy:
+      extension:
+        files: [
+          #running the extension from the build directory as the root
+          {src: 'manifest.json', dest: 'build/', expand: true, cwd: 'src/'}
+        ]
       tabs:
         files: [
           {src: ['**/*.html'], dest: 'build/', expand: true, cwd: 'src/'}
+        ]
+      fonts:
+        files: [
           {src: ['**/*.eot'], dest: 'build/fonts', expand: true, flatten: true, exclude: 'build/'}
-          {src: ['**/*.ttf'], dest: 'build/fonts', expand: true, flatten: true, exclude: 'build/'}
-          {src: ['**/*.woff'], dest: 'build/fonts', expand: true, flatten: true, exclude: 'build/'}
-          {src: ['**/*.otf'], dest: 'build/fonts', expand: true, flatten: true, exclude: 'build/'}
-          #running the extension from the build directory as the root
-          {src: 'manifest.json', dest: 'build/', expand: true, cwd: 'src/'}
         ]
       elements:
         files: [

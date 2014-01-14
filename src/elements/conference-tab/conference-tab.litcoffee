@@ -5,13 +5,12 @@ extension API, but also adds a couple features:
 * makes the tab a singleton
 
     Polymer 'conference-tab',
-      attached: ->
-        console.log 'tab it up'
 
 Using messages to trigger the tab show. These are extension messages
 rather than DOM events since we will be going between the extension and
 tabs with content triggering a click-to-dial.
 
+      attached: ->
         chrome.runtime.onMessage.addListener (message, sender, respond) ->
           if message.showConferenceTab
             conferenceURL = chrome.runtime.getURL('/tabs/conference.html')

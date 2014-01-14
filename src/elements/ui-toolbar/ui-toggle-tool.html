@@ -1,0 +1,12 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="stylesheet" type="text/css" href="./ui-toolbar.css">
+
+<polymer-element name="ui-toggle-tool" attributes="icon togglechanged active">
+<template>
+  <a id="tool" class="item">
+    <i class="fa {{ icon }}"></i>
+    <content></content>
+  </a>
+</template>
+<script src="./ui-toggle-tool.js"></script>
+</polymer-element>
