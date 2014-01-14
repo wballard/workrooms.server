@@ -38,7 +38,7 @@ the video plays.
             width = parseInt(getComputedStyle(@$.video).getPropertyValue('width').replace('px',''))
             height = @$.video.videoHeight / (@$.video.videoWidth/width)
             ctx = @$.takesnapshot.getContext('2d')
-            ctx.drawImage(video, 0, 0, width, height)
+            ctx.drawImage(@$.video, 0, 0, width, height)
             @$.snapshot.setAttribute('src', @$.takesnapshot.toDataURL('image/png'))
           takeSnapshot()
           setInterval =>
