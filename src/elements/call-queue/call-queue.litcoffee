@@ -19,7 +19,6 @@ get a reference to it and hook into the media streams.
           console.log 'background', message
           if message.call
             cleaned = _.clone(message)
-            delete cleaned.call
             @callQueue.push(cleaned)
             chrome.runtime.sendMessage
               showConferenceTab: true

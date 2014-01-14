@@ -50,6 +50,7 @@ Fired when the server requests that you handle an inbound call.
 Fired when the server requests that you handle an outbound call.
 
     uuid = require('node-uuid')
+    _ = require('lodash')
     qwery = require('qwery')
     bonzo = require('bonzo')
     config = require('../../config.yaml')?[chrome.runtime.id]
@@ -123,11 +124,10 @@ the local stream is available.
             chrome.runtime.sendMessage
               dequeueCalls: true
           if message.makeCalls
-            message.makeCalls.forEach (x) =>
-              signalling
-                call: true
-                to: x
-                callid: uuid.v1()
+            message.makeCalls.forEach (call) =>
+              call = _.clone(call)
+              call.callid = uuid.v1()
+              signalling call
 
 Set up inbound and outbound alls when asked by adding an element.
 
@@ -140,7 +140,7 @@ Set up inbound and outbound alls when asked by adding an element.
           callToast = webkitNotifications.createNotification url, 'Call From', evt.detail.userprofiles.github.name
           callToast.onclick = ->
             chrome.runtime.sendMessage
-              showConference: true
+              showConferenceTab: true
           callToast.show()
           bonzo(qwery('.calls', @shadowRoot))
             .append("""<inbound-video-call gravatarurl="#{url}" callid="#{evt.detail.callid}"></inbound-video-call>""")
