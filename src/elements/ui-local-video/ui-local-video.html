@@ -5,18 +5,16 @@
 
 <polymer-element name="ui-local-video" attributes="stream">
 <template>
-    <div class="tile video">
-      <div>
-        <video-control>
-          <audio-control>
-            <ui-video-stream id="player" mutedaudio mirror></ui-video-stream>
-            <ui-toolbar>
-              <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active></ui-toggle-tool>
-              <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active></ui-toggle-tool>
-            </ui-toolbar>
-          </audio-control>
-        </video-control>
-      </div>
+    <div class="ui tile video">
+      <video-control>
+        <audio-control>
+          <ui-video-stream id="player" mutedaudio mirror></ui-video-stream>
+          <ui-toolbar>
+            <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active></ui-toggle-tool>
+            <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active></ui-toggle-tool>
+          </ui-toolbar>
+        </audio-control>
+      </video-control>
     </div>
 </template>
 <script src="./ui-local-video.js"></script>

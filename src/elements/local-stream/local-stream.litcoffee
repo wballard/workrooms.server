@@ -28,6 +28,6 @@ Fires when a stream is available, also after then `stream` property is set.
               stream: stream
               error: err
           else
-            @setAttribute 'stream', stream
+            @stream = stream
             @fire 'localstream',
               stream: stream
