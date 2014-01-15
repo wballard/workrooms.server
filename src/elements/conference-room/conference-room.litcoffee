@@ -65,15 +65,16 @@ server when ready. This uses the inline config object data.
         @signallingserver = config.signallingServer
         @keepalive = config.keepalive or 30
 
-This is the most important part, setting up the WebSocket to the signalling server. Every message is built up with the `sessionid`.
-WebSocket messages are turned into DOM events or delegated to an appropriate
-contained call element.
+This is the most important part, setting up the WebSocket to the signalling
+server. Every message is built up with the `sessionid`.  WebSocket messages are
+turned into DOM events or delegated to an appropriate contained call element.
 
-* **TODO** make this an auto-reconnecting socket.
-* **TODO** make this buffer messages until the socket is available.
+* **TODO** make this an auto-reconnecting socket.  * **TODO** make this buffer
+messages until the socket is available.
 
         socket = new WebSocket(@signallingserver)
         signalling = (message) =>
+          console.log 'signal to server', message
           message.sessionid = @sessionid
           socket.send(JSON.stringify(message))
         socket.onmessage = (evt) =>
@@ -86,15 +87,17 @@ contained call element.
               @fire 'outboundcall', message
             forMe = (call) ->
               message.callid is call.callid and message.peerid isnt call.peerid
-            qwery('inbound-video-call', @shadowRoot).forEach (call) ->
+            qwery('ui-inbound-video-call', @shadowRoot).forEach (call) ->
               call.signal(message) if forMe(call)
-            qwery('outbound-video-call', @shadowRoot).forEach (call) ->
+            qwery('ui-outbound-video-call', @shadowRoot).forEach (call) ->
               call.signal(message) if forMe(call)
           catch err
             @fire 'error', error: err
 
 The conference room supplies the connection to the signalling server, so it
-needs to listen for signal requests from contained calls and forward those along.
+needs to listen for signal requests from contained calls and forward those
+along.
+
         @addEventListener 'signal', (evt) =>
           signalling evt.detail
 
@@ -106,7 +109,7 @@ Oh -- and -- when a local stream is available, make sure to ask if there
 are any calls queued up to process!
 
         @addEventListener 'localstream', (evt) =>
-          @localstream = evt.detail.stream
+          @localStream = evt.detail.stream
           qwery('outbound-video-call', @shadowRoot).forEach (outbound) =>
             outbound.localStream evt.detail.stream
           qwery('inbound-video-call', @shadowRoot).forEach (inbound) =>
@@ -120,7 +123,7 @@ OK -- so this is the tricky bit, it isn't worth asking to connect calls until
 the local stream is available.
 
         chrome.runtime.onMessage.addListener (message, sender, respond) =>
-          if message.call and @localstream
+          if message.call and @localStream
             chrome.runtime.sendMessage
               dequeueCalls: true
           if message.makeCalls
@@ -129,27 +132,28 @@ the local stream is available.
               call.callid = uuid.v1()
               signalling call
 
-Set up inbound and outbound alls when asked by adding an element.
+Set up inbound and outbound calls when asked by adding an element.
 
         @addEventListener 'outboundcall', (evt) ->
-          url = evt?.detail?.userprofiles?.github?.avatar_url
           bonzo(qwery('.calls', @shadowRoot))
-            .append("""<outbound-video-call gravatarurl="#{url}" callid="#{evt.detail.callid}"></outbound-video-call>""")
+            .append("""<ui-outbound-video-call callid="#{evt.detail.callid}"></ui-outbound-video-call>""")
         @addEventListener 'inboundcall', (evt) ->
+          ###
           url = evt?.detail?.userprofiles?.github?.avatar_url
           callToast = webkitNotifications.createNotification url, 'Call From', evt.detail.userprofiles.github.name
           callToast.onclick = ->
             chrome.runtime.sendMessage
               showConferenceTab: true
           callToast.show()
+          ###
           bonzo(qwery('.calls', @shadowRoot))
-            .append("""<inbound-video-call gravatarurl="#{url}" callid="#{evt.detail.callid}"></inbound-video-call>""")
+            .append("""<ui-inbound-video-call callid="#{evt.detail.callid}"></ui-inbound-video-call>""")
 
-Video players can ask for the local stream. Actually, they *will* ask for the
-local stream. Hook them up.
+Calls ask for the local stream when they are ready for it, rather than being
+told about it on create.
 
-        @addEventListener 'needlocalstream', (evt) =>
-          evt.detail.localStream = @localstream
+        @addEventListener 'needlocalstream', (evt) ->
+          evt.detail @localStream
 
 Keep track of OAuth supplied user profiles, and listen for them coming
 in from chrome. Send them along to the signalling server. These profiles

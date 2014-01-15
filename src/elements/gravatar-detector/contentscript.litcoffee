@@ -42,7 +42,8 @@ is the *click to dial*.
 
             chrome.runtime.sendMessage
               call: true
-              gravatar: gravatarToCall
+              to:
+                gravatar: gravatarToCall
 
 Now, look all through the document for all images and process em!
 

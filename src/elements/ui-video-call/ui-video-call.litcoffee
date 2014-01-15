@@ -56,16 +56,25 @@ Video streams coming over RTC need to be displayed.
         @peerConnection.onremovestream = (evt) =>
           @$.player.display null
 
+
 Event handling, up from the controls inline.
 
 * hangup: send a signal that this call is over
 
-        @shadow.addEventListener 'hangup', (evt) =>
+        @addEventListener 'hangup', (evt) =>
           evt.stopPropagation()
           @fire 'signal',
             hangup: true
             callid: @getAttribute('callid')
             peerid: @getAttribute('peerid')
+
+Good to go! Ask for a local stream to kick things off, passing a callback
+function to complete the join.
+Setting a local stream is what really 'starts' the call.
+
+        @fire 'needlocalstream', (localStream) =>
+          @peerConnection.addStream(localStream)
+          @localStream localStream
 
 Handle signals from the signaling server.
 
