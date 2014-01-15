@@ -78,13 +78,16 @@ messages until the socket is available.
           message.sessionid = @sessionid
           socket.send(JSON.stringify(message))
         socket.onmessage = (evt) =>
-          console.log 'signal from server', evt
           try
             message = JSON.parse(evt.data)
+            console.log 'signal from server', message
             if message.inboundcall?
               @fire 'inboundcall', message
             if message.outboundcall?
               @fire 'outboundcall', message
+            if message.hangup
+              bonzo(qwery("ui-outbound-video-call[callid='#{message.callid}'", @shadowRoot)).remove()
+              bonzo(qwery("ui-inbound-video-call[callid='#{message.callid}'", @shadowRoot)).remove()
             forMe = (call) ->
               message.callid is call.callid and message.peerid isnt call.peerid
             qwery('ui-inbound-video-call', @shadowRoot).forEach (call) ->
@@ -197,6 +200,3 @@ status, similar to the user profiles.
         @addEventListener 'video.off', (evt) ->
           muteStatus.sourcemutedvideo = true
           signalMuteStatus()
-        @addEventListener 'hangup', (evt) =>
-          bonzo(qwery("outbound-video-call[callid='#{evt.detail.callid}'", @shadowRoot)).remove()
-          bonzo(qwery("inbound-video-call[callid='#{evt.detail.callid}'", @shadowRoot)).remove()

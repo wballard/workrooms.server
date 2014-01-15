@@ -20,7 +20,6 @@ signalling.
       localStream: (localStream) ->
         @peerConnection.createOffer (description) =>
           @peerConnection.setLocalDescription description, =>
-            console.log 'offer', description
             @fire 'signal',
               offer: true
               callid: @getAttribute('callid')
@@ -35,7 +34,6 @@ sequence of signalling exchanges gets here, we are all done and there
 are no more messages.
 
       signal: (message) ->
-        console.log 'outbound signal', message
         if message.sdp
           @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp)
         @super(arguments)

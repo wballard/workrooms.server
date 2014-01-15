@@ -17,12 +17,10 @@ complete the call. All of this goes over the signalling channel, which is
 represented here as events.
 
       signal: (message) ->
-        console.log 'inbound signal', message
         if message.sdp
           @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), =>
             @peerConnection.createAnswer (description) =>
               @peerConnection.setLocalDescription description, =>
-                console.log 'answer', description
                 @fire 'signal',
                   answer: true
                   callid: @getAttribute('callid')
