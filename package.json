@@ -23,7 +23,8 @@
     "urlparse": "0.0.1",
     "lodash": "~2.4.1",
     "browserify-data": "~0.1.0",
-    "grunt-contrib-concat": "~0.3.0"
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-concurrent": "~0.4.2"
   },
   "scripts": {
     "install": "bower install"

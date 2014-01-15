@@ -32,7 +32,11 @@ module.exports = (grunt) ->
         ]
       tabs:
         files: [
-          {src: ['**/*.html'], dest: 'build/', expand: true, cwd: 'src/'}
+          {src: ['tabs/**/*.html'], dest: 'build/', expand: true, cwd: 'src/'}
+        ]
+      pages:
+        files: [
+          {src: ['pages/**/*.html'], dest: 'build/', expand: true, cwd: 'src/'}
         ]
       fonts:
         files: [
@@ -52,6 +56,8 @@ module.exports = (grunt) ->
         files: [
           {src: ['src/**/*.*'], dest: 'build/all'}
         ]
+    concurrent:
+      things: ['browserify', 'less', 'copy', 'concat']
     watch:
       files: [
         'Gruntfile.coffee',
@@ -72,6 +78,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-copy'
   grunt.loadNpmTasks 'grunt-contrib-less'
   grunt.loadNpmTasks 'grunt-contrib-concat'
+  grunt.loadNpmTasks 'grunt-concurrent'
 
-  grunt.registerTask 'build', ['browserify', 'less', 'copy', 'concat']
+  grunt.registerTask 'build', ['concurrent:things']
   grunt.registerTask 'publish', ['build', 'crx']
