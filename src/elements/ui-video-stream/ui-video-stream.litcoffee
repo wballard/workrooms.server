@@ -28,8 +28,10 @@ the video plays.
 
       attached: ->
         @$.video.addEventListener 'canplay', =>
+          console.log 'playing'
           width = parseInt(getComputedStyle(@$.video).getPropertyValue('width').replace('px',''))
           height = @$.video.videoHeight / (@$.video.videoWidth/width)
+          console.log 'playing', width, height
           @$.video.setAttribute('width', width)
           @$.video.setAttribute('height', height)
           @$.takesnapshot.setAttribute('width', width)
@@ -49,19 +51,19 @@ the video plays.
 Looking for attributes to mute. This is a neat trick as these are attributes
 that trigger by presence, so we can hit them with the ?
 
-      attributeChanged: (name, oldValue, newValue) ->
-        if name is 'sourcemutedaudio'
-          if newValue?
-            bonzo(@$.sourcemutedaudio).show()
-          else
-            bonzo(@$.sourcemutedaudio).hide()
-        if name is 'sourcemutedvideo'
-          if newValue?
-            bonzo(@$.video).hide()
-            bonzo(@$.snapshow).show()
-          else
-            bonzo(@$.video).show()
-            bonzo(@$.snapshow).hide()
+      sourcemutedaudioChanged: (oldValue, newValue) ->
+        if newValue?
+          bonzo(@$.sourcemutedaudio).show()
+        else
+          bonzo(@$.sourcemutedaudio).hide()
+
+      sourcemutedvideoChanged: (oldValue, newValue) ->
+        if newValue?
+          bonzo(@$.video).hide()
+          bonzo(@$.snapshot).show()
+        else
+          bonzo(@$.video).show()
+          bonzo(@$.snapshot).hide()
 
       display: (stream) ->
         if @hasAttribute('mutedaudio')

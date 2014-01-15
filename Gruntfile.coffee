@@ -7,6 +7,7 @@ module.exports = (grunt) ->
           {src: '**/*.litcoffee', dest: 'build/bower_components/', expand: true, ext: '.js', cwd: 'src/elements'}
         ]
         options:
+          debug: true
           transform: ['coffeeify', 'browserify-data']
           shim:
             MutationSummary:
@@ -57,7 +58,7 @@ module.exports = (grunt) ->
           {src: ['src/**/*.*'], dest: 'build/all'}
         ]
     concurrent:
-      things: ['browserify', 'less', 'copy', 'concat']
+      things: ['browserify', 'less', 'copy']
     watch:
       files: [
         'Gruntfile.coffee',
@@ -80,5 +81,5 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-concat'
   grunt.loadNpmTasks 'grunt-concurrent'
 
-  grunt.registerTask 'build', ['concurrent:things']
+  grunt.registerTask 'build', ['concurrent:things', 'concat']
   grunt.registerTask 'publish', ['build', 'crx']

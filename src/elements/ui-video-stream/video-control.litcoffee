@@ -4,10 +4,10 @@ or unmutes said stream for you.
 
 Not clear that this really warrants being its own component.
 
-    Polymer 'audio-control',
+    Polymer 'video-control',
       attached: ->
         @addEventListener 'stream', (evt) =>
-          @stream = evt.detail.stream
+          @stream = evt.detail
         @addEventListener 'video.on', (evt) =>
           @stream?.getVideoTracks()?.forEach (x) -> x.enabled = true
         @addEventListener 'video.off', (evt) =>

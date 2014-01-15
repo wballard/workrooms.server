@@ -7,7 +7,7 @@ Not clear that this really warrants being its own component.
     Polymer 'audio-control',
       attached: ->
         @addEventListener 'stream', (evt) =>
-          @stream = evt.detail.stream
+          @stream = evt.detail
         @addEventListener 'audio.on', (evt) =>
           @stream?.getAudioTracks()?.forEach (x) -> x.enabled = true
         @addEventListener 'audio.off', (evt) =>

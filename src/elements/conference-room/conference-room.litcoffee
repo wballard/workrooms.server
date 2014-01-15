@@ -74,13 +74,11 @@ messages until the socket is available.
 
         socket = new WebSocket(@signallingserver)
         signalling = (message) =>
-          console.log 'signal to server', message
           message.sessionid = @sessionid
           socket.send(JSON.stringify(message))
         socket.onmessage = (evt) =>
           try
             message = JSON.parse(evt.data)
-            console.log 'signal from server', message
             if message.inboundcall?
               @fire 'inboundcall', message
             if message.outboundcall?
@@ -181,12 +179,12 @@ status, similar to the user profiles.
           sourcemutedvideo: false
           sourcemutedaudio: false
         signalMuteStatus = =>
-          bonzo(qwery('outbound-video-call', @shadowRoot)).each (call) ->
+          bonzo(qwery('ui-outbound-video-call', @shadowRoot)).each (call) ->
             signalling
               sourcemutedaudio: muteStatus.sourcemutedaudio
               sourcemutedvideo: muteStatus.sourcemutedvideo
-              callid: call.getAttribute('callid')
-              peerid: call.getAttribute('peerid')
+              callid: call.callid
+              peerid: call.peerid
         setInterval signalMuteStatus, @keepalive * 1000
         @addEventListener 'audio.on', (evt) ->
           muteStatus.sourcemutedaudio = false
