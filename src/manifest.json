@@ -6,6 +6,9 @@
   "browser_action": {
     "default_title": "Workrooms"
   },
+  "icons" : {
+    "128": "images/icon.png"
+  },
   "background": {
     "page": "pages/background.html"
   },

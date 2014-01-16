@@ -30,6 +30,7 @@ module.exports = (grunt) ->
         files: [
           #running the extension from the build directory as the root
           {src: 'manifest.json', dest: 'build/', expand: true, cwd: 'src/'}
+          {src: '**/*.*', dest: 'build/images', expand: true, cwd: 'src/images'}
         ]
       tabs:
         files: [
@@ -55,10 +56,17 @@ module.exports = (grunt) ->
     concat:
       all:
         files: [
-          {src: ['src/**/*.*'], dest: 'build/all'}
+          {src: ['src/**/*.*'], dest: 'build/all', exclude: 'src/images/**/*.*'}
         ]
     concurrent:
       things: ['browserify', 'less', 'copy']
+    compress:
+      release:
+        options:
+          archive: 'release/workrooms.zip'
+        files: [
+          {src: ['**'], dest: '/', expand: true, cwd: 'build'}
+        ]
     watch:
       files: [
         'Gruntfile.coffee',
@@ -80,6 +88,7 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-less'
   grunt.loadNpmTasks 'grunt-contrib-concat'
   grunt.loadNpmTasks 'grunt-concurrent'
+  grunt.loadNpmTasks 'grunt-contrib-compress'
 
   grunt.registerTask 'build', ['concurrent:things', 'concat']
-  grunt.registerTask 'publish', ['build', 'crx']
+  grunt.registerTask 'release', ['build', 'compress']

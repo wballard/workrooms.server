@@ -7,6 +7,7 @@ Object with settings, this is going to look for a property
 `reload`.
 
     ajax = require('component-ajax')
+    md5 = require('MD5')
 
     Polymer 'chrome-devreloader',
 
@@ -22,14 +23,15 @@ to the last known version stashed in local storage. On any diff, reload!
               do ->
                 codeURL = chrome.runtime.getURL(script)
                 ajax.get codeURL, (code) ->
+                  hash = md5(code)
                   chrome.storage.local.get codeURL, (storedCode) ->
-                    if storedCode[codeURL] isnt code
+                    if storedCode[codeURL] isnt hash
                       console.log "new code! let's reload"
                       reload = true
                     else
                       reload = false
                     save = {}
-                    save[codeURL] = code
+                    save[codeURL] = hash
                     chrome.storage.local.set save, ->
                       chrome.runtime.reload() if reload
             setTimeout reloadIfChanged, 1000
