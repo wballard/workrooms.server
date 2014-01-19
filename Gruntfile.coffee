@@ -33,10 +33,6 @@ module.exports = (grunt) ->
         files: [
           {src: ['pages/**/*.html'], dest: 'build/', expand: true, cwd: 'src/'}
         ]
-      fonts:
-        files: [
-          {src: ['**/*.eot'], dest: 'build/fonts', expand: true, flatten: true, exclude: 'build/'}
-        ]
       elements:
         files: [
           #html component definitions, let's just pretend that local ones are
