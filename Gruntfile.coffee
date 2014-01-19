@@ -8,14 +8,7 @@ module.exports = (grunt) ->
         ]
         options:
           debug: true
-          transform: ['coffeeify', 'browserify-data']
-          shim:
-            MutationSummary:
-              path: './vendor/mutation-summary.js'
-              exports: 'MutationSummary'
-            PathObserver:
-              path: './vendor/observe.js'
-              exports: 'PathObserver'
+          transform: ['caching-coffeeify', 'browserify-data']
     less:
       elements:
         files: [

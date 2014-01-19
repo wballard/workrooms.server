@@ -11,6 +11,7 @@ omakialnodpjhdmhalkeffbndhjemlmo:
     clientid: df1c093b04a9ba9660cd
     clientsecret: 6ce2be9ee60bdcaf35ea192e27df9bf81d75e6e8
 hndpmcmfdenfebmdoakeeeinlllkhapk:
+  reload: false
   signallingServer: ws://localhost:9000
   github:
     clientid: eda98e0fee66b8573312

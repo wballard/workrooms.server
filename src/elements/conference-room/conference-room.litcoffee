@@ -198,3 +198,9 @@ status, similar to the user profiles.
         @addEventListener 'video.off', (evt) ->
           muteStatus.sourcemutedvideo = true
           signalMuteStatus()
+
+Actions you can take in the conference room.
+
+        @addEventListener 'sidebar', ->
+          @$.sidebar.toggle()
+

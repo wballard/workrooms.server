@@ -1650,3 +1650,5 @@ var MutationSummary = (function () {
     };
     return MutationSummary;
 })();
+
+module.exports = MutationSummary;

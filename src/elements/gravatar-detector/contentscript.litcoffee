@@ -1,7 +1,7 @@
 This is a content script that will detect and augment gravatars
 with video calls.
 
-    MutationSummary = require('MutationSummary')
+    MutationSummary = require('../../../vendor/mutation-summary.js')
     urlparse = require('urlparse')
     bonzo = require('bonzo')
     qwery = require('qwery')
