@@ -1,0 +1,33 @@
+@import "../../../bower_components/font-awesome/less/font-awesome";
+@import "../../less/variables";
+
+.tile {
+  background-color: @tileBackgroundColor;
+  border-radius: @borderRadius;
+  padding: @padding;
+  margin: @margin;
+  border: 1px solid;
+  border-color: darken(@tileBackgroundColor, 2%);
+}
+
+conference-room {
+  .calls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+inbound-video-call, outbound-video-call {
+  display: block;
+  .gravatar {
+    margin: @margin;
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-radius: @borderRadius;
+  }
+  section {
+    position: relative;
+  }
+}
