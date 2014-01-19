@@ -9,9 +9,14 @@
 
 <polymer-element name="conference-room" attributes="sessionid signallingserver">
 <template>
-  <ui-sidebar id="sidebar"></ui-sidebar>
+  <ui-sidebar id="sidebar">
+  <div class="ui left icon input inverted">
+    <input type="text" placeholder="Search...">
+    <i class="icon"><i class="fa fa-search"></i></i>
+  </div>
+  </ui-sidebar>
   <ui-toolbar>
-    <ui-command-tool icon="fa-bars" command="sidebar"></ui-command-tool>
+  <ui-command-tool icon="fa-bars" command="sidebar"></ui-command-tool>
   </ui-toolbar>
   <local-stream audio video></local-stream>
   <span class="calls">

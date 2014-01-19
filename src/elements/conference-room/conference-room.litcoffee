@@ -204,3 +204,6 @@ Actions you can take in the conference room.
         @addEventListener 'sidebar', ->
           @$.sidebar.toggle()
 
+        setTimeout =>
+          @$.sidebar.toggle()
+

@@ -1,8 +1,25 @@
 @import "../../../bower_components/font-awesome/less/font-awesome";
 @import '../../../bower_components/semantic-ui/src/modules/sidebar.less';
+@import '../../../bower_components/semantic-ui/src/elements/input.less';
+@import '../../../bower_components/semantic-ui/src/elements/icon.less';
 @import "../../less/variables";
 
 
 ui-sidebar {
   display: block;
+  .ui.sidebar {
+    display: flex;
+    div {
+      flex: 1 100%;
+      margin: @margin;
+    }
+    .inverted {
+      background-color: transparent ;
+      color: white ;
+      input {
+        background-color: transparent ;
+        color: white ;
+      }
+    }
+  }
 }
