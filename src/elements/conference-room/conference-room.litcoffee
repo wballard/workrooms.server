@@ -182,12 +182,11 @@ status, similar to the user profiles.
           sourcemutedaudio: false
         signalMuteStatus = =>
           bonzo(qwery('ui-video-call', @shadowRoot)).each (call) ->
-            if call.hasAttribute('outbound')
-                signalling
-                  sourcemutedaudio: muteStatus.sourcemutedaudio
-                  sourcemutedvideo: muteStatus.sourcemutedvideo
-                  callid: call.callid
-                  peerid: call.peerid
+            signalling
+              sourcemutedaudio: muteStatus.sourcemutedaudio
+              sourcemutedvideo: muteStatus.sourcemutedvideo
+              callid: call.callid
+              peerid: call.peerid
         setInterval signalMuteStatus, @keepalive * 1000
         @addEventListener 'audio.on', (evt) ->
           muteStatus.sourcemutedaudio = false
