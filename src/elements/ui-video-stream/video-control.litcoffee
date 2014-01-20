@@ -12,8 +12,8 @@ Not clear that this really warrants being its own component.
         @addEventListener 'stream', (evt) =>
           @stream = evt.detail
         @addEventListener 'video.on', (evt) =>
-          @stream?.getVideoTracks()?.forEach (x) -> x.enabled = true
           @player?.removeAttribute('sourcemutedvideo')
+          @stream?.getVideoTracks()?.forEach (x) -> x.enabled = true
         @addEventListener 'video.off', (evt) =>
-          @stream?.getVideoTracks()?.forEach (x) -> x.enabled = false
           @player?.setAttribute('sourcemutedvideo')
+          @stream?.getVideoTracks()?.forEach (x) -> x.enabled = false

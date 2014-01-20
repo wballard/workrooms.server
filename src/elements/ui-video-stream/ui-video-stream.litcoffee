@@ -31,6 +31,8 @@ the video plays.
 
       attached: ->
         @$.video.addEventListener 'canplay', =>
+          @fire 'snapshot'
+        @addEventListener 'snapshot', =>
           width = parseInt(getComputedStyle(@$.video).getPropertyValue('width').replace('px',''))
           height = @$.video.videoHeight / (@$.video.videoWidth/width)
           @$.video.setAttribute('width', width)
@@ -60,6 +62,7 @@ that trigger by presence, so we can hit them with the ?
 
       sourcemutedvideoChanged: (oldValue, newValue) ->
         if newValue?
+          @fire 'snapshot'
           bonzo(@$.video).hide()
           bonzo(@$.snapshot).show()
         else
@@ -73,6 +76,8 @@ that trigger by presence, so we can hit them with the ?
           @$.video.removeAttribute('muted')
         if @hasAttribute('mirror')
           bonzo(@$.video)
+           .css('-webkit-transform', 'scaleX(-1)')
+          bonzo(@$.snapshot)
            .css('-webkit-transform', 'scaleX(-1)')
         @$.video.src = URL.createObjectURL(stream)
         @$.video.play()
