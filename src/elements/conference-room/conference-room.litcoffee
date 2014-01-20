@@ -120,6 +120,14 @@ are any calls queued up to process!
           chrome.runtime.sendMessage
             dequeueCalls: true
 
+Actually start up a call when requested.
+
+        @addEventListener 'call', (evt) =>
+          console.log 'call', evt.detail
+          call = _.clone(evt.detail)
+          call.callid = uuid.v1()
+          signalling call
+
 OK -- so this is the tricky bit, it isn't worth asking to connect calls until
 the local stream is available.
 
@@ -129,9 +137,7 @@ the local stream is available.
               dequeueCalls: true
           if message.makeCalls
             message.makeCalls.forEach (call) =>
-              call = _.clone(call)
-              call.callid = uuid.v1()
-              signalling call
+              @fire 'call', call
 
 Set up inbound and outbound calls when asked by adding an element.
 
@@ -169,6 +175,8 @@ also acts as the keepalive for the WebSocket back to the signalling server.
           if message.userprofile
             userprofiles[message.userprofile.profile_source] = message.userprofile
             signalling userprofiles: userprofiles
+            @$.searchProfiles.model =
+              profiles: [userprofiles, userprofiles, userprofiles]
 
 And call control messages for connected calls. This also heartbeats the mute
 status, similar to the user profiles.

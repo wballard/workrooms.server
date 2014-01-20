@@ -6,11 +6,11 @@
   display: inline;
   background: transparent;
   color: @tileBackgroundColor;
-  transition: color 0.2s ease;
   font-size: 18px;
   margin: .2rem;
+  transition: opacity @transition;
   &:hover {
-   color: lighten(@tileBackgroundColor, 25%);
+    opacity: .6;
   }
 }
 

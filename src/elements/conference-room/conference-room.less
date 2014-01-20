@@ -16,6 +16,17 @@ conference-room {
     flex-wrap: wrap;
     justify-content: center;
   }
+  ui-sidebar {
+    ul {
+      .ui.list {
+        margin: 0;
+        padding: 0;
+      }
+      .profile:before {
+        content: '' !important;
+      }
+    }
+  }
 }
 
 inbound-video-call, outbound-video-call {

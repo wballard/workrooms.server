@@ -1,0 +1,18 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="stylesheet" type="text/css" href="./ui-user-profile.css">
+
+<polymer-element name="ui-user-profile" attributes="profile">
+<template>
+  <div class="ui item">
+    <template bind if="{{profile.github}}">
+      <img class="ui rounded mini image" src="{{profile.github.avatar_url}}">
+      <div class="content">
+        <span class="header">
+          <i id="callgravatar" class="fa fa-video-camera video-call"></i>
+          {{profile.github.name}}
+        </span>
+      </div>
+    </template>
+  </template>
+  <script src="./ui-user-profile.js"></script>
+  </polymer-element>

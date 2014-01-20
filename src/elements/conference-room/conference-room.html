@@ -6,14 +6,24 @@
 <link rel="import" href="/bower_components/ui-toolbar/ui-toolbar.html">
 <link rel="import" href="/bower_components/ui-sidebar/ui-sidebar.html">
 <link rel="import" href="/bower_components/ui-input/ui-input.html">
+<link rel="import" href="/bower_components/ui-user-profile/ui-user-profile.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 
-<polymer-element name="conference-room" attributes="sessionid signallingserver">
+<polymer-element name="conference-room" attributes="sessionid signallingserver searchProfiles">
 <template>
   <ui-sidebar id="sidebar">
-    <div class="grid grid--gutters">
-      <ui-input class="grid-cell" icon="fa-search" placeholder="Search..."></ui-input>
-    </div>
+  <span class="grid grid--gutters">
+    <ui-input class="grid-cell" icon="fa-search" placeholder="Search..."></ui-input>
+  </span>
+  <span class="grid grid--gutters">
+    <ul class="ui list grid-cell">
+      <template id="searchProfiles" repeat="{{profile in profiles}}">
+        <li class="profile">
+          <ui-user-profile class="grid-cell" profile="{{profile}}"></ui-user-profile>
+        </li>
+      </template>
+    </ul>
+  </span>
   </ui-sidebar>
   <ui-toolbar>
   <ui-command-tool icon="fa-bars" command="sidebar"></ui-command-tool>
