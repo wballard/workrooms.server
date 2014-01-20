@@ -4,7 +4,9 @@
 <polymer-element name="ui-video-stream" attributes="sourcemutedaudio sourcemutedvideo mutedaudio mirror">
 <template>
   <span id="sourcemutedaudio" class="like ui corner label">
-    <i class="icon fa fa-microphone-slash"></i>
+    <i class="icon">
+      <i class="fa fa-microphone-slash"></i>
+    </i>
   </span>
   <video id="video"></video>
   <canvas id="takesnapshot"></canvas>
