@@ -12,6 +12,15 @@ A NAT traversal message for WebRTC, sent to peers via signalling
 #Attributes
 ##peerid
 This is the identifier of this side of the running call.
+##outbound
+Flag attribute indicating this is the outbound side of the call.
+##inbound
+Flag attribute indicating this is the inbound side of the call.
+
+#Methods
+##localStream(stream)
+This kicks the process off by connecting a local source stream to the
+peer to peer mechanism.
 
     rtc = require('webrtcsupport')
     uuid = require('node-uuid')
@@ -140,12 +149,12 @@ out of band signal is used here.
 
 **TODO** just figure out how to do this from the stream itself
 
-        if message.sourcemutedaudio?
+        if message.sourcemutedaudio? and message.peerid isnt @peerid
           if message.sourcemutedaudio
             @$.player.setAttribute('sourcemutedaudio')
           else
             @$.player.removeAttribute('sourcemutedaudio')
-        if message.sourcemutedvideo?
+        if message.sourcemutedvideo? and message.peerid isnt @peerid
           if message.sourcemutedvideo
             @$.player.setAttribute('sourcemutedvideo')
           else
