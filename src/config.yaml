@@ -6,8 +6,7 @@
 #root key is the chrome extension runtime id
 omakialnodpjhdmhalkeffbndhjemlmo:
   reload: true
-  #signallingServer: ws://localhost:9000
-  signallingServer: ws://east.glgresearch.com/workrooms/
+  signallingServer: ws://localhost:9000
   github:
     clientid: df1c093b04a9ba9660cd
     clientsecret: 6ce2be9ee60bdcaf35ea192e27df9bf81d75e6e8
