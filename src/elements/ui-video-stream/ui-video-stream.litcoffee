@@ -8,6 +8,9 @@ Show a video stream with user interface.
 
 #Events
 ##stream
+Fires off when a stream is present.
+##playerready
+Fires off that this player is ready.
 
 #Methods
 ##display(stream)
@@ -74,3 +77,4 @@ that trigger by presence, so we can hit them with the ?
         @$.video.src = URL.createObjectURL(stream)
         @$.video.play()
         @fire 'stream', stream
+        @fire 'playerready', @
