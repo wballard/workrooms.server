@@ -10,7 +10,7 @@
 <template>
   <chrome-devreloader config="{{ config }}"></chrome-devreloader>
   <extension-icon></extension-icon>
-  <github-oauth clientid="{{ config.github.clientid }}" clientsecret="{{ config.github.clientsecret }}"></github-oauth>
+  <github-oauth id="github" clientid="{{ config.github.clientid }}" clientsecret="{{ config.github.clientsecret }}"></github-oauth>
   <gravatar-detector></gravatar-detector>
   <call-queue></call-queue>
   <conference-tab></conference-tab>

@@ -41,10 +41,3 @@ are set typically in sequence.
             info.profile_source = 'github'
             @userProfile = info
             @fire 'userprofile', info
-
-**HACK**
-
-            chrome.runtime.sendMessage
-              call: true
-              to:
-                email: info.email

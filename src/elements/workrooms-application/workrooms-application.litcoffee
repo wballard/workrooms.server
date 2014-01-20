@@ -24,3 +24,10 @@ so that we can get at it in tabs.
           chrome.runtime.sendMessage
             userprofile: evt.detail
 
+And, be ready to respond with a profile when asked.
+
+        chrome.runtime.onMessage.addListener (message) =>
+          if message.getuserprofile
+            if @$.github.userProfile
+              chrome.runtime.sendMessage
+                userprofile: @$.github.userProfile

@@ -57,6 +57,7 @@ Fired when the server requests that you handle an outbound call.
 
     Polymer 'conference-room',
       attached: ->
+        console.log 'attached room'
 
 Hook up the session identifier and URL pointing to the appropriate signalling
 server when ready. This uses the inline config object data.
@@ -214,6 +215,12 @@ Administrative actions on the tool and sidebar go here.
 
         @addEventListener 'autocomplete', (evt) ->
           console.log evt
+
+All set, ask if there are any existing profiles, this matters when
+you refresh or re-open the tab. You need to have a profile to do
+pretty much anything.
+
+        chrome.runtime.sendMessage getuserprofile: true
 
 This is just debug code.
 
