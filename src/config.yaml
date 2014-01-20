@@ -20,6 +20,6 @@ lejkdpfgaljfkkbefnjofcmfhmgobefa:
   reload: true
   signallingServer: ws://192.168.200.125:9000
   github:
-    clientid: df1c093b04a9ba9660cd
-    clientsecret: 6ce2be9ee60bdcaf35ea192e27df9bf81d75e6e8
+    clientid: 3467f78cc66dac9e5192
+    clientsecret: fab71e56a04e30e37e582da16cca10928f523952
 
