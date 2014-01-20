@@ -199,10 +199,15 @@ status, similar to the user profiles.
           muteStatus.sourcemutedvideo = true
           signalMuteStatus()
 
-Actions you can take in the conference room.
+Administrative actions on the tool and sidebar go here.
 
         @addEventListener 'sidebar', ->
           @$.sidebar.toggle()
+
+        @addEventListener 'autocomplete', (evt) ->
+          console.log evt
+
+This is just debug code.
 
         setTimeout =>
           @$.sidebar.toggle()

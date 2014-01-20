@@ -5,15 +5,15 @@
 <link rel="import" href="/bower_components/ui-video-call/ui-outbound-video-call.html">
 <link rel="import" href="/bower_components/ui-toolbar/ui-toolbar.html">
 <link rel="import" href="/bower_components/ui-sidebar/ui-sidebar.html">
+<link rel="import" href="/bower_components/ui-input/ui-input.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 
 <polymer-element name="conference-room" attributes="sessionid signallingserver">
 <template>
   <ui-sidebar id="sidebar">
-  <div class="ui left icon input inverted">
-    <input type="text" placeholder="Search...">
-    <i class="icon"><i class="fa fa-search"></i></i>
-  </div>
+    <div class="grid grid--gutters">
+      <ui-input class="grid-cell" icon="fa-search" placeholder="Search..."></ui-input>
+    </div>
   </ui-sidebar>
   <ui-toolbar>
   <ui-command-tool icon="fa-bars" command="sidebar"></ui-command-tool>

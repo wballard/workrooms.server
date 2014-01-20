@@ -1,0 +1,23 @@
+@import "../../../bower_components/font-awesome/less/font-awesome";
+@import "../../../bower_components/semantic-ui/src/elements/input";
+@import "../../less/variables";
+
+ui-input {
+  margin: @margin;
+  display: inline-flex;
+  flex: auto;
+  .ui.input {
+    flex: auto;
+    margin: @margin;
+  }
+}
+.inverted {
+  background-color: transparent ;
+  color: white ;
+  .ui.input {
+    input {
+      background-color: transparent ;
+      color: white ;
+    }
+  }
+}
