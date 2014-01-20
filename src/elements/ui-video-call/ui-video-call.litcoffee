@@ -73,13 +73,56 @@ function to complete the join.
 Setting a local stream is what really 'starts' the call.
 
         @fire 'needlocalstream', (localStream) =>
+          console.log 'adding local stream'
           @peerConnection.addStream(localStream)
           @localStream localStream
+
+Adding the local stream makes everything start happenig.
+
+      localStream: (localStream) ->
+        if @outbound?
+          @peerConnection.createOffer (description) =>
+            @peerConnection.setLocalDescription description, =>
+              console.log 'offering', @getAttribute('callid')
+              @fire 'signal',
+                offer: true
+                callid: @getAttribute('callid')
+                peerid: @getAttribute('peerid')
+                sdp: description
+            , (err) -> console.log err
+          , (err) -> console.log err
 
 Handle signals from the signaling server.
 
       signal: (message) ->
-        console.log 'signal in', message
+
+Inbound side SDP needs to make sure we get an offer.
+
+        if message.sdp and @inbound? and message.offer
+          @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), =>
+            @peerConnection.createAnswer (description) =>
+              @peerConnection.setLocalDescription description, =>
+                console.log 'local set, answering', @getAttribute('callid')
+                @fire 'signal',
+                  answer: true
+                  callid: @getAttribute('callid')
+                  peerid: @getAttribute('peerid')
+                  sdp: description
+              , (err) -> console.log err
+            , (err) -> console.log err
+          , (err) -> console.log err
+
+Outbound side needs to take the answer and complete the call.
+
+        if message.sdp and @outbound? and message.answer
+          console.log 'completing', @getAttribute('callid')
+          @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), (err) -> console.log err
+
+ICE messages just add in, there is now offer/answer -- just
+make sure to not add your own peer side messages.
+
+        if message.ice and message.peerid isnt @peerid
+          @peerConnection.addIceCandidate(new rtc.IceCandidate(message.ice.candidate))
 
 The far side has hung up, turn this into a local DOM event so containing
 elements on this side know about it. And `close`, like a nice programmer.
@@ -108,7 +151,3 @@ out of band signal is used here.
           else
             @$.player.removeAttribute('sourcemutedvideo')
 
-ICE messages are the same on both sides.
-
-        if message.ice
-          @peerConnection.addIceCandidate(new rtc.IceCandidate(message.ice.candidate))

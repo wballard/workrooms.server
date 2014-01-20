@@ -76,10 +76,11 @@ messages until the socket is available.
         signalling = (message) =>
           message.sessionid = @sessionid
           socket.send(JSON.stringify(message))
-          console.log 'signal out', message
         socket.onmessage = (evt) =>
           try
             message = JSON.parse(evt.data)
+            if message.sdp
+              console.log 'sdp', message
             if message.search and message.results
               @fire 'searchresults', message.results
             if message.inboundcall?
@@ -87,14 +88,9 @@ messages until the socket is available.
             if message.outboundcall?
               @fire 'outboundcall', message
             if message.hangup
-              bonzo(qwery("ui-outbound-video-call[callid='#{message.callid}'", @shadowRoot)).remove()
-              bonzo(qwery("ui-inbound-video-call[callid='#{message.callid}'", @shadowRoot)).remove()
-            forMe = (call) ->
-              message.callid is call.callid and message.peerid isnt call.peerid
-            qwery('ui-inbound-video-call', @shadowRoot).forEach (call) ->
-              call.signal(message) if forMe(call)
-            qwery('ui-outbound-video-call', @shadowRoot).forEach (call) ->
-              call.signal(message) if forMe(call)
+              bonzo(qwery("ui-video-call[callid='#{message.callid}'", @shadowRoot)).remove()
+            qwery('ui-video-call', @shadowRoot).forEach (call) ->
+              call.signal(message)
           catch err
             @fire 'error', error: err
 
@@ -114,10 +110,8 @@ are any calls queued up to process!
 
         @addEventListener 'localstream', (evt) =>
           @localStream = evt.detail.stream
-          qwery('outbound-video-call', @shadowRoot).forEach (outbound) =>
-            outbound.localStream evt.detail.stream
-          qwery('inbound-video-call', @shadowRoot).forEach (inbound) =>
-            inbound.localStream evt.detail.stream
+          qwery('ui-video-call', @shadowRoot).forEach (call) =>
+            call.localStream evt.detail.stream
           qwery('ui-local-video', @shadowRoot).forEach (s) =>
             s.localStream evt.detail.stream
           chrome.runtime.sendMessage
@@ -145,7 +139,7 @@ Set up inbound and outbound calls when asked by adding an element.
 
         @addEventListener 'outboundcall', (evt) ->
           bonzo(qwery('.calls', @shadowRoot))
-            .append("""<ui-outbound-video-call callid="#{evt.detail.callid}"></ui-outbound-video-call>""")
+            .append("""<ui-video-call outbound callid="#{evt.detail.callid}"></ui-video-call>""")
         @addEventListener 'inboundcall', (evt) ->
           ###
           url = evt?.detail?.userprofiles?.github?.avatar_url
@@ -156,7 +150,7 @@ Set up inbound and outbound calls when asked by adding an element.
           callToast.show()
           ###
           bonzo(qwery('.calls', @shadowRoot))
-            .append("""<ui-inbound-video-call callid="#{evt.detail.callid}"></ui-inbound-video-call>""")
+            .append("""<ui-video-call inbound callid="#{evt.detail.callid}"></ui-video-call>""")
 
 Calls ask for the local stream when they are ready for it, rather than being
 told about it on create.
@@ -187,12 +181,13 @@ status, similar to the user profiles.
           sourcemutedvideo: false
           sourcemutedaudio: false
         signalMuteStatus = =>
-          bonzo(qwery('ui-outbound-video-call', @shadowRoot)).each (call) ->
-            signalling
-              sourcemutedaudio: muteStatus.sourcemutedaudio
-              sourcemutedvideo: muteStatus.sourcemutedvideo
-              callid: call.callid
-              peerid: call.peerid
+          bonzo(qwery('ui-video-call', @shadowRoot)).each (call) ->
+            if call.hasAttribute('outbound')
+                signalling
+                  sourcemutedaudio: muteStatus.sourcemutedaudio
+                  sourcemutedvideo: muteStatus.sourcemutedvideo
+                  callid: call.callid
+                  peerid: call.peerid
         setInterval signalMuteStatus, @keepalive * 1000
         @addEventListener 'audio.on', (evt) ->
           muteStatus.sourcemutedaudio = false
