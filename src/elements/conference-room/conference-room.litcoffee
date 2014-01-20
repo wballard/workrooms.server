@@ -80,6 +80,9 @@ messages until the socket is available.
         socket.onmessage = (evt) =>
           try
             message = JSON.parse(evt.data)
+            console.log message
+            if message.search and message.results
+              @fire 'searchresults', message.results
             if message.inboundcall?
               @fire 'inboundcall', message
             if message.outboundcall?
@@ -176,8 +179,6 @@ also acts as the keepalive for the WebSocket back to the signalling server.
           if message.userprofile
             userprofiles[message.userprofile.profile_source] = message.userprofile
             signalling userprofiles: userprofiles
-            @$.searchProfiles.model =
-              profiles: [userprofiles, userprofiles, userprofiles]
 
 And call control messages for connected calls. This also heartbeats the mute
 status, similar to the user profiles.
@@ -214,7 +215,14 @@ Administrative actions on the tool and sidebar go here.
           @$.sidebar.toggle()
 
         @addEventListener 'autocomplete', (evt) ->
-          console.log evt
+          signalling search: evt.detail
+
+        @addEventListener 'clear', (evt) =>
+          @fire 'searchresults', []
+
+        @addEventListener 'searchresults', (evt) =>
+          @$.searchProfiles.model =
+            profiles: evt.detail
 
 All set, ask if there are any existing profiles, this matters when
 you refresh or re-open the tab. You need to have a profile to do

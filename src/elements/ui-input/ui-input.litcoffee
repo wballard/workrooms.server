@@ -13,6 +13,8 @@ Text to show when there is not yet any input.
 ##autocomplete
 This is a deleyed change event that fires after a keystroke timeout, which
 is what you want when tying the text to an autocomplete.
+##clear
+Fires on escape, clearing out the text box. And when you just delete everything.
 
     _ = require('lodash')
     bonzo = require('bonzo')
@@ -22,10 +24,14 @@ is what you want when tying the text to an autocomplete.
         autocomplete = _.debounce =>
           @fire 'autocomplete', @$.input.value
         , 300
-        @addEventListener 'keyup', (evt) ->
+        @addEventListener 'keyup', (evt) =>
           if evt.keyCode is 27
             @$.input.value = ''
-          autocomplete()
+            @fire 'clear'
+          else if @$.input.value
+            autocomplete()
+          else
+            @fire 'clear'
 
 Synch up the value property with the input control inside this element.
 
