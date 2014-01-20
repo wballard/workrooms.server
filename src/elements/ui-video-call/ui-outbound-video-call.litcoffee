@@ -25,7 +25,9 @@ signalling.
               callid: @getAttribute('callid')
               peerid: @getAttribute('peerid')
               sdp: description
+          , (err) -> console.log err
         , (err) -> console.log err
+      , (err) -> console.log err
 
 Process incoming signal messages from the signalling server. This is
 mirror image-ish from the inbound side. The main difference is that
@@ -35,5 +37,5 @@ are no more messages.
 
       signal: (message) ->
         if message.sdp
-          @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp)
+          @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), (err) -> console.log err
         @super(arguments)

@@ -56,11 +56,20 @@ module.exports = (grunt) ->
         files: [
           {src: ['**'], dest: '/', expand: true, cwd: 'build'}
         ]
+    crx:
+      workrooms:
+        src: 'build'
+        dest: '~/workrooms/workrooms.crx'
+        baseUrl: 'http://wballard.github.io/workrooms/'
+        privateKey: '~/homedirectory/chrome-keys/workrooms.chrome.pem'
+        options:
+          maxBuffer: 9000 * 1024
     watch:
       files: [
         'Gruntfile.coffee',
         'src/**/*.coffee',
         'src/**/*.litcoffee',
+        'src/**/*.yaml',
         'src/**/*.js',
         'src/**/*.less',
         'src/**/*.css',
@@ -77,7 +86,8 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks 'grunt-contrib-less'
   grunt.loadNpmTasks 'grunt-contrib-concat'
   grunt.loadNpmTasks 'grunt-concurrent'
+  grunt.loadNpmTasks 'grunt-crx'
   grunt.loadNpmTasks 'grunt-contrib-compress'
 
   grunt.registerTask 'build', ['concurrent:things', 'concat']
-  grunt.registerTask 'release', ['build', 'compress']
+  grunt.registerTask 'release', ['build', 'crx', 'compress']

@@ -79,6 +79,7 @@ Setting a local stream is what really 'starts' the call.
 Handle signals from the signaling server.
 
       signal: (message) ->
+        console.log 'signal in', message
 
 The far side has hung up, turn this into a local DOM event so containing
 elements on this side know about it. And `close`, like a nice programmer.

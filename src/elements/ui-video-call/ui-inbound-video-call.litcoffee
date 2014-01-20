@@ -26,4 +26,7 @@ represented here as events.
                   callid: @getAttribute('callid')
                   peerid: @getAttribute('peerid')
                   sdp: description
+              , (err) -> console.log err
+            , (err) -> console.log err
+          , (err) -> console.log err
         @super(arguments)

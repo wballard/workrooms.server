@@ -57,7 +57,6 @@ Fired when the server requests that you handle an outbound call.
 
     Polymer 'conference-room',
       attached: ->
-        console.log 'attached room'
 
 Hook up the session identifier and URL pointing to the appropriate signalling
 server when ready. This uses the inline config object data.
@@ -77,10 +76,10 @@ messages until the socket is available.
         signalling = (message) =>
           message.sessionid = @sessionid
           socket.send(JSON.stringify(message))
+          console.log 'signal out', message
         socket.onmessage = (evt) =>
           try
             message = JSON.parse(evt.data)
-            console.log message
             if message.search and message.results
               @fire 'searchresults', message.results
             if message.inboundcall?
@@ -127,7 +126,6 @@ are any calls queued up to process!
 Actually start up a call when requested.
 
         @addEventListener 'call', (evt) =>
-          console.log 'call', evt.detail
           call = _.clone(evt.detail)
           call.callid = uuid.v1()
           signalling call

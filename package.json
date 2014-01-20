@@ -32,5 +32,8 @@
   },
   "scripts": {
     "install": "bower install"
+  },
+  "devDependencies": {
+    "grunt-crx": "~0.3.3"
   }
 }

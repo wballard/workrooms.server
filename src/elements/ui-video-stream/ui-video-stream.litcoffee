@@ -28,10 +28,8 @@ the video plays.
 
       attached: ->
         @$.video.addEventListener 'canplay', =>
-          console.log 'playing'
           width = parseInt(getComputedStyle(@$.video).getPropertyValue('width').replace('px',''))
           height = @$.video.videoHeight / (@$.video.videoWidth/width)
-          console.log 'playing', width, height
           @$.video.setAttribute('width', width)
           @$.video.setAttribute('height', height)
           @$.takesnapshot.setAttribute('width', width)
