@@ -17,11 +17,6 @@ Flag attribute indicating this is the outbound side of the call.
 ##inbound
 Flag attribute indicating this is the inbound side of the call.
 
-#Methods
-##localStream(stream)
-This kicks the process off by connecting a local source stream to the
-peer to peer mechanism.
-
     rtc = require('webrtcsupport')
     uuid = require('node-uuid')
 
@@ -68,7 +63,8 @@ Video streams coming over RTC need to be displayed.
 
 Event handling, up from the controls inline.
 
-* hangup: send a signal that this call is over
+        @addEventListener 'signal', (evt) =>
+          @signal(evt.detail)
 
         @addEventListener 'hangup', (evt) =>
           evt.stopPropagation()
@@ -77,29 +73,24 @@ Event handling, up from the controls inline.
             callid: @getAttribute('callid')
             peerid: @getAttribute('peerid')
 
-Good to go! Ask for a local stream to kick things off, passing a callback
-function to complete the join.
-Setting a local stream is what really 'starts' the call.
+Setting a local stream is what really 'starts' the call, but it is supplied
+asynchronously.
 
-        @fire 'needlocalstream', (localStream) =>
-          console.log 'adding local stream'
+        @addEventListener 'localstream', (evt) =>
+          localStream = evt.detail.stream
+          console.log 'adding local stream', localStream
           @peerConnection.addStream(localStream)
-          @localStream localStream
-
-Adding the local stream makes everything start happenig.
-
-      localStream: (localStream) ->
-        if @outbound?
-          @peerConnection.createOffer (description) =>
-            @peerConnection.setLocalDescription description, =>
-              console.log 'offering', @getAttribute('callid')
-              @fire 'signal',
-                offer: true
-                callid: @getAttribute('callid')
-                peerid: @getAttribute('peerid')
-                sdp: description
+          if @outbound?
+            @peerConnection.createOffer (description) =>
+              @peerConnection.setLocalDescription description, =>
+                console.log 'offering', @getAttribute('callid')
+                @fire 'signal',
+                  offer: true
+                  callid: @getAttribute('callid')
+                  peerid: @getAttribute('peerid')
+                  sdp: description
+              , (err) -> console.log err
             , (err) -> console.log err
-          , (err) -> console.log err
 
 Handle signals from the signaling server.
 
@@ -130,7 +121,7 @@ Outbound side needs to take the answer and complete the call.
 ICE messages just add in, there is now offer/answer -- just
 make sure to not add your own peer side messages.
 
-        if message.ice and message.peerid isnt @peerid
+        if message?.ice?.candidate and message.peerid isnt @peerid
           @peerConnection.addIceCandidate(new rtc.IceCandidate(message.ice.candidate))
 
 The far side has hung up, turn this into a local DOM event so containing

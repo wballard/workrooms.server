@@ -89,8 +89,6 @@ messages until the socket is available.
               @fire 'outboundcall', message
             if message.hangup
               bonzo(qwery("ui-video-call[callid='#{message.callid}'", @shadowRoot)).remove()
-            qwery('ui-video-call', @shadowRoot).forEach (call) ->
-              call.signal(message)
           catch err
             @fire 'error', error: err
 
@@ -110,8 +108,6 @@ are any calls queued up to process!
 
         @addEventListener 'localstream', (evt) =>
           @localStream = evt.detail.stream
-          qwery('ui-video-call', @shadowRoot).forEach (call) =>
-            call.localStream evt.detail.stream
           qwery('ui-local-video', @shadowRoot).forEach (s) =>
             s.localStream evt.detail.stream
           chrome.runtime.sendMessage
@@ -152,12 +148,6 @@ Set up inbound and outbound calls when asked by adding an element.
           bonzo(qwery('.calls', @shadowRoot))
             .append("""<ui-video-call inbound callid="#{evt.detail.callid}"></ui-video-call>""")
 
-Calls ask for the local stream when they are ready for it, rather than being
-told about it on create.
-
-        @addEventListener 'needlocalstream', (evt) ->
-          evt.detail @localStream
-
 Keep track of OAuth supplied user profiles, and listen for them coming
 in from chrome. Send them along to the signalling server. These profiles
 sent to the signalling server build up a directory service dynamically. This
@@ -169,8 +159,13 @@ also acts as the keepalive for the WebSocket back to the signalling server.
         , @keepalive * 1000
         chrome.runtime.onMessage.addListener (message) =>
           if message.userprofile
+            console.log 'profile', message.userprofile
             userprofiles[message.userprofile.profile_source] = message.userprofile
             signalling userprofiles: userprofiles
+            signalling
+              call: true
+              to:
+                gravatar: "e8f4dae176a1790b20a5f84043748675"
 
 And call control messages for connected calls. This also heartbeats the mute
 status, similar to the user profiles.
