@@ -3,10 +3,10 @@ This event sink takes DOM events and relays them along to a websocket
 server. Incoming websocket messages are translated into DOM events
 to bubble up the DOM so they can be handled by all kinds of elements.
 
-So, this is like an `event-sink`, but it is the out of process approach that
+So, this is like an [event-sink](./event-sink.litcoffee), but it is the out of process approach that
 lets multiple different users in different browsers collaborate via events.
-Use an `event-sink` to wrap around DOM elements and relay events
-back to `event-source` elements. This lets you bubble events 'up' the
+Use an [event-sink](./event-sink.litcoffee) to wrap around DOM elements and relay events
+back to [event-source](./event-source.litcoffee) elements. This lets you bubble events 'up' the
 DOM and have them restart down deep in the DOM again.
 
 #Attributes
