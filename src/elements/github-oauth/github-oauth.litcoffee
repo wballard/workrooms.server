@@ -24,6 +24,11 @@ Call this to force the login sequence.
 
     Polymer 'github-oauth',
 
+      attached: ->
+        @addEventListener 'getuserprofile', =>
+          if @userProfile
+            @fire 'userprofile', @userProfile
+
 This will sign you in to github as soon as it comes in the DOM.
 
       attributeChanged: (name, oldvalue, newvalue) ->

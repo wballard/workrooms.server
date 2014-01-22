@@ -16,7 +16,6 @@ get a reference to it and hook into the media streams.
       callQueue: []
       attached: ->
         chrome.runtime.onMessage.addListener (message, sender, respond) =>
-          console.log 'background', message
           if message.call
             cleaned = _.clone(message)
             @callQueue.push(cleaned)

@@ -29,5 +29,7 @@ Fires when a stream is available, also after then `stream` property is set.
               error: err
           else
             @stream = stream
-            @fire 'localstream',
-              stream: stream
+            @fire 'localstream', stream
+        @addEventListener 'getlocalstream', =>
+          if @stream
+            @fire 'localstream', @stream

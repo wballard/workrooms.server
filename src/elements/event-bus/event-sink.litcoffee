@@ -10,10 +10,13 @@ events to all `event-source`. Like rebubbling events.
 #Attributes
 ##events
 This is a space separated list of event names that will be relayed.
+##autofire
+This is a space separated list of event names to fire automatically.
 
     Polymer 'event-sink',
       sources: []
       attached: ->
+        console.log 'attach sink', @events
         @addEventListener 'eventsource', (evt) ->
           @sources.push(evt.detail)
 
@@ -22,12 +25,30 @@ themselves were relayed already, which can be detected by looking if they
 came from an `event-source`.
 
       relay: (evt) ->
-        if evt.srcElement.nodeName isnt "EVENT-SOURCE"
-          console.log 'relay!', evt
+        if evt?.srcElement?.nodeName isnt "EVENT-SOURCE"
+          console.log 'relay!', evt.type, evt.detail
           @sources.forEach (source) ->
             source.relay(evt)
+
+If we are in a chrome app, relay the message to Chrome as well, this lets
+us go across tabs, background, and content pages.
+
+          if chrome?.runtime?.sendMessage
+            message = {}
+            message[evt.type] = true
+            message.detail = evt.detail
+            chrome.runtime.sendMessage message
+
+Keep a strict subscription to only the events specified by attribute.
+
       eventsChanged: (oldValue, newValue) ->
-        for name in (oldValue or '').split(' ')
+        (oldValue or '').split(' ').forEach (name) =>
           @removeEventListener name.trim(), @relay
-        for name in (newValue or '').split(' ')
+        (newValue or '').split(' ').forEach (name) =>
+          console.log 'sink', name
           @addEventListener name.trim(), @relay
+
+      autofireChanged: (oldValue, newValue) ->
+        (newValue or '').split(' ').forEach (name) =>
+          @relay
+            type: name

@@ -6,10 +6,13 @@
 <link rel="import" href="/bower_components/ui-sidebar/ui-sidebar.html">
 <link rel="import" href="/bower_components/ui-input/ui-input.html">
 <link rel="import" href="/bower_components/ui-user-profile/ui-user-profile.html">
+<link rel="import" href="/bower_components/event-bus/event-sink.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 
-<polymer-element name="conference-room" attributes="sessionid signallingserver searchProfiles">
+<polymer-element name="conference-room" attributes="searchProfiles config">
 <template>
+  <event-sink events="signal localstream getlocalstream" autofire="getuserprofile">
+  <event-source events="userprofile"></event-source>
   <ui-sidebar id="sidebar">
   <span class="grid grid--gutters">
     <ui-input class="grid-cell" icon="fa-search" placeholder="Search..."></ui-input>
@@ -31,6 +34,7 @@
   <span class="calls">
     <ui-local-video></ui-local-video>
   </span>
+  </event-sink>
 </template>
 <script src="./conference-room.js"></script>
 </polymer-element>

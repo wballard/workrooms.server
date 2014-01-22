@@ -63,8 +63,6 @@ Video streams coming over RTC need to be displayed.
 
 Event handling, up from the controls inline.
 
-        @addEventListener 'signal', (evt) =>
-          @signal(evt.detail)
 
         @addEventListener 'hangup', (evt) =>
           evt.stopPropagation()
@@ -77,7 +75,7 @@ Setting a local stream is what really 'starts' the call, but it is supplied
 asynchronously.
 
         @addEventListener 'localstream', (evt) =>
-          localStream = evt.detail.stream
+          localStream = evt.detail
           console.log 'adding local stream', localStream
           @peerConnection.addStream(localStream)
           if @outbound?
@@ -94,45 +92,46 @@ asynchronously.
 
 Handle signals from the signaling server.
 
-      signal: (message) ->
+        @addEventListener 'signal', (evt) =>
+          message = evt.detail
 
 Inbound side SDP needs to make sure we get an offer.
 
-        if message.sdp and @inbound? and message.offer
-          @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), =>
-            @peerConnection.createAnswer (description) =>
-              @peerConnection.setLocalDescription description, =>
-                console.log 'local set, answering', @getAttribute('callid')
-                @fire 'signal',
-                  answer: true
-                  callid: @getAttribute('callid')
-                  peerid: @getAttribute('peerid')
-                  sdp: description
+          if message.sdp and @inbound? and message.offer
+            @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), =>
+              @peerConnection.createAnswer (description) =>
+                @peerConnection.setLocalDescription description, =>
+                  console.log 'local set, answering', @getAttribute('callid')
+                  @fire 'signal',
+                    answer: true
+                    callid: @getAttribute('callid')
+                    peerid: @getAttribute('peerid')
+                    sdp: description
+                , (err) -> console.log err
               , (err) -> console.log err
             , (err) -> console.log err
-          , (err) -> console.log err
 
 Outbound side needs to take the answer and complete the call.
 
-        if message.sdp and @outbound? and message.answer
-          console.log 'completing', @getAttribute('callid')
-          @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), (err) -> console.log err
+          if message.sdp and @outbound? and message.answer
+            console.log 'completing', @getAttribute('callid')
+            @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), (err) -> console.log err
 
 ICE messages just add in, there is now offer/answer -- just
 make sure to not add your own peer side messages.
 
-        if message?.ice?.candidate and message.peerid isnt @peerid
-          @peerConnection.addIceCandidate(new rtc.IceCandidate(message.ice.candidate))
+          if message?.ice?.candidate and message.peerid isnt @peerid
+            @peerConnection.addIceCandidate(new rtc.IceCandidate(message.ice.candidate))
 
 The far side has hung up, turn this into a local DOM event so containing
 elements on this side know about it. And `close`, like a nice programmer.
 
-        if message.hangup
-          @peerConnection.close()
-          @fire 'hangup',
-            hangup: true
-            callid: @getAttribute('callid')
-            peerid: @getAttribute('peerid')
+          if message.hangup
+            @peerConnection.close()
+            @fire 'hangup',
+              hangup: true
+              callid: @getAttribute('callid')
+              peerid: @getAttribute('peerid')
 
 Mute control from the far side. Unfortunately could not see a way to
 get this from the stream itself, even though it surely knows it. So, an
@@ -140,14 +139,19 @@ out of band signal is used here.
 
 **TODO** just figure out how to do this from the stream itself
 
-        if message.sourcemutedaudio? and message.peerid isnt @peerid
-          if message.sourcemutedaudio
-            @$.player.setAttribute('sourcemutedaudio')
-          else
-            @$.player.removeAttribute('sourcemutedaudio')
-        if message.sourcemutedvideo? and message.peerid isnt @peerid
-          if message.sourcemutedvideo
-            @$.player.setAttribute('sourcemutedvideo')
-          else
-            @$.player.removeAttribute('sourcemutedvideo')
+          if message.sourcemutedaudio? and message.peerid isnt @peerid
+            if message.sourcemutedaudio
+              @$.player.setAttribute('sourcemutedaudio')
+            else
+              @$.player.removeAttribute('sourcemutedaudio')
+          if message.sourcemutedvideo? and message.peerid isnt @peerid
+            if message.sourcemutedvideo
+              @$.player.setAttribute('sourcemutedvideo')
+            else
+              @$.player.removeAttribute('sourcemutedvideo')
 
+Kick things off by asking for the local stream.
+
+      ready: ->
+        console.log 'love me some stream'
+        @fire 'getlocalstream'

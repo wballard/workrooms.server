@@ -18,13 +18,34 @@ to register that this `event-source` exists and needs events relayed.
     _ = require('lodash')
 
     Polymer 'event-source',
+      relay: ->
+      chromeRelay: ->
       attached: ->
+        console.log 'attach source', @events
+        @wireEvents @events
         @fire 'eventsource', @
-      eventsChanged: (oldValue, newValue) ->
+        if chrome?.runtime?.onMessage
+          chrome.runtime.onMessage.addListener (message, sender, respond) =>
+            @chromeRelay message
+
+This does the connection of events based on the space separated string
+of event names.
+
+      wireEvents: (eventstring) ->
         events = {}
-        for name in (newValue or '').split(' ')
-          events[name.trim()]
+        (eventstring or '').split(' ').forEach (name) ->
+          console.log 'source', name
+          events[name.trim()] = true
         @relay = (evt) =>
-          console.log 'relay dispatch', evt
-          @fire evt.type, evt.detail
+          if events[evt.type]
+            console.log 'relay dispatch', evt.type, evt.detail
+            @fire evt.type, evt.detail
+        @chromeRelay = (message) =>
+          _.keys(events).forEach (type) =>
+            if message[type]
+              console.log 'chrome relay dispatch', type, message.detail
+              @fire type, message.detail
+              return
+      eventsChanged: (oldValue, newValue) ->
+        @wireEvents(newValue)
 

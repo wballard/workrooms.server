@@ -1,7 +1,9 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="/bower_components/event-bus/event-source.html">
 
 <polymer-element name="local-stream" attributes="audio video">
 <template>
+  <event-source events="getlocalstream"></event-source>
 </template>
 <script src="./local-stream.js"></script>
 </polymer-element>

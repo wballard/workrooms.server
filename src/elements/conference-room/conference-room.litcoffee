@@ -107,9 +107,9 @@ Oh -- and -- when a local stream is available, make sure to ask if there
 are any calls queued up to process!
 
         @addEventListener 'localstream', (evt) =>
-          @localStream = evt.detail.stream
+          @localStream = evt.detail
           qwery('ui-local-video', @shadowRoot).forEach (s) =>
-            s.localStream evt.detail.stream
+            s.localStream @localStream
           chrome.runtime.sendMessage
             dequeueCalls: true
 
@@ -157,15 +157,16 @@ also acts as the keepalive for the WebSocket back to the signalling server.
         setInterval =>
           signalling userprofiles: @userprofiles
         , @keepalive * 1000
-        chrome.runtime.onMessage.addListener (message) =>
-          if message.userprofile
-            console.log 'profile', message.userprofile
-            userprofiles[message.userprofile.profile_source] = message.userprofile
-            signalling userprofiles: userprofiles
-            signalling
-              call: true
-              to:
-                gravatar: "e8f4dae176a1790b20a5f84043748675"
+        @addEventListener 'userprofile', (evt) ->
+          profile = evt.detail
+          console.log 'profile', profile
+          userprofiles[profile.profile_source] = profile
+          signalling userprofiles: userprofiles
+          signalling
+            call: true
+            callid: uuid.v1()
+            to:
+              gravatar: "e8f4dae176a1790b20a5f84043748675"
 
 And call control messages for connected calls. This also heartbeats the mute
 status, similar to the user profiles.
@@ -210,12 +211,6 @@ Administrative actions on the tool and sidebar go here.
         @addEventListener 'searchresults', (evt) =>
           @$.searchProfiles.model =
             profiles: evt.detail
-
-All set, ask if there are any existing profiles, this matters when
-you refresh or re-open the tab. You need to have a profile to do
-pretty much anything.
-
-        chrome.runtime.sendMessage getuserprofile: true
 
 This is just debug code.
 
