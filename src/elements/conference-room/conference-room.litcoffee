@@ -61,6 +61,7 @@ Fired when the server requests that you handle an outbound call.
 Hook up the session identifier and URL pointing to the appropriate signalling
 server when ready. This uses the inline config object data.
 
+        @config = config
         @sessionid = uuid.v1()
         @signallingserver = config.signallingServer
         @keepalive = config.keepalive or 30

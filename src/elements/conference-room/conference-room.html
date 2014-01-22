@@ -7,11 +7,13 @@
 <link rel="import" href="/bower_components/ui-input/ui-input.html">
 <link rel="import" href="/bower_components/ui-user-profile/ui-user-profile.html">
 <link rel="import" href="/bower_components/event-bus/event-sink.html">
+<link rel="import" href="/bower_components/event-bus/websocket-event-sink.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 
 <polymer-element name="conference-room" attributes="searchProfiles config">
 <template>
   <event-sink events="signal localstream getlocalstream" autofire="getuserprofile">
+  <websocket-event-sink events="ice" server={{config.signallingServer}}>
   <event-source events="userprofile"></event-source>
   <ui-sidebar id="sidebar">
   <span class="grid grid--gutters">
@@ -34,6 +36,7 @@
   <span class="calls">
     <ui-local-video></ui-local-video>
   </span>
+  </websocket-event-sink>
   </event-sink>
 </template>
 <script src="./conference-room.js"></script>

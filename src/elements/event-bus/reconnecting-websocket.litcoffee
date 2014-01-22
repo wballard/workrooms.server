@@ -62,7 +62,7 @@ closure.
               @onreconnect(event)
             else
               @onopen(event)
-            drain()
+            @drain()
           @ws.onclose = (event) =>
             if @forceclose
               @readyState = WebSocket.CLOSED
@@ -83,7 +83,7 @@ Kick it all off with a connect.
 
       send: (data) =>
         @messages.push(data)
-        drain()
+        @drain()
 
       close: =>
         @forceclose = true
@@ -112,5 +112,6 @@ the debugger.
       onerror: (event) ->
       onsend: (event) ->
 
+Publish this object for browserify.
 
-module.exports = ReconnectingWebSocket
+      module.exports = ReconnectingWebSocket
