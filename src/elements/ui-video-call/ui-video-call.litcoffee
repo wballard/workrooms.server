@@ -95,9 +95,7 @@ ICE messages just add in, there is now offer/answer -- just
 make sure to not add your own peer side messages.
 
         @addEventListener 'ice', (evt) =>
-          console.log 'ice?', @peerid, evt.detail.peerid
           if evt?.detail?.candidate and evt?.detail?.peerid isnt @peerid
-            console.log 'ice', evt
             @peerConnection.addIceCandidate(new rtc.IceCandidate(evt.detail.candidate))
 
 

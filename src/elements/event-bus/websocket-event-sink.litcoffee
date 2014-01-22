@@ -62,7 +62,6 @@ messages into DOM events, which bubble.
         if newValue
           @socket = new ReconnectingWebSocket(newValue)
           @socket.onmessage = (evt) =>
-            console.log 'socky', evt
             try
               message = JSON.parse(evt.data)
               if message.type
