@@ -29,6 +29,7 @@ Fires when a stream is available, also after then `stream` property is set.
               error: err
           else
             @stream = stream
+            @stream.__not_serializable__ = true
             @fire 'localstream', stream
         @addEventListener 'getlocalstream', =>
           if @stream

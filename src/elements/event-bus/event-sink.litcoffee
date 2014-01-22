@@ -33,7 +33,10 @@ came from an `event-source`.
 If we are in a chrome app, relay the message to Chrome as well, this lets
 us go across tabs, background, and content pages.
 
-          if chrome?.runtime?.sendMessage
+And, some messages just can't be relayed or serialized out of process, like
+a WebSocket itself, or a MediaStream.
+
+          if chrome?.runtime?.sendMessage and not evt?.detail?.__not_serializable__
             message = {}
             message[evt.type] = true
             message.detail = evt.detail
