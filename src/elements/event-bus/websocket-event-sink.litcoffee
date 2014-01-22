@@ -40,11 +40,11 @@ came from an `event-source`.
 
       relay: (evt) ->
         if evt?.srcElement?.nodeName isnt "EVENT-SOURCE"
-          console.log 'websocket relay!', evt.type, evt.detail
-          @socket?.send
+          @socket?.send JSON.stringify(
             type: evt.type
             detail: evt.detail
             from: @sesionid
+          )
 
 Keep a strict subscription to only the events specified by attribute.
 
@@ -52,7 +52,6 @@ Keep a strict subscription to only the events specified by attribute.
         (oldValue or '').split(' ').forEach (name) =>
           @removeEventListener name.trim(), @relay
         (newValue or '').split(' ').forEach (name) =>
-          console.log 'sink', name
           @addEventListener name.trim(), @relay
 
 Set up the socket when the server attribute is supplied. This turns webwocket
@@ -60,13 +59,14 @@ messages into DOM events, which bubble.
 
       serverChanged: (oldValue, newValue) ->
         @socket?.close()
-        console.log 'SOCKET TO', newValue
         if newValue
           @socket = new ReconnectingWebSocket(newValue)
           @socket.onmessage = (evt) =>
+            console.log 'socky', evt
             try
               message = JSON.parse(evt.data)
               if message.type
                 @fire message.type, message.detail
             catch err
+              console.log err
               @fire 'error', err

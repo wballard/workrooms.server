@@ -46,11 +46,10 @@ and sending along ice candidates as `signal`.
 
         #ice candidates just need to be shared with peers
         @peerConnection.onicecandidate = (evt) =>
-          @fire 'signal',
+          @fire 'ice',
             callid: @getAttribute('callid')
             peerid: @getAttribute('peerid')
-            ice:
-              candidate: evt.candidate
+            candidate: evt.candidate
 
 Video streams coming over RTC need to be displayed.
 
@@ -92,6 +91,16 @@ asynchronously.
 
 Handle signals from the signaling server.
 
+ICE messages just add in, there is now offer/answer -- just
+make sure to not add your own peer side messages.
+
+        @addEventListener 'ice', (evt) =>
+          console.log 'ice?', @peerid, evt.detail.peerid
+          if evt?.detail?.candidate and evt?.detail?.peerid isnt @peerid
+            console.log 'ice', evt
+            @peerConnection.addIceCandidate(new rtc.IceCandidate(evt.detail.candidate))
+
+
         @addEventListener 'signal', (evt) =>
           message = evt.detail
 
@@ -117,21 +126,6 @@ Outbound side needs to take the answer and complete the call.
             console.log 'completing', @getAttribute('callid')
             @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), (err) -> console.log err
 
-ICE messages just add in, there is now offer/answer -- just
-make sure to not add your own peer side messages.
-
-          if message?.ice?.candidate and message.peerid isnt @peerid
-            @peerConnection.addIceCandidate(new rtc.IceCandidate(message.ice.candidate))
-
-The far side has hung up, turn this into a local DOM event so containing
-elements on this side know about it. And `close`, like a nice programmer.
-
-          if message.hangup
-            @peerConnection.close()
-            @fire 'hangup',
-              hangup: true
-              callid: @getAttribute('callid')
-              peerid: @getAttribute('peerid')
 
 Mute control from the far side. Unfortunately could not see a way to
 get this from the stream itself, even though it surely knows it. So, an

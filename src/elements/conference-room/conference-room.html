@@ -12,7 +12,7 @@
 
 <polymer-element name="conference-room" attributes="searchProfiles config">
 <template>
-  <event-sink events="signal localstream getlocalstream" autofire="getuserprofile">
+  <event-sink events="signal ice localstream getlocalstream" autofire="getuserprofile">
   <websocket-event-sink events="ice" server={{config.signallingServer}}>
   <event-source events="userprofile"></event-source>
   <ui-sidebar id="sidebar">

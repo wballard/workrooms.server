@@ -16,7 +16,6 @@ This is a space separated list of event names to fire automatically.
     Polymer 'event-sink',
       sources: []
       attached: ->
-        console.log 'attach sink', @events
         @addEventListener 'eventsource', (evt) ->
           @sources.push(evt.detail)
 
@@ -26,7 +25,6 @@ came from an `event-source`.
 
       relay: (evt) ->
         if evt?.srcElement?.nodeName isnt "EVENT-SOURCE"
-          console.log 'relay!', evt.type, evt.detail
           @sources.forEach (source) ->
             source.relay(evt)
 
@@ -48,7 +46,6 @@ Keep a strict subscription to only the events specified by attribute.
         (oldValue or '').split(' ').forEach (name) =>
           @removeEventListener name.trim(), @relay
         (newValue or '').split(' ').forEach (name) =>
-          console.log 'sink', name
           @addEventListener name.trim(), @relay
 
       autofireChanged: (oldValue, newValue) ->

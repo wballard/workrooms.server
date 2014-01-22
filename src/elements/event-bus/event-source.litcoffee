@@ -34,7 +34,6 @@ of event names.
       wireEvents: (eventstring) ->
         events = {}
         (eventstring or '').split(' ').forEach (name) ->
-          console.log 'source', name
           events[name.trim()] = true
         @relay = (evt) =>
           if events[evt.type]

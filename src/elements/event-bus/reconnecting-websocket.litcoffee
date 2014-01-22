@@ -97,9 +97,10 @@ reconnect and let a fresh connection try the message.
         while @messages.length
           try
             @ws.send @messages[0]
-            sent = @messages.unshift()
+            sent = @messages.shift()
             @onsend(new MessageEvent(sent))
-          catch
+          catch err
+            console.log err
             return
 
 Empty shims for the event handlers. These are just here for discovery via
