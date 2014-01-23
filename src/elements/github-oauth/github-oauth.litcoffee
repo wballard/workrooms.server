@@ -28,6 +28,8 @@ Call this to force the login sequence.
         @addEventListener 'getuserprofile', =>
           if @userProfile
             @fire 'userprofile', @userProfile
+          else
+            @login()
 
 This will sign you in to github as soon as it comes in the DOM.
 

@@ -19,6 +19,8 @@ This is a `ws://` or `wss:///` url pointing to your websocket server.
 #Events
 ##error
 Fires off when trouble happens.
+##reconnect
+Fires when the server connection has been interrupted and then restored.
 ##*
 This is a bit of a wildcard emitter, any websocket message received is
 turned into a DOM event with `.type` being the event name and `.detail` passed
@@ -28,8 +30,7 @@ as the custom event detail.
     uuid = require('node-uuid')
 
     Polymer 'websocket-event-sink',
-      sesionid: uuid.v1()
-      sources: []
+      sessionid: uuid.v1()
       attached: ->
       detached: ->
         @socket?.close()
@@ -43,7 +44,7 @@ came from an `event-source`.
           @socket?.send JSON.stringify(
             type: evt.type
             detail: evt.detail
-            from: @sesionid
+            from: @sessionid
           )
 
 Keep a strict subscription to only the events specified by attribute.
@@ -61,6 +62,8 @@ messages into DOM events, which bubble.
         @socket?.close()
         if newValue
           @socket = new ReconnectingWebSocket(newValue)
+          @.onreconnect = =>
+            @fire 'reconnect'
           @socket.onmessage = (evt) =>
             try
               message = JSON.parse(evt.data)

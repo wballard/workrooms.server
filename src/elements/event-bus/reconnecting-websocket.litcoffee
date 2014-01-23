@@ -108,7 +108,7 @@ the debugger.
 
       onopen: (event) ->
       onclose: (event) ->
-      onreconnecting: (event) ->
+      onreconnect: (event) ->
       onmessage: (event) ->
       onerror: (event) ->
       onsend: (event) ->

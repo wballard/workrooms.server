@@ -57,6 +57,7 @@ Fired when the server requests that you handle an outbound call.
 
     Polymer 'conference-room',
       attached: ->
+        @calls = []
 
 Hook up the session identifier and URL pointing to the appropriate signalling
 server when ready. This uses the inline config object data.
@@ -109,8 +110,6 @@ are any calls queued up to process!
 
         @addEventListener 'localstream', (evt) =>
           @localStream = evt.detail
-          qwery('ui-local-video', @shadowRoot).forEach (s) =>
-            s.localStream @localStream
           chrome.runtime.sendMessage
             dequeueCalls: true
 
@@ -135,8 +134,7 @@ the local stream is available.
 Set up inbound and outbound calls when asked by adding an element.
 
         @addEventListener 'outboundcall', (evt) ->
-          bonzo(qwery('.calls', @shadowRoot))
-            .append("""<ui-video-call outbound callid="#{evt.detail.callid}"></ui-video-call>""")
+          @calls.push evt.detail
         @addEventListener 'inboundcall', (evt) ->
           ###
           url = evt?.detail?.userprofiles?.github?.avatar_url
@@ -146,8 +144,8 @@ Set up inbound and outbound calls when asked by adding an element.
               showConferenceTab: true
           callToast.show()
           ###
-          bonzo(qwery('.calls', @shadowRoot))
-            .append("""<ui-video-call inbound callid="#{evt.detail.callid}"></ui-video-call>""")
+          @calls.push evt.detail
+          console.log @calls
 
 Keep track of OAuth supplied user profiles, and listen for them coming
 in from chrome. Send them along to the signalling server. These profiles
@@ -160,7 +158,7 @@ also acts as the keepalive for the WebSocket back to the signalling server.
         , @keepalive * 1000
         @addEventListener 'userprofile', (evt) ->
           profile = evt.detail
-          console.log 'profile', profile
+          console.log 'profile found', profile
           userprofiles[profile.profile_source] = profile
           signalling userprofiles: userprofiles
           signalling

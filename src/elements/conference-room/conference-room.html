@@ -8,13 +8,17 @@
 <link rel="import" href="/bower_components/ui-user-profile/ui-user-profile.html">
 <link rel="import" href="/bower_components/event-bus/event-sink.html">
 <link rel="import" href="/bower_components/event-bus/websocket-event-sink.html">
+<link rel="import" href="/bower_components/event-bus/chrome-event-sink.html">
+<link rel="import" href="/bower_components/event-bus/event-fire.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 
-<polymer-element name="conference-room" attributes="searchProfiles config">
+<polymer-element name="conference-room" attributes="searchProfiles config localStream calls">
 <template>
-  <event-sink events="signal ice localstream getlocalstream" autofire="getuserprofile">
-  <websocket-event-sink events="ice" server={{config.signallingServer}}>
-  <event-source events="userprofile"></event-source>
+  <event-sink events="signal ice localstream userprofile">
+  <websocket-event-sink events="ice" server="{{config.signallingServer}}">
+  <chrome-event-sink events="getuserprofile">
+  <event-fire events="getuserprofile"></event-fire>
+  <local-stream audio video>
   <ui-sidebar id="sidebar">
   <span class="grid grid--gutters">
     <ui-input class="grid-cell" icon="fa-search" placeholder="Search..."></ui-input>
@@ -32,10 +36,14 @@
   <ui-toolbar>
   <ui-command-tool icon="fa-bars" command="sidebar"></ui-command-tool>
   </ui-toolbar>
-  <local-stream audio video></local-stream>
   <span class="calls">
-    <ui-local-video></ui-local-video>
+    <ui-local-video stream="{{localStream}}"></ui-local-video>
+    <template id="calls" repeat="{{call in calls}}">
+      <ui-video-call outbound?="{{call.outboundcall}}" inbound?="{{call.inboundcall}}" callid="{{call.callid}}" localStream="{{localStream}}"></ui-video-call>
+    </template>
   </span>
+  </local-stream>
+  </chrome-event-sink>
   </websocket-event-sink>
   </event-sink>
 </template>

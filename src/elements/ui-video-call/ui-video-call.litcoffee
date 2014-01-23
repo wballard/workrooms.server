@@ -21,7 +21,7 @@ Flag attribute indicating this is the inbound side of the call.
     uuid = require('node-uuid')
 
     Polymer 'ui-video-call',
-      attached: ->
+      created: ->
         @setAttribute 'peerid', uuid.v1()
 
 Hook up an RTC connection, using Google's stun/turn.
@@ -59,9 +59,9 @@ Video streams coming over RTC need to be displayed.
         @peerConnection.onremovestream = (evt) =>
           @$.player.display null
 
+      attached: ->
 
 Event handling, up from the controls inline.
-
 
         @addEventListener 'hangup', (evt) =>
           evt.stopPropagation()
@@ -70,36 +70,18 @@ Event handling, up from the controls inline.
             callid: @getAttribute('callid')
             peerid: @getAttribute('peerid')
 
-Setting a local stream is what really 'starts' the call, but it is supplied
-asynchronously.
-
-        @addEventListener 'localstream', (evt) =>
-          localStream = evt.detail
-          console.log 'adding local stream', localStream
-          @peerConnection.addStream(localStream)
-          if @outbound?
-            @peerConnection.createOffer (description) =>
-              @peerConnection.setLocalDescription description, =>
-                console.log 'offering', @getAttribute('callid')
-                @fire 'signal',
-                  offer: true
-                  callid: @getAttribute('callid')
-                  peerid: @getAttribute('peerid')
-                  sdp: description
-              , (err) -> console.log err
-            , (err) -> console.log err
-
-Handle signals from the signaling server.
+The document acts as an event bus, so we're hooking up events.
 
 ICE messages just add in, there is now offer/answer -- just
 make sure to not add your own peer side messages.
 
-        @addEventListener 'ice', (evt) =>
+        document.addEventListener 'ice', (evt) =>
           if evt?.detail?.candidate and evt?.detail?.peerid isnt @peerid
             @peerConnection.addIceCandidate(new rtc.IceCandidate(evt.detail.candidate))
 
+Handle signals from the signaling server.
 
-        @addEventListener 'signal', (evt) =>
+        document.addEventListener 'signal', (evt) =>
           message = evt.detail
 
 Inbound side SDP needs to make sure we get an offer.
@@ -142,8 +124,22 @@ out of band signal is used here.
             else
               @$.player.removeAttribute('sourcemutedvideo')
 
-Kick things off by asking for the local stream.
+Setting a local stream is what really 'starts' the call, but it is supplied
+asynchronously.
 
-      ready: ->
-        console.log 'love me some stream'
-        @fire 'getlocalstream'
+      localStreamChanged: (oldValue, newValue) ->
+        if newValue
+          console.log 'adding local stream', newValue
+          @peerConnection.addStream(newValue)
+          if @outbound?
+            @peerConnection.createOffer (description) =>
+              @peerConnection.setLocalDescription description, =>
+                console.log 'offering', @getAttribute('callid')
+                @fire 'signal',
+                  offer: true
+                  callid: @getAttribute('callid')
+                  peerid: @getAttribute('peerid')
+                  sdp: description
+              , (err) -> console.log err
+            , (err) -> console.log err
+
