@@ -13,9 +13,9 @@
 
 <polymer-element name="conference-room" attributes="searchProfiles config localStream calls">
 <template>
-  <websocket-event-sink events="ice" server="{{config.signallingServer}}">
+  <websocket-event-sink events="call ice offer answer userprofile autocomplete" server="{{config.signallingServer}}">
   <chrome-event-sink events="getuserprofile">
-  <event-fire events="getuserprofile"></event-fire>
+  <event-fire id="fire" events="getuserprofile"></event-fire>
   <local-stream audio video>
   <ui-sidebar id="sidebar">
   <span class="grid grid--gutters">
@@ -37,7 +37,7 @@
   <span class="calls">
     <ui-local-video stream="{{localStream}}"></ui-local-video>
     <template id="calls" repeat="{{call in calls}}">
-      <ui-video-call outbound?="{{call.outboundcall}}" inbound?="{{call.inboundcall}}" callid="{{call.callid}}" localStream="{{localStream}}"></ui-video-call>
+      <ui-video-call outbound?="{{call.outbound}}" inbound?="{{call.inbound}}" callid="{{call.callid}}" localStream="{{localStream}}"></ui-video-call>
     </template>
   </span>
   </local-stream>

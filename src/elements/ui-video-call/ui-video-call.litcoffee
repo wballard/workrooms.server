@@ -72,27 +72,25 @@ Event handling, up from the controls inline.
 
 The document acts as an event bus, so we're hooking up events.
 
-ICE messages just add in, there is now offer/answer -- just
-make sure to not add your own peer side messages.
+ICE messages just add in, there is now offer/answer -- just make sure to not
+add your own peer side messages.  And make sure it is a server signal, not just
+a local ice message. This isn't a *real case*, but it shows up when you call
+yourself for testing.
 
         document.addEventListener 'ice', (evt) =>
-          if evt?.detail?.candidate and evt?.detail?.peerid isnt @peerid
+          if evt.detail.candidate and evt.detail.peerid isnt @peerid and event.detail.signal
             @peerConnection.addIceCandidate(new rtc.IceCandidate(evt.detail.candidate))
 
-Handle signals from the signaling server.
+Inbound side SDP needs to make sure we get an offer, which it will then answer.
 
-        document.addEventListener 'signal', (evt) =>
+        document.addEventListener 'offer', (evt) =>
           message = evt.detail
-
-Inbound side SDP needs to make sure we get an offer.
-
-          if message.sdp and @inbound? and message.offer
+          if @inbound? and message.signal
             @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), =>
               @peerConnection.createAnswer (description) =>
                 @peerConnection.setLocalDescription description, =>
                   console.log 'local set, answering', @getAttribute('callid')
-                  @fire 'signal',
-                    answer: true
+                  @fire 'answer',
                     callid: @getAttribute('callid')
                     peerid: @getAttribute('peerid')
                     sdp: description
@@ -102,10 +100,16 @@ Inbound side SDP needs to make sure we get an offer.
 
 Outbound side needs to take the answer and complete the call.
 
-          if message.sdp and @outbound? and message.answer
+        document.addEventListener 'answer', (evt) =>
+          message = evt.detail
+          if @outbound? and message.signal
             console.log 'completing', @getAttribute('callid')
             @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), (err) -> console.log err
 
+Handle signals from the signaling server.
+
+        document.addEventListener 'signal', (evt) =>
+          message = evt.detail
 
 Mute control from the far side. Unfortunately could not see a way to
 get this from the stream itself, even though it surely knows it. So, an
@@ -135,8 +139,7 @@ asynchronously.
             @peerConnection.createOffer (description) =>
               @peerConnection.setLocalDescription description, =>
                 console.log 'offering', @getAttribute('callid')
-                @fire 'signal',
-                  offer: true
+                @fire 'offer',
                   callid: @getAttribute('callid')
                   peerid: @getAttribute('peerid')
                   sdp: description

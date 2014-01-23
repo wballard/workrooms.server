@@ -35,19 +35,14 @@ though the signalling server.
 ```
 
 #Attributes
-##sessionid
-This is a unique random guid used to identify this running app to the
-signalling server.
-##signallingserver
-An URL pointing to a WebSocket server used for call signalling.
-
-#Events
-##error
-Bad things happen. This lets you see when.
-##inboundcall
-Fired when the server requests that you handle an inbound call.
-##outboundcall
-Fired when the server requests that you handle an outbound call.
+##config
+All the settings, these are loaded up from disk and keyed by the local
+chrome extension ID.
+##localStream
+This is your local video/audio data stream.
+##calls
+Array of all active calls metadata. These aren't calls themselves, just
+identifiers used to data bind and generate `ui-video-call` elements.
 
     uuid = require('node-uuid')
     _ = require('lodash')
@@ -58,52 +53,11 @@ Fired when the server requests that you handle an outbound call.
     Polymer 'conference-room',
       attached: ->
         @calls = []
-
-Hook up the session identifier and URL pointing to the appropriate signalling
-server when ready. This uses the inline config object data.
-
         @config = config
-        @sessionid = uuid.v1()
-        @signallingserver = config.signallingServer
-        @keepalive = config.keepalive or 30
-
-This is the most important part, setting up the WebSocket to the signalling
-server. Every message is built up with the `sessionid`.  WebSocket messages are
-turned into DOM events or delegated to an appropriate contained call element.
-
-* **TODO** make this an auto-reconnecting socket.  * **TODO** make this buffer
-messages until the socket is available.
-
-        socket = new WebSocket(@signallingserver)
-        signalling = (message) =>
-          message.sessionid = @sessionid
-          socket.send(JSON.stringify(message))
-        socket.onmessage = (evt) =>
-          try
-            message = JSON.parse(evt.data)
-            if message.sdp
-              console.log 'sdp', message
-            if message.search and message.results
-              @fire 'searchresults', message.results
-            if message.inboundcall?
-              @fire 'inboundcall', message
-            if message.outboundcall?
-              @fire 'outboundcall', message
-            if message.hangup
-              bonzo(qwery("ui-video-call[callid='#{message.callid}'", @shadowRoot)).remove()
-          catch err
-            @fire 'error', error: err
-
-The conference room supplies the connection to the signalling server, so it
-needs to listen for signal requests from contained calls and forward those
-along.
-
-        @addEventListener 'signal', (evt) =>
-          signalling evt.detail
 
 WebRTC kicks off interaction when it has something to share, namely a local
-stream of data to transmit. Listen for this stream and pass it along to call
-objects. This kicks off call negotiation with the signalling server.
+stream of data to transmit. Listen for this stream and set it so that
+it can be bound by all the contained calls.
 
 Oh -- and -- when a local stream is available, make sure to ask if there
 are any calls queued up to process!
@@ -113,15 +67,11 @@ are any calls queued up to process!
           chrome.runtime.sendMessage
             dequeueCalls: true
 
-Actually start up a call when requested.
-
-        @addEventListener 'call', (evt) =>
-          call = _.clone(evt.detail)
-          call.callid = uuid.v1()
-          signalling call
-
 OK -- so this is the tricky bit, it isn't worth asking to connect calls until
 the local stream is available.
+
+The `.fire.fire` bit is going to a nested element so that it gets caught by
+the surrounding websocket.
 
         chrome.runtime.onMessage.addListener (message, sender, respond) =>
           if message.call and @localStream
@@ -129,13 +79,16 @@ the local stream is available.
               dequeueCalls: true
           if message.makeCalls
             message.makeCalls.forEach (call) =>
-              @fire 'call', call
+              call.callid = uuid.v1()
+              @$.fire.fire 'call', call
 
 Set up inbound and outbound calls when asked by adding an element.
 
         @addEventListener 'outboundcall', (evt) ->
+          evt.detail.outbound = true
           @calls.push evt.detail
         @addEventListener 'inboundcall', (evt) ->
+          evt.detail.inbound = true
           ###
           url = evt?.detail?.userprofiles?.github?.avatar_url
           callToast = webkitNotifications.createNotification url, 'Call From', evt.detail.userprofiles.github.name
@@ -146,25 +99,13 @@ Set up inbound and outbound calls when asked by adding an element.
           ###
           @calls.push evt.detail
 
-Keep track of OAuth supplied user profiles, and listen for them coming
-in from chrome. Send them along to the signalling server. These profiles
-sent to the signalling server build up a directory service dynamically. This
-also acts as the keepalive for the WebSocket back to the signalling server.
+Keep track of OAuth supplied user profiles, and hotwire a call for testing.
 
-        userprofiles = {}
-        setInterval =>
-          signalling userprofiles: @userprofiles
-        , @keepalive * 1000
-        @addEventListener 'userprofile', (evt) ->
-          profile = evt.detail
-          console.log 'profile found', profile
-          userprofiles[profile.profile_source] = profile
-          signalling userprofiles: userprofiles
-          signalling
-            call: true
+        @addEventListener 'userprofile', (evt) =>
+          @$.fire.fire 'call',
             callid: uuid.v1()
             to:
-              gravatar: "e8f4dae176a1790b20a5f84043748675"
+              gravatar: evt.detail.gravatar_id
 
 And call control messages for connected calls. This also heartbeats the mute
 status, similar to the user profiles.
@@ -175,8 +116,8 @@ status, similar to the user profiles.
           sourcemutedvideo: false
           sourcemutedaudio: false
         signalMuteStatus = =>
-          bonzo(qwery('ui-video-call', @shadowRoot)).each (call) ->
-            signalling
+          bonzo(qwery('ui-video-call', @shadowRoot)).each (call) =>
+            @$.fire.fire 'mutestatus',
               sourcemutedaudio: muteStatus.sourcemutedaudio
               sourcemutedvideo: muteStatus.sourcemutedvideo
               callid: call.callid
@@ -200,18 +141,15 @@ Administrative actions on the tool and sidebar go here.
         @addEventListener 'sidebar', ->
           @$.sidebar.toggle()
 
-        @addEventListener 'autocomplete', (evt) ->
-          signalling search: evt.detail
-
         @addEventListener 'clear', (evt) =>
           @fire 'searchresults', []
 
-        @addEventListener 'searchresults', (evt) =>
+        document.addEventListener 'autocompleteresults', (evt) =>
           @$.searchProfiles.model =
-            profiles: evt.detail
+            profiles: evt.detail.results
 
 This is just debug code.
 
         setTimeout =>
-          @$.sidebar.toggle()
+          @fire 'sidebar'
 

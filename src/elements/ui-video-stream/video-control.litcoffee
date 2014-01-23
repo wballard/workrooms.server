@@ -7,7 +7,6 @@ Not clear that this really warrants being its own component.
     Polymer 'video-control',
       attached: ->
         @addEventListener 'playerready', (evt) =>
-          console.log 'player', evt.detail
           @player = evt.detail
         @addEventListener 'stream', (evt) =>
           @stream = evt.detail

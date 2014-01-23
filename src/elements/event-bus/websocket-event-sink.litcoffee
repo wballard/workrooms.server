@@ -3,12 +3,6 @@ This event sink takes DOM events and relays them along to a websocket
 server. Incoming websocket messages are translated into DOM events
 to bubble up the DOM so they can be handled by all kinds of elements.
 
-So, this is like an [event-sink](./event-sink.litcoffee), but it is the out of process approach that
-lets multiple different users in different browsers collaborate via events.
-Use an [event-sink](./event-sink.litcoffee) to wrap around DOM elements and relay events
-back to [event-source](./event-source.litcoffee) elements. This lets you bubble events 'up' the
-DOM and have them restart down deep in the DOM again.
-
 #Attributes
 ##events
 This is a space separated list of event names that will be relayed to the
@@ -32,15 +26,17 @@ as the custom event detail.
     Polymer 'websocket-event-sink',
       sessionid: uuid.v1()
       attached: ->
+        console.log 'attach websocket', @events
       detached: ->
         @socket?.close()
 
-Relay events. The most important rule here is to not relay events that
-themselves were relayed already, which can be detected by looking if they
-came from an `event-source`.
+Relay events along to the websocket, giving the signalling server the chance
+to share messages with other clients. But, really important to not relay
+messages you posted, otherwise it's essentially an infinite loop.
 
       relay: (evt) ->
-        if evt?.srcElement?.nodeName isnt "EVENT-SOURCE"
+        if evt.target isnt @
+          console.log 'websocket relay', evt.detail
           @socket?.send JSON.stringify(
             type: evt.type
             detail: evt.detail

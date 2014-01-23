@@ -4,6 +4,8 @@ A general purpose user profile display tile.
 ##profile
 This is an amalgamated profile object via OAuth sources.
 
+    uuid = require('node-uuid')
+
     Polymer 'ui-user-profile',
       attached: ->
 
@@ -11,7 +13,7 @@ Click to dial anywhere on the row for now.
 
         @addEventListener 'click', =>
           @fire 'call',
-            call: true
+            callid: uuid.v1()
             to:
               gravatar: @profile.github.gravatar_id
 
