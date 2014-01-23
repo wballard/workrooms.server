@@ -2,15 +2,13 @@
 <link rel="import" href="../extension-icon/extension-icon.html">
 <link rel="import" href="../chrome-devreloader/chrome-devreloader.html">
 <link rel="import" href="../github-oauth/github-oauth.html">
-<link rel="import" href="/bower_components/gravatar-detector/gravatar-detector.html">
-<link rel="import" href="/bower_components/call-queue/call-queue.html">
-<link rel="import" href="/bower_components/conference-tab/conference-tab.html">
-<link rel="import" href="/bower_components/event-bus/event-sink.html">
-<link rel="import" href="/bower_components/event-bus/chrome-event-sink.html">
+<link rel="import" href="../gravatar-detector/gravatar-detector.html">
+<link rel="import" href="../call-queue/call-queue.html">
+<link rel="import" href="../conference-tab/conference-tab.html">
+<link rel="import" href="../event-bus/chrome-event-sink.html">
 
 <polymer-element name="workrooms-application" attributes="config">
 <template>
-  <event-sink events="getuserprofile">
   <chrome-event-sink events="userprofile">
   <chrome-devreloader config="{{ config }}"></chrome-devreloader>
   <extension-icon></extension-icon>
@@ -19,7 +17,6 @@
   <call-queue></call-queue>
   <conference-tab></conference-tab>
   </chrome-event-sink>
-  </event-sink>
 </template>
 <script src="./workrooms-application.js"></script>
 </polymer-element>

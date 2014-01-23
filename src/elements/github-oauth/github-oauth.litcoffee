@@ -23,9 +23,8 @@ Call this to force the login sequence.
     _ = require('lodash')
 
     Polymer 'github-oauth',
-
       attached: ->
-        @addEventListener 'getuserprofile', =>
+        document.addEventListener 'getuserprofile', =>
           if @userProfile
             @fire 'userprofile', @userProfile
           else

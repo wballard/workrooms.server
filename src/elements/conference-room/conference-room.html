@@ -1,20 +1,18 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="/bower_components/local-stream/local-stream.html">
-<link rel="import" href="/bower_components/ui-local-video/ui-local-video.html">
-<link rel="import" href="/bower_components/ui-video-call/ui-video-call.html">
-<link rel="import" href="/bower_components/ui-toolbar/ui-toolbar.html">
-<link rel="import" href="/bower_components/ui-sidebar/ui-sidebar.html">
-<link rel="import" href="/bower_components/ui-input/ui-input.html">
-<link rel="import" href="/bower_components/ui-user-profile/ui-user-profile.html">
-<link rel="import" href="/bower_components/event-bus/event-sink.html">
-<link rel="import" href="/bower_components/event-bus/websocket-event-sink.html">
-<link rel="import" href="/bower_components/event-bus/chrome-event-sink.html">
-<link rel="import" href="/bower_components/event-bus/event-fire.html">
+<link rel="import" href="../local-stream/local-stream.html">
+<link rel="import" href="../ui-local-video/ui-local-video.html">
+<link rel="import" href="../ui-video-call/ui-video-call.html">
+<link rel="import" href="../ui-toolbar/ui-toolbar.html">
+<link rel="import" href="../ui-sidebar/ui-sidebar.html">
+<link rel="import" href="../ui-input/ui-input.html">
+<link rel="import" href="../ui-user-profile/ui-user-profile.html">
+<link rel="import" href="../event-bus/websocket-event-sink.html">
+<link rel="import" href="../event-bus/chrome-event-sink.html">
+<link rel="import" href="../event-bus/event-fire.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 
 <polymer-element name="conference-room" attributes="searchProfiles config localStream calls">
 <template>
-  <event-sink events="signal ice localstream userprofile">
   <websocket-event-sink events="ice" server="{{config.signallingServer}}">
   <chrome-event-sink events="getuserprofile">
   <event-fire events="getuserprofile"></event-fire>
@@ -45,7 +43,6 @@
   </local-stream>
   </chrome-event-sink>
   </websocket-event-sink>
-  </event-sink>
 </template>
 <script src="./conference-room.js"></script>
 </polymer-element>

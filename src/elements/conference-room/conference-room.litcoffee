@@ -145,7 +145,6 @@ Set up inbound and outbound calls when asked by adding an element.
           callToast.show()
           ###
           @calls.push evt.detail
-          console.log @calls
 
 Keep track of OAuth supplied user profiles, and listen for them coming
 in from chrome. Send them along to the signalling server. These profiles
