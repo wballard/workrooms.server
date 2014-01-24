@@ -18,11 +18,9 @@ Flag attribute indicating this is the outbound side of the call.
 Flag attribute indicating this is the inbound side of the call.
 
     rtc = require('webrtcsupport')
-    uuid = require('node-uuid')
 
     Polymer 'ui-video-call',
       created: ->
-        @setAttribute 'peerid', uuid.v1()
 
 Hook up an RTC connection, using Google's stun/turn.
 
@@ -63,10 +61,9 @@ Video streams coming over RTC need to be displayed.
 
 Event handling, up from the controls inline.
 
-        @addEventListener 'hangup', (evt) =>
+        @addEventListener 'dohangup', (evt) =>
           evt.stopPropagation()
-          @fire 'signal',
-            hangup: true
+          @fire 'hangup',
             callid: @getAttribute('callid')
             peerid: @getAttribute('peerid')
 

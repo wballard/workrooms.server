@@ -85,10 +85,9 @@ the surrounding websocket.
 Set up inbound and outbound calls when asked by adding an element.
 
         @addEventListener 'outboundcall', (evt) ->
-          evt.detail.outbound = true
           @calls.push evt.detail
+
         @addEventListener 'inboundcall', (evt) ->
-          evt.detail.inbound = true
           ###
           url = evt?.detail?.userprofiles?.github?.avatar_url
           callToast = webkitNotifications.createNotification url, 'Call From', evt.detail.userprofiles.github.name
@@ -98,6 +97,10 @@ Set up inbound and outbound calls when asked by adding an element.
           callToast.show()
           ###
           @calls.push evt.detail
+
+        @addEventListener 'hangup', (evt) ->
+          _.remove @calls, (call) ->
+            call.callid is evt.detail.callid and call.peerid is evt.detail.peerid
 
 Keep track of OAuth supplied user profiles, and hotwire a call for testing.
 
