@@ -13,6 +13,8 @@ This is a `ws://` or `wss:///` url pointing to your websocket server.
 #Events
 ##error
 Fires off when trouble happens.
+##connect
+Fires when the initial connection has been made.
 ##reconnect
 Fires when the server connection has been interrupted and then restored.
 ##*
@@ -22,11 +24,21 @@ as the custom event detail.
 
     ReconnectingWebSocket = require('./reconnecting-websocket.litcoffee')
     uuid = require('node-uuid')
+    TIMEOUT = 1000
 
     Polymer 'websocket-event-sink',
       sessionid: uuid.v1()
       attached: ->
         console.log 'attach websocket', @events
+        setInterval =>
+          try
+            @socket?.send JSON.stringify(
+              ping: true
+              from: @sessionid
+            )
+          catch err
+            console.log err
+        , TIMEOUT
       detached: ->
         @socket?.close()
 
@@ -58,13 +70,14 @@ messages into DOM events, which bubble.
         @socket?.close()
         if newValue
           @socket = new ReconnectingWebSocket(newValue)
-          @.onreconnect = =>
+          @socket.onreconnect = =>
             @fire 'reconnect'
+          @socket.onconnect = =>
+            @fire 'connect'
           @socket.onmessage = (evt) =>
             try
               message = JSON.parse(evt.data)
               if message.type
                 @fire message.type, message.detail
             catch err
-              console.log err
               @fire 'error', err

@@ -28,7 +28,8 @@
     "MD5": "~1.2.0",
     "grunt-zip": "~0.10.2",
     "grunt-contrib-compress": "~0.6.0",
-    "caching-coffeeify": "~0.3.0"
+    "caching-coffeeify": "~0.3.0",
+    "q": "~1.0.0"
   },
   "scripts": {
     "install": "bower install"

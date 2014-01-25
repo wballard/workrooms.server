@@ -22,9 +22,7 @@ If you explicitly call `close()`, then this socket will really close, otherwise
 it will work to automatically reconnect `onerror` and `onclose` from the
 underlying WebSocket.
 
-#Additional Behavior
-Reconnection will use an exponential backoff, ranging between 100ms and 6400ms.
-
+#Events
 ##onreconnect(event)
 This callback is fired when the socket reconnects. This is separated from the
 `onconnect(event)` callback so that you can have different behavior on the
@@ -34,9 +32,6 @@ Fired after a message has gone out the socket.
 ##ws
 A reference to the contained WebSocket in case you need to poke under the hood.
 
-    MIN_TIMEOUT = 100
-    MAX_TIMEOUT = 6400
-
     class ReconnectingWebSocket
       constructor: (@url, @protocols) ->
         @messages = []
@@ -45,41 +40,28 @@ A reference to the contained WebSocket in case you need to poke under the hood.
         @readyState = WebSocket.CONNECTING
         @connectionCount = 0
 
-The all powerful connect function, tucked up inside the constructor to get a
-closure.
+The all powerful connect function, sets up events and error handling.
 
-        connect = (timeout) =>
-          timeout = Math.min(timeout, MAX_TIMEOUT)
-          @ws = new WebSocket(@url, @protocols)
-          reconnect = setTimeout =>
-            connect(timeout * 2)
-          , timeout
-          @ws.onopen = (event) =>
-            clearTimeout(reconnect)
-            timeout = MIN_TIMEOUT
-            @readyState = WebSocket.OPEN
-            if @connectionCount++ > 1
-              @onreconnect(event)
-            else
-              @onopen(event)
-            @drain()
-          @ws.onclose = (event) =>
-            if @forceclose
-              @readyState = WebSocket.CLOSED
-              @onclose(event)
-            else
-              @readyState = WebSocket.CONNECTING
-              setTimeout =>
-                connect(timeout * 2)
-              , timeout
-          @ws.onmessage = (event) =>
-            @onmessage(event)
-          @ws.onerror = (event) =>
-            @onerror(event)
-
-Kick it all off with a connect.
-
-        connect(MIN_TIMEOUT)
+      connect: (timeout) =>
+        @ws = new WebSocket(@url, @protocols)
+        @ws.onopen = (event) =>
+          @readyState = WebSocket.OPEN
+          if @connectionCount++
+            @onreconnect(event)
+          else
+            @onopen(event)
+          @drain()
+        @ws.onclose = (event) =>
+          if @forceclose
+            @readyState = WebSocket.CLOSED
+            @onclose(event)
+          else
+            @readyState = WebSocket.CONNECTING
+        @ws.onmessage = (event) =>
+          @onmessage(event)
+        @ws.onerror = (event) =>
+          console.log 'socket error', event
+          @onerror(event)
 
       send: (data) =>
         @messages.push(data)
@@ -93,15 +75,21 @@ Drain out the pending messages, but only consume them if a send
 was without error. Bail out if we do error, as it is now time to
 reconnect and let a fresh connection try the message.
 
+This will connect if not connected, which then comes back to drain -- finishing
+the process.
+
       drain: =>
-        while @messages.length
-          try
-            @ws.send @messages[0]
-            sent = @messages.shift()
-            @onsend(new MessageEvent(sent))
-          catch err
-            console.log err
-            return
+        if @readyState is WebSocket.OPEN
+          while @messages.length
+            try
+              @ws.send @messages[0]
+              sent = @messages.shift()
+              @onsend(new MessageEvent(sent))
+            catch err
+              console.log err
+              return
+        else
+          @connect()
 
 Empty shims for the event handlers. These are just here for discovery via
 the debugger.

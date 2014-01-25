@@ -49,39 +49,40 @@ identifiers used to data bind and generate `ui-video-call` elements.
     qwery = require('qwery')
     bonzo = require('bonzo')
     config = require('../../config.yaml')?[chrome.runtime.id]
+    Q = require('q')
 
     Polymer 'conference-room',
       attached: ->
         @calls = []
+        @profiles = {}
         @config = config
+        @localStreamReady = Q.defer()
+        @profilesReady = Q.defer()
+        Q.all([@localStreamReady.promise, @profilesReady.promise]).then =>
+          console.log 'ready'
+          @$.local.fire 'ready',
+            profiles: @profiles
+            calls: []
+          @fire 'debugready'
 
 WebRTC kicks off interaction when it has something to share, namely a local
 stream of data to transmit. Listen for this stream and set it so that
 it can be bound by all the contained calls.
 
-Oh -- and -- when a local stream is available, make sure to ask if there
-are any calls queued up to process!
 
         @addEventListener 'localstream', (evt) =>
           @localStream = evt.detail
-          chrome.runtime.sendMessage
-            dequeueCalls: true
+          @localStreamReady.resolve(@localStream)
+          @$.local.fire 'getuserprofile'
 
-OK -- so this is the tricky bit, it isn't worth asking to connect calls until
-the local stream is available.
+Profiles coming in from OAuth, there is just Github at the moment, but hash
+this with a source anyhow. This gets triggered as a result of the
+`getuserprofile` event request being relayed to the background page.
 
-The `.fire.fire` bit is going to a nested element so that it gets caught by
-the surrounding websocket. If the event fired on `this` it would be above the
-websocket. Whoops!
-
-        chrome.runtime.onMessage.addListener (message, sender, respond) =>
-          if message.call and @localStream
-            chrome.runtime.sendMessage
-              dequeueCalls: true
-          if message.makeCalls
-            message.makeCalls.forEach (call) =>
-              call.callid = uuid.v1()
-              @$.fire.fire 'call', call
+        @addEventListener 'userprofile', (evt) =>
+          console.log 'profile', evt.detail
+          @profiles[evt.detail.profile_source] = evt.detail
+          @profilesReady.resolve(@profiles)
 
 Set up inbound and outbound calls when asked by adding an element via data
 binding. Polymer magic.
@@ -102,7 +103,7 @@ binding. Polymer magic.
 
         @addEventListener 'hangup', (evt) ->
           _.remove @calls, (call) ->
-            call.callid is evt.detail.callid and call.peerid is evt.detail.peerid
+            call.callid is evt.detail.callid and evt.detail.signal
 
 In call options, most important of which is mute audio / mute video. This just
 fires an event, counting on the individual calls to listen for it and then
@@ -142,13 +143,28 @@ server.
           @$.searchProfiles.model =
             profiles: evt.detail.results
 
+On connection or reconnection, as for a user profile otherwise not much will
+be useful.
+
+        @addEventListener 'connect', =>
+          if @localStream and @profiles
+            @$.local.fire 'ready',
+              profiles: @profiles
+              calls: @calls
+        @addEventListener 'reconnect', =>
+          if @localStream and @profiles
+            @$.local.fire 'ready',
+              profiles: @profiles
+              calls: @calls
+
 This is just debug code. Remove later. Really. No fooling.
 
         setTimeout =>
           @fire 'sidebar'
 
-        @addEventListener 'userprofile', (evt) =>
-          @$.fire.fire 'call',
-            callid: uuid.v1()
-            to:
-              gravatar: evt.detail.gravatar_id
+        @addEventListener 'debugready', (evt) =>
+          setTimeout =>
+            @$.local.fire 'call',
+              callid: uuid.v1()
+              to:
+                gravatar: @profiles.github.gravatar_id

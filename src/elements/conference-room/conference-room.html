@@ -8,14 +8,12 @@
 <link rel="import" href="../ui-user-profile/ui-user-profile.html">
 <link rel="import" href="../event-bus/websocket-event-sink.html">
 <link rel="import" href="../event-bus/chrome-event-sink.html">
-<link rel="import" href="../event-bus/event-fire.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 
-<polymer-element name="conference-room" attributes="searchProfiles config localStream calls">
+<polymer-element name="conference-room" attributes="searchProfiles profiles config localStream calls">
 <template>
-  <websocket-event-sink events="call ice offer answer hangup userprofile autocomplete" server="{{config.signallingServer}}">
-  <chrome-event-sink events="getuserprofile">
-  <event-fire id="fire" events="getuserprofile"></event-fire>
+  <websocket-event-sink events="call ice offer answer hangup ready autocomplete" server="{{config.signallingServer}}">
+  <chrome-event-sink events="getuserprofile userprofile">
   <local-stream audio video>
   <ui-sidebar id="sidebar">
   <span class="grid grid--gutters">
@@ -35,7 +33,7 @@
   <ui-command-tool icon="fa-bars" command="sidebar"></ui-command-tool>
   </ui-toolbar>
   <span class="calls">
-    <ui-local-video stream="{{localStream}}"></ui-local-video>
+    <ui-local-video id="local" stream="{{localStream}}"></ui-local-video>
     <template id="calls" repeat="{{call in calls}}">
       <ui-video-call outbound?="{{call.outbound}}" inbound?="{{call.inbound}}" callid="{{call.callid}}" localStream="{{localStream}}" peerid="{{call.peerid}}"></ui-video-call>
     </template>
