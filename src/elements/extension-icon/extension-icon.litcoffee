@@ -19,9 +19,10 @@ ends up always using a *1px* font, no matter what you tell it.
 And, why do I need to delay to get the font loaded to render?
 
       attached: ->
-        setTimeout =>
+        setInterval =>
           canvas = @$.extensionIcon
           context = canvas.getContext('2d')
+          context.clearRect(0, 0, @size, @size)
           context.font = "#{@size-2}px FontAwesome"
           context.textBaseline = "top"
           context.fillStyle = "rgba(0, 0, 0, 0.5)"
@@ -29,5 +30,4 @@ And, why do I need to delay to get the font loaded to render?
           context.fillText(String.fromCharCode(0xf0c0), 1, 1)
           image = context.getImageData(0, 0, @size, @size)
           chrome.browserAction.setIcon imageData: image
-          @fire 'change'
-        , 1000
+        , 5000
