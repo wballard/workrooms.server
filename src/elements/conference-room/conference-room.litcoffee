@@ -71,7 +71,8 @@ OK -- so this is the tricky bit, it isn't worth asking to connect calls until
 the local stream is available.
 
 The `.fire.fire` bit is going to a nested element so that it gets caught by
-the surrounding websocket.
+the surrounding websocket. If the event fired on `this` it would be above the
+websocket. Whoops!
 
         chrome.runtime.onMessage.addListener (message, sender, respond) =>
           if message.call and @localStream
@@ -82,7 +83,8 @@ the surrounding websocket.
               call.callid = uuid.v1()
               @$.fire.fire 'call', call
 
-Set up inbound and outbound calls when asked by adding an element.
+Set up inbound and outbound calls when asked by adding an element via data
+binding. Polymer magic.
 
         @addEventListener 'outboundcall', (evt) ->
           @calls.push evt.detail
@@ -102,57 +104,51 @@ Set up inbound and outbound calls when asked by adding an element.
           _.remove @calls, (call) ->
             call.callid is evt.detail.callid and call.peerid is evt.detail.peerid
 
-Keep track of OAuth supplied user profiles, and hotwire a call for testing.
-
-        @addEventListener 'userprofile', (evt) =>
-          @$.fire.fire 'call',
-            callid: uuid.v1()
-            to:
-              gravatar: evt.detail.gravatar_id
-
-And call control messages for connected calls. This also heartbeats the mute
-status, similar to the user profiles.
-
-* *TODO* use peer to peer messaging for the mute controls
+In call options, most important of which is mute audio / mute video. This just
+fires an event, counting on the individual calls to listen for it and then
+send to one another peer-to-peer.
 
         muteStatus =
           sourcemutedvideo: false
           sourcemutedaudio: false
-        signalMuteStatus = =>
-          bonzo(qwery('ui-video-call', @shadowRoot)).each (call) =>
-            @$.fire.fire 'mutestatus',
-              sourcemutedaudio: muteStatus.sourcemutedaudio
-              sourcemutedvideo: muteStatus.sourcemutedvideo
-              callid: call.callid
-              peerid: call.peerid
-        setInterval signalMuteStatus, @keepalive * 1000
         @addEventListener 'audio.on', (evt) ->
           muteStatus.sourcemutedaudio = false
-          signalMuteStatus()
+          @fire 'mutestatus', muteStatus
         @addEventListener 'audio.off', (evt) ->
           muteStatus.sourcemutedaudio = true
-          signalMuteStatus()
+          @fire 'mutestatus', muteStatus
         @addEventListener 'video.on', (evt) ->
           muteStatus.sourcemutedvideo = false
-          signalMuteStatus()
+          @fire 'mutestatus', muteStatus
         @addEventListener 'video.off', (evt) ->
           muteStatus.sourcemutedvideo = true
-          signalMuteStatus()
+          @fire 'mutestatus', muteStatus
 
 Administrative actions on the tool and sidebar go here.
 
         @addEventListener 'sidebar', ->
           @$.sidebar.toggle()
 
-        @addEventListener 'clear', (evt) =>
-          @fire 'searchresults', []
+Clear out autocomplete results. Pay attention to this one, multiple text input
+elements that can fire clear will totally overdo it.
 
-        document.addEventListener 'autocompleteresults', (evt) =>
+        @addEventListener 'clear', (evt) =>
+          @fire 'autocompleteresults', []
+
+Show those results via data binding. This message is coming back in from the
+server.
+
+        @addEventListener 'autocompleteresults', (evt) =>
           @$.searchProfiles.model =
             profiles: evt.detail.results
 
-This is just debug code.
+This is just debug code. Remove later. Really. No fooling.
 
         setTimeout =>
           @fire 'sidebar'
 
+        @addEventListener 'userprofile', (evt) =>
+          @$.fire.fire 'call',
+            callid: uuid.v1()
+            to:
+              gravatar: evt.detail.gravatar_id

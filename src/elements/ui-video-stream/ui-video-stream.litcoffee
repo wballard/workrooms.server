@@ -18,7 +18,7 @@ Fires off that this player is ready.
     _ = require('lodash')
     bonzo = require('bonzo')
 
-    SNAPSHOT_TIMEOUT = 30 * 1000
+    SNAPSHOT_TIMEOUT = 1 * 1000
 
     Polymer 'ui-video-stream',
 
@@ -62,7 +62,6 @@ that trigger by presence, so we can hit them with the ?
 
       sourcemutedvideoChanged: (oldValue, newValue) ->
         if newValue?
-          @fire 'snapshot'
           bonzo(@$.video).hide()
           bonzo(@$.snapshot).show()
         else

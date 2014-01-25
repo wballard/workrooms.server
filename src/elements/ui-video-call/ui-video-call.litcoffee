@@ -57,6 +57,29 @@ Video streams coming over RTC need to be displayed.
         @peerConnection.onremovestream = (evt) =>
           @$.player.display null
 
+Data channels for messages that are just between us peers. This turns messages
+coming in into DOM events with the `type` `detail` convention of `CustomEvent`.
+So you can just make an event fire on a connected peer by saying
+```
+@send
+  type: 'nameofevent'
+  detail:
+    stuff: true
+    things: yep
+```
+And then handle it remotedly with
+```
+@addEventListener 'nameofevent', (evt) -> evt.detail ...
+```
+
+        @data = @peerConnection.createDataChannel 'sendy', reliable: false
+        @data.onopen = =>
+          @send = (data) =>
+            @data.send JSON.stringify(data)
+        @data.onmessage = (evt) =>
+          message = JSON.parse(evt.data)
+          @fire message.type, message.detail
+
       attached: ->
 
 Event handling, up from the controls inline.
@@ -68,6 +91,30 @@ Event handling, up from the controls inline.
             peerid: @getAttribute('peerid')
 
 The document acts as an event bus, so we're hooking up events.
+
+Mute control, bridge this across to peers. This side will do the actual work
+of switching off parts of the stream, and then relay to the far side to do the
+visual work of updating visual status of the mute.
+
+        document.addEventListener 'mutestatus', (evt) =>
+          @send
+            type: 'peermutestatus'
+            detail: evt.detail
+
+        @addEventListener 'peermutestatus', (evt) =>
+          message = evt.detail
+          if message.sourcemutedaudio?
+            if message.sourcemutedaudio
+              @$.player.setAttribute('sourcemutedaudio')
+            else
+              @$.player.removeAttribute('sourcemutedaudio')
+          if message.sourcemutedvideo?
+            if message.sourcemutedvideo
+              @$.player.setAttribute('sourcemutedvideo')
+            else
+              @$.player.removeAttribute('sourcemutedvideo')
+
+
 
 ICE messages just add in, there is now offer/answer -- just make sure to not
 add your own peer side messages.  And make sure it is a server signal, not just
@@ -102,28 +149,6 @@ Outbound side needs to take the answer and complete the call.
           if @outbound? and message.signal
             console.log 'completing', @getAttribute('callid')
             @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), (err) -> console.log err
-
-Handle signals from the signaling server.
-
-        document.addEventListener 'signal', (evt) =>
-          message = evt.detail
-
-Mute control from the far side. Unfortunately could not see a way to
-get this from the stream itself, even though it surely knows it. So, an
-out of band signal is used here.
-
-**TODO** just figure out how to do this from the stream itself
-
-          if message.sourcemutedaudio? and message.peerid isnt @peerid
-            if message.sourcemutedaudio
-              @$.player.setAttribute('sourcemutedaudio')
-            else
-              @$.player.removeAttribute('sourcemutedaudio')
-          if message.sourcemutedvideo? and message.peerid isnt @peerid
-            if message.sourcemutedvideo
-              @$.player.setAttribute('sourcemutedvideo')
-            else
-              @$.player.removeAttribute('sourcemutedvideo')
 
 Setting a local stream is what really 'starts' the call, but it is supplied
 asynchronously.
