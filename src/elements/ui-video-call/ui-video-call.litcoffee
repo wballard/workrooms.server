@@ -18,9 +18,11 @@ Flag attribute indicating this is the outbound side of the call.
 Flag attribute indicating this is the inbound side of the call.
 
     rtc = require('webrtcsupport')
+    uuid = require('node-uuid')
 
     Polymer 'ui-video-call',
       created: ->
+        @peerid = uuid.v1()
 
 Hook up an RTC connection, using Google's stun/turn.
 
@@ -46,7 +48,7 @@ and sending along ice candidates as `signal`.
         @peerConnection.onicecandidate = (evt) =>
           @fire 'ice',
             callid: @getAttribute('callid')
-            peerid: @getAttribute('peerid')
+            peerid: @peerid
             candidate: evt.candidate
 
 Video streams coming over RTC need to be displayed.
@@ -88,7 +90,7 @@ Event handling, up from the controls inline.
           evt.stopPropagation()
           @fire 'hangup',
             callid: @getAttribute('callid')
-            peerid: @getAttribute('peerid')
+            peerid: @peerid
 
 The document acts as an event bus, so we're hooking up events.
 
@@ -130,13 +132,15 @@ Inbound side SDP needs to make sure we get an offer, which it will then answer.
         document.addEventListener 'offer', (evt) =>
           message = evt.detail
           if @inbound? and message.signal
+            console.log 'offer inbound', message.sdp
             @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), =>
+              console.log 'offer accepted', message.sdp
               @peerConnection.createAnswer (description) =>
                 @peerConnection.setLocalDescription description, =>
                   console.log 'local set, answering', @getAttribute('callid')
                   @fire 'answer',
                     callid: @getAttribute('callid')
-                    peerid: @getAttribute('peerid')
+                    peerid: @peerid
                     sdp: description
                 , (err) -> console.log err
               , (err) -> console.log err
@@ -163,7 +167,7 @@ asynchronously.
                 console.log 'offering', @getAttribute('callid')
                 @fire 'offer',
                   callid: @getAttribute('callid')
-                  peerid: @getAttribute('peerid')
+                  peerid: @peerid
                   sdp: description
               , (err) -> console.log err
             , (err) -> console.log err

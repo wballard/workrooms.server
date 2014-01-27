@@ -77,6 +77,7 @@ messages into DOM events, which bubble.
           @socket.onmessage = (evt) =>
             try
               message = JSON.parse(evt.data)
+              message.detail.signal = true
               if message.type
                 @fire message.type, message.detail
             catch err

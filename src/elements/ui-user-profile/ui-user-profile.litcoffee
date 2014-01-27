@@ -13,9 +13,7 @@ Click to dial anywhere on the row for now.
 
         @addEventListener 'click', =>
           @fire 'call',
-            callid: uuid.v1()
-            to:
-              gravatar: @profile.github.gravatar_id
+            to: @profile.sessionid
 
       profileChanged: (oldValue, newValue) ->
         console.log 'profile', newValue

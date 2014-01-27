@@ -8,32 +8,6 @@ This differs from a controller in that only the DOM scoping is used, events
 bubble up from contained elements, and messages are send back down
 via method calls and property sets. Nice and simple.
 
-#Message Pattern
-All calls have an outbound (you call) and an inbound (you were called) side
-to match up with WebRTC's expectations.
-
-All calls have a .id which is unique to each call, and is used
-as the correlation key between the inbound and outbound side
-to set up peer-peer traffic.
-
-##Connecting State
-Connecting relays through the server to find another peer to call, and
-if possible, sets up a local `outboundcall`. Similarly the called side
-gets a `inboundcall`.
-```
-  (call) -> server
-  calling client <- (outboundcall | notavailable)
-  called client <- (inboundcall)
-```
-##Connected State
-When connected, calls can be modified by either side by relaying messages
-though the signalling server.
-**TODO** should these go peer-to-peer instead over a data channel?
-```
-  (mute | unmute | hangup) -> server
-  any client <- (mute | unmute | hangup)
-```
-
 #Attributes
 ##config
 All the settings, these are loaded up from disk and keyed by the local
@@ -49,30 +23,33 @@ identifiers used to data bind and generate `ui-video-call` elements.
     qwery = require('qwery')
     bonzo = require('bonzo')
     config = require('../../config.yaml')?[chrome.runtime.id]
-    Q = require('q')
 
     Polymer 'conference-room',
       attached: ->
+        @sessionid = uuid.v1()
         @calls = []
         @profiles = {}
         @config = config
-        @localStreamReady = Q.defer()
-        @profilesReady = Q.defer()
-        Q.all([@localStreamReady.promise, @profilesReady.promise]).then =>
-          console.log 'ready'
-          @$.local.fire 'ready',
-            profiles: @profiles
-            calls: []
-          @fire 'debugready'
+
+This is the startup routine that registers with the signalling server.
+
+        debugcall = true
+        startup = =>
+          @$.local.fire 'register',
+            sessionid: @sessionid
+            calls: @calls
+          @$.local.fire 'userprofiles', @profiles
+          if debugcall
+            debugcall = false
+            @$.local.fire 'call',
+              to: @sessionid
 
 WebRTC kicks off interaction when it has something to share, namely a local
 stream of data to transmit. Listen for this stream and set it so that
 it can be bound by all the contained calls.
 
-
         @addEventListener 'localstream', (evt) =>
           @localStream = evt.detail
-          @localStreamReady.resolve(@localStream)
           @$.local.fire 'getuserprofile'
 
 Profiles coming in from OAuth, there is just Github at the moment, but hash
@@ -82,7 +59,7 @@ this with a source anyhow. This gets triggered as a result of the
         @addEventListener 'userprofile', (evt) =>
           console.log 'profile', evt.detail
           @profiles[evt.detail.profile_source] = evt.detail
-          @profilesReady.resolve(@profiles)
+          startup()
 
 Set up inbound and outbound calls when asked by adding an element via data
 binding. Polymer magic.
@@ -134,12 +111,14 @@ Clear out autocomplete results. Pay attention to this one, multiple text input
 elements that can fire clear will totally overdo it.
 
         @addEventListener 'clear', (evt) =>
-          @fire 'autocompleteresults', []
+          @fire 'autocomplete',
+            search: undefined
+            results: []
 
 Show those results via data binding. This message is coming back in from the
 server.
 
-        @addEventListener 'autocompleteresults', (evt) =>
+        @addEventListener 'autocomplete', (evt) =>
           @$.searchProfiles.model =
             profiles: evt.detail.results
 
@@ -147,24 +126,12 @@ On connection or reconnection, as for a user profile otherwise not much will
 be useful.
 
         @addEventListener 'connect', =>
-          if @localStream and @profiles
-            @$.local.fire 'ready',
-              profiles: @profiles
-              calls: @calls
+          startup()
         @addEventListener 'reconnect', =>
-          if @localStream and @profiles
-            @$.local.fire 'ready',
-              profiles: @profiles
-              calls: @calls
+          startup()
 
 This is just debug code. Remove later. Really. No fooling.
 
         setTimeout =>
           @fire 'sidebar'
 
-        @addEventListener 'debugready', (evt) =>
-          setTimeout =>
-            @$.local.fire 'call',
-              callid: uuid.v1()
-              to:
-                gravatar: @profiles.github.gravatar_id

@@ -22,7 +22,8 @@ Fires on escape, clearing out the text box. And when you just delete everything.
     Polymer 'ui-input',
       attached: ->
         autocomplete = _.debounce =>
-          @fire 'autocomplete', @$.input.value
+          @fire 'autocomplete',
+            search: @$.input.value
         , 300
         @addEventListener 'keyup', (evt) =>
           if evt.keyCode is 27
