@@ -23,6 +23,7 @@ Call this to force the login sequence.
     _ = require('lodash')
 
     Polymer 'github-oauth',
+      inProgress: false
       attached: ->
         document.addEventListener 'getuserprofile', =>
           if @userProfile
@@ -39,11 +40,17 @@ This will sign you in to github as soon as it comes in the DOM.
 Little debounce to avoid double login as the `clientid` and `clientsecret`
 are set typically in sequence.
 
-      login: _.debounce ->
-        github.login @getAttribute('clientid'), @getAttribute('clientsecret'), (error, info) =>
-          if error
-            @fire 'error', error
-          else
-            info.profile_source = 'github'
-            @userProfile = info
-            @fire 'userprofile', info
+      login: ->
+        if @inProgress
+          return
+        else
+          @inProgress = true
+          github.login @getAttribute('clientid'), @getAttribute('clientsecret'), (error, info) =>
+            if error
+              @inProgress = false
+              @fire 'error', error
+            else
+              @inProgress = false
+              info.profile_source = 'github'
+              @userProfile = info
+              @fire 'userprofile', info

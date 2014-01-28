@@ -28,7 +28,7 @@ identifiers used to data bind and generate `ui-video-call` elements.
       attached: ->
         @sessionid = uuid.v1()
         @calls = []
-        @profiles = {}
+        @userprofiles = {}
         @config = config
 
 This is the startup routine that registers with the signalling server.
@@ -38,7 +38,7 @@ This is the startup routine that registers with the signalling server.
           @$.local.fire 'register',
             sessionid: @sessionid
             calls: @calls
-          @$.local.fire 'userprofiles', @profiles
+          @$.local.fire 'userprofiles', @userprofiles
           if debugcall
             debugcall = false
             @$.local.fire 'call',
@@ -58,7 +58,7 @@ this with a source anyhow. This gets triggered as a result of the
 
         @addEventListener 'userprofile', (evt) =>
           console.log 'profile', evt.detail
-          @profiles[evt.detail.profile_source] = evt.detail
+          @userprofiles[evt.detail.profile_source] = evt.detail
           startup()
 
 Set up inbound and outbound calls when asked by adding an element via data

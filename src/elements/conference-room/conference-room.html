@@ -6,11 +6,12 @@
 <link rel="import" href="../ui-sidebar/ui-sidebar.html">
 <link rel="import" href="../ui-input/ui-input.html">
 <link rel="import" href="../ui-user-profile/ui-user-profile.html">
+<link rel="import" href="../ui-hide/ui-hide.html">
 <link rel="import" href="../event-bus/websocket-event-sink.html">
 <link rel="import" href="../event-bus/chrome-event-sink.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 
-<polymer-element name="conference-room" attributes="searchProfiles profiles config localStream calls">
+<polymer-element name="conference-room" attributes="searchProfiles userprofiles config localStream calls">
 <template>
   <websocket-event-sink events="register userprofiles call ice offer answer hangup autocomplete" server="{{config.signallingServer}}">
   <chrome-event-sink events="getuserprofile userprofile">
@@ -30,7 +31,12 @@
   </span>
   </ui-sidebar>
   <ui-toolbar>
-  <ui-command-tool icon="fa-bars" command="sidebar"></ui-command-tool>
+    <ui-command-tool icon="fa-bars" command="sidebar"></ui-command-tool>
+    <ui-right-toolbar>
+      <ui-hide hide="{{userprofiles.github}}">
+        <ui-command-tool icon="fa-sign-in" command="getuserprofile"></ui-command-tool>
+      </ui-hide>
+    </ui-right-toolbar>
   </ui-toolbar>
   <span class="calls">
     <ui-local-video id="local" stream="{{localStream}}"></ui-local-video>
