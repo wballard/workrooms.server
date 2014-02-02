@@ -7,14 +7,12 @@
 <link rel="import" href="../ui-input/ui-input.html">
 <link rel="import" href="../ui-user-profile/ui-user-profile.html">
 <link rel="import" href="../ui-hide/ui-hide.html">
-<link rel="import" href="../event-bus/websocket-event-sink.html">
 <link rel="import" href="../event-bus/chrome-event-sink.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 
 <polymer-element name="conference-room" attributes="searchProfiles userprofiles config localStream calls">
 <template>
-  <websocket-event-sink events="register userprofiles call ice offer answer hangup autocomplete" server="{{config.signallingServer}}">
-  <chrome-event-sink events="getuserprofile userprofile">
+  <chrome-event-sink events="getuserprofile register call ice offer answer hangup autocomplete">
   <local-stream audio video>
   <ui-sidebar id="sidebar">
   <span class="grid grid--gutters">
@@ -46,7 +44,6 @@
   </span>
   </local-stream>
   </chrome-event-sink>
-  </websocket-event-sink>
 </template>
 <script src="./conference-room.js"></script>
 </polymer-element>

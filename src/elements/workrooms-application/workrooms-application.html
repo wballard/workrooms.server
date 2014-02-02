@@ -5,15 +5,22 @@
 <link rel="import" href="../gravatar-detector/gravatar-detector.html">
 <link rel="import" href="../conference-tab/conference-tab.html">
 <link rel="import" href="../event-bus/chrome-event-sink.html">
+<link rel="import" href="../event-bus/websocket-event-sink.html">
 
 <polymer-element name="workrooms-application" attributes="config">
 <template>
+  <!--chrome sink to get message from the websocket-->
+  <chrome-event-sink events="inboundcall outboundcall ice offer answer hangup autocomplete hello">
+  <websocket-event-sink id="server" events="userprofile register call ice offer answer hangup autocomplete" server="{{config.signallingServer}}">
+  <!--chrome sink to get message to the websocket-->
   <chrome-event-sink events="userprofile">
   <chrome-devreloader config="{{ config }}"></chrome-devreloader>
   <extension-icon></extension-icon>
   <github-oauth id="github" clientid="{{ config.github.clientid }}" clientsecret="{{ config.github.clientsecret }}"></github-oauth>
   <gravatar-detector></gravatar-detector>
   <conference-tab></conference-tab>
+  </chrome-event-sink>
+  </websocket-event-sink>
   </chrome-event-sink>
 </template>
 <script src="./workrooms-application.js"></script>

@@ -26,23 +26,9 @@ identifiers used to data bind and generate `ui-video-call` elements.
 
     Polymer 'conference-room',
       attached: ->
-        @sessionid = uuid.v1()
         @calls = []
         @userprofiles = {}
         @config = config
-
-This is the startup routine that registers with the signalling server.
-
-        debugcall = true
-        startup = =>
-          @$.local.fire 'register',
-            sessionid: @sessionid
-            calls: @calls
-          @$.local.fire 'userprofiles', @userprofiles
-          if debugcall
-            debugcall = false
-            @$.local.fire 'call',
-              to: @sessionid
 
 WebRTC kicks off interaction when it has something to share, namely a local
 stream of data to transmit. Listen for this stream and set it so that
@@ -51,15 +37,21 @@ it can be bound by all the contained calls.
         @addEventListener 'localstream', (evt) =>
           @localStream = evt.detail
           @$.local.fire 'getuserprofile'
+          @$.local.fire 'register',
+            calls: @calls
+
+The server will need to know all about your calls if you reconnect.
+
+        @addEventListener 'hello', (evt) =>
+          @$.local.fire 'register',
+            calls: @calls
 
 Profiles coming in from OAuth, there is just Github at the moment, but hash
 this with a source anyhow. This gets triggered as a result of the
 `getuserprofile` event request being relayed to the background page.
 
         @addEventListener 'userprofile', (evt) =>
-          console.log 'profile', evt.detail
           @userprofiles[evt.detail.profile_source] = evt.detail
-          startup()
 
 Set up inbound and outbound calls when asked by adding an element via data
 binding. Polymer magic.
@@ -122,13 +114,6 @@ server.
           @$.searchProfiles.model =
             profiles: evt.detail.results
 
-On connection or reconnection, as for a user profile otherwise not much will
-be useful.
-
-        @addEventListener 'connect', =>
-          startup()
-        @addEventListener 'reconnect', =>
-          startup()
 
 This is just debug code. Remove later. Really. No fooling.
 

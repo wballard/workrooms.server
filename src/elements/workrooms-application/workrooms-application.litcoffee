@@ -16,3 +16,15 @@ elements that actually do work!
       ready: ->
         console.log 'application starting', config
         @config = config
+
+      attached: ->
+
+On connection or reconnection, as for a user profile otherwise not much will
+be useful.
+
+        @addEventListener 'connect', =>
+          @$.github.fire 'getuserprofile'
+
+        @addEventListener 'hello', =>
+          @$.github.fire 'getuserprofile'
+
