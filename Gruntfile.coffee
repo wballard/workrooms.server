@@ -25,7 +25,7 @@ module.exports = (grunt) ->
           {src: 'manifest.json', dest: 'build/', expand: true, cwd: 'src/'}
           {src: '**/*.*', dest: 'build/images', expand: true, cwd: 'src/images'}
           {src: '**/*.*', dest: 'build/fonts', expand: true, cwd: 'bower_components/font-awesome/fonts'}
-          {src: '**/*.*', dest: 'build/fonts', expand: true, cwd: 'bower_components/semantic-ui/src/fonts'}
+          {src: '**/*.*', dest: 'build/fonts', expand: true, cwd: 'bower_components/semantic/src/fonts'}
         ]
       tabs:
         files: [
@@ -93,3 +93,4 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'build', ['concurrent:things', 'concat']
   grunt.registerTask 'release', ['build', 'crx', 'compress']
+  grunt.registerTask 'default', ['build']

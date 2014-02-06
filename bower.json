@@ -16,7 +16,7 @@
   "dependencies": {
     "polymer": "*",
     "jquery": "~2.0.3",
-    "semantic-ui": "*",
+    "semantic": "~0.12.3",
     "font-awesome": "~4.0.3"
   }
 }
