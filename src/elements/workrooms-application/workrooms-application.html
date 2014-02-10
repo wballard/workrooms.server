@@ -10,7 +10,7 @@
 <polymer-element name="workrooms-application" attributes="config serverConfig">
 <template>
   <!--chrome sink to get message from the websocket-->
-  <chrome-event-sink events="inboundcall outboundcall ice offer answer hangup autocomplete">
+  <chrome-event-sink events="hello inboundcall outboundcall ice offer answer hangup autocomplete">
   <websocket-event-sink id="server" events="userprofile register call ice offer answer hangup autocomplete" server="{{config.signallingServer}}">
   <!--chrome sink to get message to the websocket-->
   <chrome-event-sink events="userprofile">

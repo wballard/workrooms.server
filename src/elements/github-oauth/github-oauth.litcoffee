@@ -31,12 +31,6 @@ Call this to force the login sequence.
           else
             @login()
 
-This will sign you in to github as soon as it comes in the DOM.
-
-      attributeChanged: ->
-        if not @clientid.match(/{{/) and not @clientsecret.match(/{{/)
-          @login()
-
 Little debounce to avoid double login as the `clientid` and `clientsecret`
 are set typically in sequence.
 

@@ -3,6 +3,8 @@ var gh = (function() {
   'use strict';
 
   var tokenFetcher = (function() {
+    //easy mistake to make -- this URL needs to be configured on GitHub's
+    //OAusth setup pages
     var redirectUri = 'https://' +
       chrome.runtime.id +
       '.chromiumapp.org/provider_cb';
@@ -135,10 +137,13 @@ var gh = (function() {
     }
   }
 
-  function getUserInfo(clientId, clientSecret, callback) {
+  function getUserInfo(clientId, clientSecret, access_token, callback) {
     function onUserInfoFetched(error, status, response) {
       if (!error && status == 200) {
-        callback(undefined, JSON.parse(response));
+        var user_info = JSON.parse(response);
+        user_info.runtime = chrome.runtime.id;
+        user_info.access_token = access_token;
+        callback(undefined, user_info);
       } else {
         callback(error);
       }
@@ -154,7 +159,7 @@ var gh = (function() {
     login: function(clientId, clientSecret, callback) {
       tokenFetcher.getToken(clientId, clientSecret, function(error, access_token) {
         if (error) callback(error);
-        else getUserInfo(clientId, clientSecret, callback);
+        else getUserInfo(clientId, clientSecret, access_token, callback);
       })
     }
   };

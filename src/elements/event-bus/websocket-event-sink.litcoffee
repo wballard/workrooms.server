@@ -22,7 +22,7 @@ This is a bit of a wildcard emitter, any websocket message received is
 turned into a DOM event with `.type` being the event name and `.detail` passed
 as the custom event detail.
 
-    ReconnectingWebSocket = require('./reconnecting-websocket.litcoffee')
+    HuntingWebsocket = require('./hunting-websocket.litcoffee')
     uuid = require('node-uuid')
 
     Polymer 'websocket-event-sink',
@@ -59,13 +59,10 @@ messages into DOM events, which bubble.
       serverChanged: (oldValue, newValue) ->
         @socket?.close()
         if newValue
-          @socket = new ReconnectingWebSocket(newValue)
-          @socket.onreconnect = =>
-            @fire 'reconnect'
-          @socket.onconnect = =>
-            @fire 'connect'
+          @socket = new HuntingWebsocket([newValue])
           @socket.onmessage = (evt) =>
             try
+              console.log evt.data
               message = JSON.parse(evt.data)
               message.detail.signal = true
               if message.type

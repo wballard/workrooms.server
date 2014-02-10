@@ -22,10 +22,11 @@ elements that actually do work!
 
         @addEventListener 'configured', (evt) =>
           @serverConfig = evt.detail
+          @$.github.login()
 
 On connection or reconnection, as for a user profile otherwise not much will
 be useful.
 
-        @addEventListener 'connect', =>
+        @addEventListener 'hello', =>
           @fire 'configure', chrome.runtime.id
 

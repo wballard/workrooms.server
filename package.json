@@ -29,7 +29,8 @@
     "grunt-zip": "~0.10.2",
     "grunt-contrib-compress": "~0.6.0",
     "caching-coffeeify": "~0.3.0",
-    "q": "~1.0.0"
+    "q": "~1.0.0",
+    "ws": "~0.4.31"
   },
   "scripts": {
     "install": "bower install"
