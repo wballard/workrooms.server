@@ -24,9 +24,10 @@ elements that actually do work!
           @serverConfig = evt.detail
           @$.github.login()
 
-On connection or reconnection, as for a user profile otherwise not much will
-be useful.
+Ask for configuration when the server says hello. This fires off github since
+an event fired off the server itself would refuse to relay.
 
         @addEventListener 'hello', =>
-          @fire 'configure', chrome.runtime.id
+          @$.github.fire 'register',
+            runtime: chrome.runtime.id
 

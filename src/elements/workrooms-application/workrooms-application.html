@@ -5,15 +5,18 @@
 <link rel="import" href="../gravatar-detector/gravatar-detector.html">
 <link rel="import" href="../conference-tab/conference-tab.html">
 <link rel="import" href="../event-bus/chrome-event-sink.html">
+<link rel="import" href="../event-bus/chrome-tab-event-relay.html">
 <link rel="import" href="../event-bus/websocket-event-sink.html">
 
 <polymer-element name="workrooms-application" attributes="config serverConfig">
 <template>
-  <!--chrome sink to get message from the websocket-->
+  <!--send along events to the extension from the websocket-->
   <chrome-event-sink events="hello inboundcall outboundcall ice offer answer hangup autocomplete">
-  <websocket-event-sink id="server" events="userprofile register call ice offer answer hangup autocomplete" server="{{config.signallingServer}}">
-  <!--chrome sink to get message to the websocket-->
-  <chrome-event-sink events="userprofile">
+  <!--send along events to all tabs coming from the websocket, used in content scripts-->
+  <chrome-tab-event-relay events="online">
+  <websocket-event-sink id="server" events="userprofile register call ice offer answer hangup autocomplete isonline" server="{{config.signallingServer}}">
+  <!--this will get chrome messages that need a chance at the socket-->
+  <chrome-event-sink>
   <chrome-devreloader config="{{ config }}"></chrome-devreloader>
   <extension-icon></extension-icon>
   <github-oauth id="github" clientid="{{ serverConfig.github.clientid }}" clientsecret="{{ serverConfig.github.clientsecret }}"></github-oauth>
@@ -21,6 +24,7 @@
   <conference-tab></conference-tab>
   </chrome-event-sink>
   </websocket-event-sink>
+  </chrome-tab-event-relay>
   </chrome-event-sink>
 </template>
 <script src="./workrooms-application.js"></script>

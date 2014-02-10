@@ -27,8 +27,6 @@ as the custom event detail.
 
     Polymer 'websocket-event-sink',
       sessionid: uuid.v1()
-      attached: ->
-        console.log 'attach websocket', @events
       detached: ->
         @socket?.close()
 
@@ -38,7 +36,7 @@ messages you posted, otherwise it's essentially an infinite loop.
 
       relay: (evt) ->
         if evt.target isnt @
-          console.log 'websocket relay', evt.detail
+          console.log 'websocket relay', evt.type, evt.detail
           @socket?.send JSON.stringify(
             type: evt.type
             detail: evt.detail
@@ -48,6 +46,7 @@ messages you posted, otherwise it's essentially an infinite loop.
 Keep a strict subscription to only the events specified by attribute.
 
       eventsChanged: (oldValue, newValue) ->
+        console.log 'attach websocket', @events
         (oldValue or '').split(' ').forEach (name) =>
           @removeEventListener name.trim(), @relay
         (newValue or '').split(' ').forEach (name) =>
@@ -62,10 +61,10 @@ messages into DOM events, which bubble.
           @socket = new HuntingWebsocket([newValue])
           @socket.onmessage = (evt) =>
             try
-              console.log evt.data
               message = JSON.parse(evt.data)
               message.detail.signal = true
               if message.type
+                console.log 'websocket fire', message.type, message
                 @fire message.type, message.detail
             catch err
               @fire 'error', err

@@ -47,4 +47,4 @@ are set typically in sequence.
               @inProgress = false
               info.profile_source = 'github'
               @userProfile = info
-              @fire 'userprofile', info
+              @fire 'userprofile', @userProfile

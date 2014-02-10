@@ -4,10 +4,11 @@
 
 .video-call {
   display: inline;
+  vertical-align: middle !important;
   background: transparent;
   color: @tileBackgroundColor;
-  font-size: 18px;
-  margin: .2rem;
+  font-size: 1.5em;
+  margin-right: 0.2em;
   transition: opacity @transition;
   &:hover {
     opacity: .6;
@@ -15,10 +16,11 @@
 }
 
 .callable {
-  position: relative;
+  img {
+    float: none !important;
+    margin: 0px !important;
+    vertical-align: middle !important;
+  }
 }
 
-.called {
-  float: none !important;
-  position: relative;
-}
+
