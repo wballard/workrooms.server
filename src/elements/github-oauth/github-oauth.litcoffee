@@ -33,7 +33,7 @@ Call this to force the login sequence.
 
 This will sign you in to github as soon as it comes in the DOM.
 
-      attributeChanged: (name, oldvalue, newvalue) ->
+      attributeChanged: ->
         if not @clientid.match(/{{/) and not @clientsecret.match(/{{/)
           @login()
 
@@ -45,7 +45,7 @@ are set typically in sequence.
           return
         else
           @inProgress = true
-          github.login @getAttribute('clientid'), @getAttribute('clientsecret'), (error, info) =>
+          github.login @clientid, @clientsecret, (error, info) =>
             if error
               @inProgress = false
               @fire 'error', error

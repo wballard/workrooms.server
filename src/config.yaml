@@ -4,22 +4,9 @@
 #production with a live server
 
 #root key is the chrome extension runtime id
-omakialnodpjhdmhalkeffbndhjemlmo:
+default:
   reload: true
   signallingServer: ws://localhost:9000
-  github:
-    clientid: df1c093b04a9ba9660cd
-    clientsecret: 6ce2be9ee60bdcaf35ea192e27df9bf81d75e6e8
-hndpmcmfdenfebmdoakeeeinlllkhapk:
-  reload: false
-  signallingServer: ws://localhost:9000
-  github:
-    clientid: eda98e0fee66b8573312
-    clientsecret: 8dc00cee1647aab2a2e926bf45914759e26f7632
 lejkdpfgaljfkkbefnjofcmfhmgobefa:
-  reload: true
+  reload: false
   signallingServer: ws://192.168.200.125:9000
-  github:
-    clientid: 3467f78cc66dac9e5192
-    clientsecret: fab71e56a04e30e37e582da16cca10928f523952
-

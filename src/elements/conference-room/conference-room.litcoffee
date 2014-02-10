@@ -22,13 +22,10 @@ identifiers used to data bind and generate `ui-video-call` elements.
     _ = require('lodash')
     qwery = require('qwery')
     bonzo = require('bonzo')
-    config = require('../../config.yaml')?[chrome.runtime.id]
 
     Polymer 'conference-room',
       attached: ->
         @calls = []
-        @userprofiles = {}
-        @config = config
 
 WebRTC kicks off interaction when it has something to share, namely a local
 stream of data to transmit. Listen for this stream and set it so that
@@ -36,22 +33,16 @@ it can be bound by all the contained calls.
 
         @addEventListener 'localstream', (evt) =>
           @localStream = evt.detail
-          @$.local.fire 'getuserprofile'
           @$.local.fire 'register',
+            runtime: chrome.runtime.id
             calls: @calls
 
 The server will need to know all about your calls if you reconnect.
 
         @addEventListener 'hello', (evt) =>
           @$.local.fire 'register',
+            runtime: chrome.runtime.id
             calls: @calls
-
-Profiles coming in from OAuth, there is just Github at the moment, but hash
-this with a source anyhow. This gets triggered as a result of the
-`getuserprofile` event request being relayed to the background page.
-
-        @addEventListener 'userprofile', (evt) =>
-          @userprofiles[evt.detail.profile_source] = evt.detail
 
 Set up inbound and outbound calls when asked by adding an element via data
 binding. Polymer magic.

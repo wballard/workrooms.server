@@ -24,21 +24,11 @@ as the custom event detail.
 
     ReconnectingWebSocket = require('./reconnecting-websocket.litcoffee')
     uuid = require('node-uuid')
-    TIMEOUT = 1000
 
     Polymer 'websocket-event-sink',
       sessionid: uuid.v1()
       attached: ->
         console.log 'attach websocket', @events
-        setInterval =>
-          try
-            @socket?.send JSON.stringify(
-              ping: true
-              from: @sessionid
-            )
-          catch err
-            console.log err
-        , TIMEOUT
       detached: ->
         @socket?.close()
 

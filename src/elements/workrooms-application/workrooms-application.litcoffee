@@ -6,7 +6,8 @@ separate event mechanisms of `$emit` and `$broadcast`.
 
 Store configurations for each runtime id along with the code.
 
-    config = require('../../config.yaml')?[chrome.runtime.id]
+    config = require('../../config.yaml')
+    config = config[chrome.runtime.id] or config['default']
 
     Polymer 'workrooms-application',
 
@@ -19,12 +20,12 @@ elements that actually do work!
 
       attached: ->
 
+        @addEventListener 'configured', (evt) =>
+          @serverConfig = evt.detail
+
 On connection or reconnection, as for a user profile otherwise not much will
 be useful.
 
         @addEventListener 'connect', =>
-          @$.github.fire 'getuserprofile'
-
-        @addEventListener 'hello', =>
-          @$.github.fire 'getuserprofile'
+          @fire 'configure', chrome.runtime.id
 
