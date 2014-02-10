@@ -4,7 +4,7 @@ var gh = (function() {
 
   var tokenFetcher = (function() {
     //easy mistake to make -- this URL needs to be configured on GitHub's
-    //OAusth setup pages
+    //OAuth setup pages
     var redirectUri = 'https://' +
       chrome.runtime.id +
       '.chromiumapp.org/provider_cb';
