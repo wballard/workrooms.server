@@ -25,7 +25,7 @@ module.exports = (grunt) ->
           {src: 'manifest.json', dest: 'build/', expand: true, cwd: 'src/'}
           {src: '**/*.*', dest: 'build/images', expand: true, cwd: 'src/images'}
           {src: '**/*.*', dest: 'build/fonts', expand: true, cwd: 'bower_components/font-awesome/fonts'}
-          {src: '**/*.*', dest: 'build/fonts', expand: true, cwd: 'bower_components/semantic/src/fonts'}
+          {src: '**/*.*', dest: 'build/fonts', expand: true, cwd: 'bower_components/semantic/build/uncompressed/fonts'}
         ]
       tabs:
         files: [
