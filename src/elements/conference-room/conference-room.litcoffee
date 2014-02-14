@@ -31,6 +31,9 @@ WebRTC kicks off interaction when it has something to share, namely a local
 stream of data to transmit. Listen for this stream and set it so that
 it can be bound by all the contained calls.
 
+One trick, this fires on element `local` so that it bubbles up to the chrome
+bridge and is carried away.
+
         @addEventListener 'localstream', (evt) =>
           @localStream = evt.detail
           @$.local.fire 'register',
@@ -38,11 +41,12 @@ it can be bound by all the contained calls.
             calls: @calls
 
 The server will need to know all about your calls if you reconnect.
+This also adds debugging support to quickly call yourself from the console.
 
-        @addEventListener 'hello', (evt) =>
-          @$.local.fire 'register',
-            runtime: chrome.runtime.id
-            calls: @calls
+        @addEventListener 'configured', (evt) =>
+          window.debugCallSelf = =>
+            @$.local.fire 'call', to: evt.detail.sessionid
+
 
 Set up inbound and outbound calls when asked by adding an element via data
 binding. Polymer magic.

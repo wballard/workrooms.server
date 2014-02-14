@@ -11,7 +11,7 @@
 <polymer-element name="workrooms-application" attributes="config serverConfig">
 <template>
   <!--send along events to the extension from the websocket-->
-  <chrome-event-sink events="hello inboundcall outboundcall ice offer answer hangup autocomplete">
+  <chrome-event-sink events="hello configured inboundcall outboundcall ice offer answer hangup autocomplete">
   <!--send along events to all tabs coming from the websocket, used in content scripts-->
   <chrome-tab-event-relay events="online">
   <websocket-event-sink id="server" events="userprofile register call ice offer answer hangup autocomplete isonline" server="{{config.signallingServer}}">
