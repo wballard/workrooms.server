@@ -23,6 +23,10 @@ elements that actually do work!
         @addEventListener 'configured', (evt) =>
           @serverConfig = evt.detail
           @$.github.login()
+          @$.icon.drawIcon()
+
+        @addEventListener 'calls', (evt) =>
+          @$.icon.drawIcon(evt.detail)
 
 Ask for configuration when the server says hello. This fires off github since
 an event fired off the server itself would refuse to relay.

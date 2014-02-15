@@ -11,7 +11,7 @@ This is a space separated list of event names to fire automatically.
     _ = require('lodash')
     uuid = require('node-uuid')
 
-    Polymer 'chrome-event-sink',
+    Polymer 'chrome-event-bridge',
       sessionid: uuid.v1()
       attached: ->
 

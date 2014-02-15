@@ -7,12 +7,12 @@
 <link rel="import" href="../ui-input/ui-input.html">
 <link rel="import" href="../ui-user-profile/ui-user-profile.html">
 <link rel="import" href="../ui-hide/ui-hide.html">
-<link rel="import" href="../event-bus/chrome-event-sink.html">
+<link rel="import" href="../event-bus/chrome-event-bridge.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 
 <polymer-element name="conference-room" attributes="searchProfiles localStream calls">
 <template>
-  <chrome-event-sink events="getuserprofile signout register call ice offer answer hangup autocomplete">
+  <chrome-event-bridge events="getuserprofile signout register call calls ice offer answer hangup autocomplete">
   <local-stream id="local" audio video>
   <ui-sidebar id="sidebar">
   <span class="grid grid--gutters">
@@ -42,7 +42,7 @@
     </template>
   </span>
   </local-stream>
-  </chrome-event-sink>
+  </chrome-event-bridge>
 </template>
 <script src="./conference-room.js"></script>
 </polymer-element>

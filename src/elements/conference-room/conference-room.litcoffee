@@ -55,6 +55,7 @@ binding. Polymer magic.
 
         @addEventListener 'outboundcall', (evt) ->
           @calls.push evt.detail
+          @$.local.fire 'calls', @calls
 
         @addEventListener 'inboundcall', (evt) ->
           ###
@@ -66,10 +67,12 @@ binding. Polymer magic.
           callToast.show()
           ###
           @calls.push evt.detail
+          @$.local.fire 'calls', @calls
 
         @addEventListener 'hangup', (evt) ->
           _.remove @calls, (call) ->
             call.callid is evt.detail.callid and evt.detail.signal
+          @$.local.fire 'calls', @calls
 
 In call options, most important of which is mute audio / mute video. This just
 fires an event, counting on the individual calls to listen for it and then

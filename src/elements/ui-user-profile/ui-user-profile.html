@@ -7,10 +7,7 @@
     <template bind if="{{profile.userprofiles.github}}">
       <img class="ui rounded mini image" src="{{profile.userprofiles.github.avatar_url}}">
       <div class="content">
-        <span class="header">
-          <i id="callgravatar" class="fa fa-video-camera video-call"></i>
-          {{profile.userprofiles.github.name}}
-        </span>
+        <a class="header">{{profile.userprofiles.github.name}}</a>
       </div>
     </template>
   </template>
