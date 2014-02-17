@@ -21,6 +21,12 @@ Flag attribute indicating this is the inbound side of the call.
     uuid = require('node-uuid')
 
     Polymer 'ui-video-call',
+
+This is the default implementation until data is connected.
+
+      send: (message) ->
+        console.log 'WARNING, data not connected', message
+
       created: ->
         @peerid = uuid.v1()
 
@@ -117,21 +123,21 @@ visual work of updating visual status of the mute.
               @$.player.removeAttribute('sourcemutedvideo')
 
 
-
 ICE messages just add in, there is now offer/answer -- just make sure to not
 add your own peer side messages.  And make sure it is a server signal, not just
 a local ice message. This isn't a *real case*, but it shows up when you call
 yourself for testing.
 
         document.addEventListener 'ice', (evt) =>
-          if evt.detail.candidate and evt.detail.peerid isnt @peerid and event.detail.signal
-            @peerConnection.addIceCandidate(new rtc.IceCandidate(evt.detail.candidate))
+          if evt?.detail?.peerid isnt @peerid and event?.detail?.signal and event?.detail?.callid is @callid
+            if evt?.detail?.candidate
+              @peerConnection.addIceCandidate(new rtc.IceCandidate(evt.detail.candidate))
 
 Inbound side SDP needs to make sure we get an offer, which it will then answer.
 
         document.addEventListener 'offer', (evt) =>
-          message = evt.detail
-          if @inbound? and message.signal
+          message = evt?.detail
+          if @inbound? and message?.signal and message?.callid is @callid
             console.log 'offer inbound', message.sdp
             @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), =>
               console.log 'offer accepted', message.sdp
@@ -150,7 +156,7 @@ Outbound side needs to take the answer and complete the call.
 
         document.addEventListener 'answer', (evt) =>
           message = evt.detail
-          if @outbound? and message.signal
+          if @outbound? and message?.signal and message?.callid is @callid
             console.log 'completing', @getAttribute('callid')
             @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), (err) -> console.log err
 

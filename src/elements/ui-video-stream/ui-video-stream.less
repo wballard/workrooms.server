@@ -1,6 +1,7 @@
 @import "../../../bower_components/font-awesome/less/font-awesome";
 @import '../../../bower_components/semantic/build/less/collections/menu.less';
 @import '../../../bower_components/semantic/build/less/elements/label.less';
+@import '../../../bower_components/semantic/build/less/elements/loader.less';
 @import "../../less/variables";
 
 
@@ -15,7 +16,10 @@ ui-video-stream {
     display: block;
     margin-bottom: @margin;
     -webkit-mask-image: url('avatar-mask.svg');
-    width: 20em;
+    //this is in pixels, it doesn't really make sense to me to scale this
+    //relative to the font
+    width: 300px;
+    height: 225px
   }
   canvas {
     display: none;

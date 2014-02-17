@@ -34,9 +34,7 @@ the video plays.
           @fire 'snapshot'
         @addEventListener 'snapshot', =>
           width = parseInt(getComputedStyle(@$.video).getPropertyValue('width').replace('px',''))
-          height = @$.video.videoHeight / (@$.video.videoWidth/width)
-          @$.video.setAttribute('width', width)
-          @$.video.setAttribute('height', height)
+          height = parseInt(getComputedStyle(@$.video).getPropertyValue('height').replace('px',''))
           @$.takesnapshot.setAttribute('width', width)
           @$.takesnapshot.setAttribute('height', height)
           takeSnapshot = =>
@@ -80,5 +78,6 @@ that trigger by presence, so we can hit them with the ?
            .css('-webkit-transform', 'scaleX(-1)')
         @$.video.src = URL.createObjectURL(stream)
         @$.video.play()
+        bonzo(@$.loading).hide()
         @fire 'stream', stream
         @fire 'playerready', @
