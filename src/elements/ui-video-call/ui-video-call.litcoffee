@@ -20,7 +20,15 @@ Flag attribute indicating this is the inbound side of the call.
     rtc = require('webrtcsupport')
     uuid = require('node-uuid')
 
+    RECONNECT_TRIES = 3
+    RECONNECT_TIMEOUT = 2 * 1000
+
     Polymer 'ui-video-call',
+
+Simple countdown to know if we have ever connected, this drives the timeout
+to error the call or auto reconnect.
+
+      reconnectCount: 0
 
 This is the default implementation until data is connected.
 
@@ -31,8 +39,9 @@ This is the default implementation until data is connected.
         @peerid = uuid.v1()
 
 Hook up an RTC connection, using Google's stun/turn.
-
 **TODO** make the ice servers configurable.
+
+      connect: ->
 
         config =
           peerConnectionConfig:
@@ -65,6 +74,25 @@ Video streams coming over RTC need to be displayed.
         @peerConnection.onremovestream = (evt) =>
           @$.player.display null
 
+If there is a disconnection, get back to initial state.
+
+        @peerConnection.oniceconnectionstatechange = (evt) =>
+          if @peerConnection?.iceConnectionState is 'disconnected'
+            if @localStream
+              @disconnect()
+              @connect().addStream(@localStream)
+
+On a request to negotiate, send along the offer from the outbound side to
+start up the sequence.
+
+        @peerConnection.onnegotiationneeded = (evt) =>
+          if @outbound?
+            console.log 'NEGOTIATE', evt, @peerConnection.getLocalStreams()
+            @offer()
+            initialLocalStream = @localStream
+            window.debugFakeDrop = =>
+              @disconnect()
+
 Data channels for messages that are just between us peers. This turns messages
 coming in into DOM events with the `type` `detail` convention of `CustomEvent`.
 So you can just make an event fire on a connected peer by saying
@@ -87,6 +115,12 @@ And then handle it remotedly with
         @data.onmessage = (evt) =>
           message = JSON.parse(evt.data)
           @fire message.type, message.detail
+        @peerConnection
+
+And let everything go.
+
+      disconnect: ->
+        @peerConnection?.close()
 
       attached: ->
 
@@ -158,23 +192,31 @@ Outbound side needs to take the answer and complete the call.
           message = evt.detail
           if @outbound? and message?.signal and message?.callid is @callid
             console.log 'completing', @getAttribute('callid')
-            @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), (err) -> console.log err
+            @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), (err) ->
+              console.log(err) if err
 
-Setting a local stream is what really 'starts' the call, but it is supplied
-asynchronously.
+
+This is the offer startup if we are on the outbound side.
+
+      offer: ->
+        @peerConnection.createOffer (description) =>
+          @peerConnection.setLocalDescription description, =>
+            console.log 'offering', @getAttribute('callid')
+            @fire 'offer',
+              callid: @getAttribute('callid')
+              peerid: @peerid
+              sdp: description
+          , (err) -> console.log err
+        , (err) -> console.log err
+
+Setting a local stream is what really 'starts' the call, as it triggers the
+RTCPeerConnection to start negotiation.
 
       localStreamChanged: (oldValue, newValue) ->
         if newValue
           console.log 'adding local stream', newValue
-          @peerConnection.addStream(newValue)
           if @outbound?
-            @peerConnection.createOffer (description) =>
-              @peerConnection.setLocalDescription description, =>
-                console.log 'offering', @getAttribute('callid')
-                @fire 'offer',
-                  callid: @getAttribute('callid')
-                  peerid: @peerid
-                  sdp: description
-              , (err) -> console.log err
-            , (err) -> console.log err
-
+            window.debugFakeReconnect = =>
+              @connect().addStream(newValue)
+          @reconnectCount = RECONNECT_TRIES
+          @connect().addStream(newValue)
