@@ -32,7 +32,7 @@ to error the call or auto reconnect.
 
 This is the default implementation until data is connected.
 
-      send: (message) ->
+      send: (type, detail) ->
         console.log 'WARNING, data not connected', message
 
       created: ->
@@ -81,6 +81,8 @@ If there is a disconnection, get back to initial state.
             if @localStream
               @disconnect()
               @connect().addStream(@localStream)
+          if @peerConnection?.iceConnectionState is 'connected'
+            console.log 'connected'
 
 On a request to negotiate, send along the offer from the outbound side to
 start up the sequence.
@@ -97,11 +99,9 @@ Data channels for messages that are just between us peers. This turns messages
 coming in into DOM events with the `type` `detail` convention of `CustomEvent`.
 So you can just make an event fire on a connected peer by saying
 ```
-@send
-  type: 'nameofevent'
-  detail:
-    stuff: true
-    things: yep
+@send 'nameofevent',
+  stuff: true
+  things: yep
 ```
 And then handle it remotedly with
 ```
@@ -110,10 +110,15 @@ And then handle it remotedly with
 
         @data = @peerConnection.createDataChannel 'sendy', reliable: false
         @data.onopen = =>
-          @send = (data) =>
-            @data.send JSON.stringify(data)
+          @send = (type, detail) =>
+            message =
+              type: type
+              from: @peerid
+              detail: detail
+            @data.send JSON.stringify(message)
         @data.onmessage = (evt) =>
           message = JSON.parse(evt.data)
+          console.log message.from, @peerid, message
           @fire message.type, message.detail
         @peerConnection
 
@@ -139,9 +144,7 @@ of switching off parts of the stream, and then relay to the far side to do the
 visual work of updating visual status of the mute.
 
         document.addEventListener 'mutestatus', (evt) =>
-          @send
-            type: 'peermutestatus'
-            detail: evt.detail
+          @send 'peermutestatus', evt.detail
 
         @addEventListener 'peermutestatus', (evt) =>
           message = evt.detail
