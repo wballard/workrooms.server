@@ -42,7 +42,7 @@ Hook up an RTC connection, using Google's stun/turn.
 **TODO** make the ice servers configurable.
 
       connect: ->
-
+        @reconnectCount = 0
         config =
           peerConnectionConfig:
             iceServers: [{"url": "stun:stun.l.google.com:19302"}]
@@ -218,5 +218,4 @@ RTCPeerConnection to start negotiation.
           if @outbound?
             window.debugFakeReconnect = =>
               @connect().addStream(newValue)
-          @reconnectCount = RECONNECT_TRIES
           @connect().addStream(newValue)
