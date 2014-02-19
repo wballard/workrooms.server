@@ -29,10 +29,12 @@
     "caching-coffeeify": "~0.3.0",
     "gulp-rename": "~1.1.0",
     "gulp-flatten": "0.0.2",
-    "gulp-concat": "~2.1.7"
+    "gulp-concat": "~2.1.7",
+    "gulp-plumber": "~0.5.6",
+    "gulp-continuous-concat": "~0.1.1"
   },
   "scripts": {
     "install": "bower install",
-    "start": "nodemon --exec 'gulp --require coffee-script/register --gulpfile' --legacy-watch gulpfile.litcoffee"
+    "start": "nodemon --exec 'gulp' --require coffee-script/register --gulpfile gulpfile.litcoffee"
   }
 }

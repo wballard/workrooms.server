@@ -8,7 +8,8 @@ build script and watch for changes.
     rename = require 'gulp-rename'
     flatten = require 'gulp-flatten'
     watch = require 'gulp-watch'
-    concat = require 'gulp-concat'
+    concat = require 'gulp-continuous-concat'
+    plumber = require 'gulp-plumber'
 
     gulp.task 'default', ->
 
@@ -51,6 +52,7 @@ Each area has html templates, less styles, and litcoffee source.
             debug: true
           .pipe rename extname: '.js'
           .pipe gulp.dest dest
+          .pipe concat('all')
         gulp.src '**/*.less', {cwd: src}
           .pipe watch()
           .pipe less()
@@ -64,9 +66,9 @@ Each area has html templates, less styles, and litcoffee source.
 
 Drive the hot reload.
 
-    gulp.watch 'src/**/*.*', ['reloader']
-    gulp.task 'reloader', ->
-      gulp.src '**', {cwd: 'src'}
+      gulp.src 'src/**'
+        .pipe watch()
+        .pipe plumber()
         .pipe concat('all')
         .pipe gulp.dest 'build'
 

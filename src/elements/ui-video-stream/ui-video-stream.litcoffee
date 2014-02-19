@@ -76,8 +76,12 @@ that trigger by presence, so we can hit them with the ?
            .css('-webkit-transform', 'scaleX(-1)')
           bonzo(@$.snapshot)
            .css('-webkit-transform', 'scaleX(-1)')
-        @$.video.src = URL.createObjectURL(stream)
-        @$.video.play()
-        bonzo(@$.loading).hide()
-        @fire 'stream', stream
-        @fire 'playerready', @
+        if stream
+          @$.video.src = URL.createObjectURL(stream)
+          @$.video.play()
+          bonzo(@$.loading).hide()
+          @fire 'stream', stream
+          @fire 'playerready', @
+        else
+          @$.video.src = ''
+          bonzo(@$.loading).show()

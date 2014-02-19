@@ -20,15 +20,18 @@ Flag attribute indicating this is the inbound side of the call.
     rtc = require('webrtcsupport')
     uuid = require('node-uuid')
 
-    RECONNECT_TRIES = 3
+    RECONNECT_TIMEOUT_THRESHOLD = 3
     RECONNECT_TIMEOUT = 2 * 1000
+    KEEPALIVE_TIMEOUT = 2 * RECONNECT_TIMEOUT
 
     Polymer 'ui-video-call',
 
-Simple countdown to know if we have ever connected, this drives the timeout
-to error the call or auto reconnect.
+This is a counting sempahore, yeah, hair splitting, but JavaScript has one
+thread so this is atomic by definition. Keep alives reset it, missed
+reconnect intervals increment it. When it is above the threshold, reconnection
+is tried.
 
-      reconnectCount: 0
+      reconnectSemaphore: 0
 
 This is the default implementation until data is connected.
 
@@ -42,7 +45,6 @@ Hook up an RTC connection, using Google's stun/turn.
 **TODO** make the ice servers configurable.
 
       connect: ->
-        @reconnectCount = 0
         config =
           peerConnectionConfig:
             iceServers: [{"url": "stun:stun.l.google.com:19302"}]
@@ -78,20 +80,23 @@ If there is a disconnection, get back to initial state.
 
         @peerConnection.oniceconnectionstatechange = (evt) =>
           if @peerConnection?.iceConnectionState is 'disconnected'
-            if @localStream
-              @disconnect()
-              @connect().addStream(@localStream)
+            @disconnect()
           if @peerConnection?.iceConnectionState is 'connected'
-            console.log 'connected'
+            @reconnectSemaphore = 0
+            @keepaliveInterval = setInterval =>
+              @send 'callkeepalive',
+                callid: @callid
+                peerid: @peerid
+            , KEEPALIVE_TIMEOUT
 
 On a request to negotiate, send along the offer from the outbound side to
 start up the sequence.
 
         @peerConnection.onnegotiationneeded = (evt) =>
           if @outbound?
-            console.log 'NEGOTIATE', evt, @peerConnection.getLocalStreams()
             @offer()
             initialLocalStream = @localStream
+          else
             window.debugFakeDrop = =>
               @disconnect()
 
@@ -118,26 +123,50 @@ And then handle it remotedly with
             @data.send JSON.stringify(message)
         @data.onmessage = (evt) =>
           message = JSON.parse(evt.data)
-          console.log message.from, @peerid, message
           @fire message.type, message.detail
         @peerConnection
 
 And let everything go.
 
       disconnect: ->
-        @peerConnection?.close()
+        @$.player.display null
+        if @keepaliveInterval?
+          clearInterval @keepaliveInterval
+          @keepaliveInterval = undefined
+        try
+          @peerConnection?.close()
+        catch err
+
+The document acts as an event bus, so we're hooking up events to the document
+and the element itself when it is attached to the DOM.
 
       attached: ->
+
+Call keep alives, when these fail -- it is time to reconnect the call. This is
+reall no more complicated than disconnecting and reconnecting, with each side
+doing its part as if it was the original call.
+Now the tricky part is to keep from *flapping*, so we'll take that reconnection
+semaphore down a few more counts to keep it well below the threshold.
+
+        @reconnectInterval = setInterval =>
+          if @reconnectSemaphore++ > RECONNECT_TIMEOUT_THRESHOLD
+            if @localStream
+              console.log 'trying to reconnect'
+              @reconnectSemaphore = -(2 * RECONNECT_TIMEOUT_THRESHOLD)
+              @disconnect()
+              @connect().addStream(@localStream)
+        , RECONNECT_TIMEOUT
+
+        @addEventListener 'callkeepalive', (evt) =>
+          @reconnectSemaphore = 0
 
 Event handling, up from the controls inline.
 
         @addEventListener 'dohangup', (evt) =>
           evt.stopPropagation()
           @fire 'hangup',
-            callid: @getAttribute('callid')
+            callid: @callid
             peerid: @peerid
-
-The document acts as an event bus, so we're hooking up events.
 
 Mute control, bridge this across to peers. This side will do the actual work
 of switching off parts of the stream, and then relay to the far side to do the
@@ -158,7 +187,6 @@ visual work of updating visual status of the mute.
               @$.player.setAttribute('sourcemutedvideo')
             else
               @$.player.removeAttribute('sourcemutedvideo')
-
 
 ICE messages just add in, there is now offer/answer -- just make sure to not
 add your own peer side messages.  And make sure it is a server signal, not just
@@ -198,6 +226,12 @@ Outbound side needs to take the answer and complete the call.
             @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), (err) ->
               console.log(err) if err
 
+When the element is removed from the DOM -- really hung up, there is no need
+to reconnect any more.
+
+      detached: ->
+        @disconnect()
+        clearInterval @reconnectInterval
 
 This is the offer startup if we are on the outbound side.
 
@@ -212,6 +246,7 @@ This is the offer startup if we are on the outbound side.
           , (err) -> console.log err
         , (err) -> console.log err
 
+
 Setting a local stream is what really 'starts' the call, as it triggers the
 RTCPeerConnection to start negotiation.
 
@@ -222,3 +257,4 @@ RTCPeerConnection to start negotiation.
             window.debugFakeReconnect = =>
               @connect().addStream(newValue)
           @connect().addStream(newValue)
+
