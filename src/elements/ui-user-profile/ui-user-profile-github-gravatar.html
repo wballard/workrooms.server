@@ -1,0 +1,12 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="stylesheet" type="text/css" href="./ui-user-profile-github-gravatar.css">
+
+<polymer-element name="ui-user-profile-github-gravatar" attributes="github">
+<template>
+  <a id="gravatar" class="gravatar fitted item">
+    <img class="ui rounded mini image" src="{{github.avatar_url}}">
+  </a>
+</template>
+<script src="/bower_components/semantic/build/uncompressed/modules/popup.js"></script>
+<script src="./ui-user-profile-github-gravatar.js"></script>
+</polymer-element>

@@ -48,6 +48,7 @@ This also adds debugging support to quickly call yourself from the console.
             @$.local.fire 'call', to: evt.detail.sessionid
           window.debugCallFail = =>
             @$.local.fire 'call', to: 'fail'
+          debugCallSelf()
 
 
 Set up inbound and outbound calls when asked by adding an element via data
