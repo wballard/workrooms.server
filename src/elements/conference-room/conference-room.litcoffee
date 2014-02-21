@@ -27,6 +27,9 @@ identifiers used to data bind and generate `ui-video-call` elements.
       attached: ->
         @calls = []
 
+        @addEventListener 'error', (err) ->
+          console.log err
+
 WebRTC kicks off interaction when it has something to share, namely a local
 stream of data to transmit. Listen for this stream and set it so that
 it can be bound by all the contained calls.
@@ -40,6 +43,11 @@ bridge and is carried away.
             runtime: chrome.runtime.id
             calls: @calls
 
+        @addEventListener 'hello', (evt) =>
+          @$.local.fire 'register',
+            runtime: chrome.runtime.id
+            calls: @calls
+
 The server will need to know all about your calls if you reconnect.
 This also adds debugging support to quickly call yourself from the console.
 
@@ -48,8 +56,6 @@ This also adds debugging support to quickly call yourself from the console.
             @$.local.fire 'call', to: evt.detail.sessionid
           window.debugCallFail = =>
             @$.local.fire 'call', to: 'fail'
-          debugCallSelf()
-
 
 Set up inbound and outbound calls when asked by adding an element via data
 binding. Polymer magic.
@@ -71,8 +77,11 @@ binding. Polymer magic.
           @$.local.fire 'calls', @calls
 
         @addEventListener 'hangup', (evt) ->
-          _.remove @calls, (call) ->
-            call.callid is evt.detail.callid and evt.detail.signal
+          console.log 'hangup', evt
+          _.forEach evt?.detail?.calls or [], (hangupCall) =>
+            _.remove @calls, (call) ->
+              console.log 'hangup', call, @calls
+              call.callid is hangupCall.callid
           @$.local.fire 'calls', @calls
 
 In call options, most important of which is mute audio / mute video. This just

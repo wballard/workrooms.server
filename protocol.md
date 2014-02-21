@@ -57,14 +57,14 @@ Initially, calls is an empty array, but on reconnect will contain
 metadata of active calls in the client that were supplied by
 `inboundcall` and `outboundcall`.
 
-###userprofiles
+###userprofile
 Once a client has captured a local video stream, authenticated via
 OAuth, and fetch a userprofile from the OAuth source, profiles are
 signalled:
 
 ```
 {
-  type: 'userprofiles',
+  type: 'userprofile',
   detail: {
     github: {...}
   }
@@ -91,7 +91,7 @@ Starts up the call connection sequence.
 {
   type: 'call',
   detail: {
-    to: sessionid
+    to: to_sessionid
   }
 }
 ```
@@ -103,8 +103,10 @@ completed.
 {
   type: 'outboundcall',
   detail: {
+    outbound: true,
     callid: callid,
-    sessionid: to_sessionid,
+    fromsessionid: sessionid,
+    tosessionid: to_sessionid,
     userprofiles: to_userprofiles
   }
 }
@@ -117,8 +119,10 @@ completed.
 {
   type: 'inboundcall',
   detail: {
+    inbound: true,
     callid: callid,
-    sessionid: from_sessionid,
+    fromsessionid: sessionid,
+    tosessionid: to_sessionid,
     userprofiles: from_userprofiles
   }
 }
@@ -127,10 +131,28 @@ completed.
 ##Connected State
 When connected, calls can be modified by either side by relaying messages
 though the signalling server.
-**TODO** should these go peer-to-peer instead over a data channel?
+
+###hangup
+A hangup message from a connected client hangs up all passed calls by
+looking up the counterparty sockets by sessionid, calls by callid. Once
+a call to hang up is found, it is signalled to both peers of the call,
+and the call is removed from the signalling server.
+
+When a connected client receives as hangup from the server, it is
+responsible for remove the designated call from itself and ending the
+RTC connection.
 ```
-  (mute | unmute | hangup) -> server
-  any client <- (mute | unmute | hangup)
+{
+  type: 'hangup',
+  detail: {
+    calls: [
+      {
+        callid: callid,
+        sessionid: from_sessionid,
+      }, ...
+    ]
+  }
+}
 ```
 
 ##Other

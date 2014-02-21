@@ -160,14 +160,6 @@ semaphore down a few more counts to keep it well below the threshold.
         @addEventListener 'callkeepalive', (evt) =>
           @reconnectSemaphore = 0
 
-Event handling, up from the controls inline.
-
-        @addEventListener 'dohangup', (evt) =>
-          evt.stopPropagation()
-          @fire 'hangup',
-            callid: @callid
-            peerid: @peerid
-
 Mute control, bridge this across to peers. This side will do the actual work
 of switching off parts of the stream, and then relay to the far side to do the
 visual work of updating visual status of the mute.
