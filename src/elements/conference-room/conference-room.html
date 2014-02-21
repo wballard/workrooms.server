@@ -10,7 +10,7 @@
 <link rel="import" href="../event-bus/chrome-event-bridge.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 
-<polymer-element name="conference-room" attributes="searchProfiles localStream calls">
+<polymer-element name="conference-room" attributes="searchProfiles localStream calls serverConfig">
 <template>
   <chrome-event-bridge events="getuserprofile signout register call calls ice offer answer hangup autocomplete">
   <local-stream id="local" audio video>
@@ -39,7 +39,7 @@
   <span class="calls">
     <ui-local-video  stream="{{localStream}}"></ui-local-video>
     <template id="calls" repeat="{{call in calls}}">
-      <ui-video-call outbound?="{{call.outbound}}" inbound?="{{call.inbound}}" callid="{{call.callid}}" userprofiles="{{call.userprofiles}}" localStream="{{localStream}}"></ui-video-call>
+      <ui-video-call outbound?="{{call.outbound}}" inbound?="{{call.inbound}}" callid="{{call.callid}}" userprofiles="{{call.userprofiles}}" localStream="{{localStream}}" config="{{serverConfig}}"></ui-video-call>
     </template>
   </span>
   </local-stream>

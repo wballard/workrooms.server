@@ -7,6 +7,6 @@
 default:
   reload: true
   signallingServer: ws://localhost:9000
-lejkdpfgaljfkkbefnjofcmfhmgobefa:
+cmkckpjleijfldmfnabklbcldhcemgnh:
   reload: false
-  signallingServer: ws://192.168.200.125:9000
+  signallingServer: ws://workrooms.glgresearch.com/workrooms/

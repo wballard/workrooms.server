@@ -19,6 +19,7 @@ Flag attribute indicating this is the inbound side of the call.
 
     rtc = require('webrtcsupport')
     uuid = require('node-uuid')
+    _ = require('lodash')
 
     RECONNECT_TIMEOUT_THRESHOLD = 3
     RECONNECT_TIMEOUT = 2 * 1000
@@ -41,13 +42,13 @@ This is the default implementation until data is connected.
       created: ->
         @peerid = uuid.v1()
 
-Hook up an RTC connection, using Google's stun/turn.
-**TODO** make the ice servers configurable.
+Hook up an RTC connection using ice STUN/TURN servers supplied by our
+signaling server.
 
       connect: ->
         config =
           peerConnectionConfig:
-            iceServers: [{"url": "stun:stun.l.google.com:19302"}]
+            iceServers: @config.iceServers
           peerConnectionContraints:
             optional: [
               {DtlsSrtpKeyAgreement: true},
@@ -95,7 +96,6 @@ start up the sequence.
         @peerConnection.onnegotiationneeded = (evt) =>
           if @outbound?
             @offer()
-            initialLocalStream = @localStream
           else
             window.debugFakeDrop = =>
               @disconnect()
@@ -227,24 +227,25 @@ to reconnect any more.
 
 This is the offer startup if we are on the outbound side.
 
-      offer: ->
-        @peerConnection.createOffer (description) =>
-          @peerConnection.setLocalDescription description, =>
-            console.log 'offering', @getAttribute('callid')
-            @fire 'offer',
-              callid: @getAttribute('callid')
-              peerid: @peerid
-              sdp: description
+      offer: _.debounce ->
+        if @outbound?
+          @peerConnection.createOffer (description) =>
+            console.log 'offer created', description, @peerConnection
+            @peerConnection.setLocalDescription description, =>
+              console.log 'offering', description
+              @fire 'offer',
+                callid: @getAttribute('callid')
+                peerid: @peerid
+                sdp: description
+            , (err) -> console.log err
           , (err) -> console.log err
-        , (err) -> console.log err
-
+      , 300
 
 Setting a local stream is what really 'starts' the call, as it triggers the
 RTCPeerConnection to start negotiation.
 
       localStreamChanged: (oldValue, newValue) ->
         if newValue
-          console.log 'adding local stream', newValue
           if @outbound?
             window.debugFakeReconnect = =>
               @connect().addStream(newValue)

@@ -52,6 +52,7 @@ The server will need to know all about your calls if you reconnect.
 This also adds debugging support to quickly call yourself from the console.
 
         @addEventListener 'configured', (evt) =>
+          @serverConfig = evt.detail
           window.debugCallSelf = =>
             @$.local.fire 'call', to: evt.detail.sessionid
           window.debugCallFail = =>

@@ -27,7 +27,7 @@ content pages.
 And don't relay messages you fired. Inifinite loop buddy!
 
       relay: (evt) ->
-        if evt.target isnt @
+        if evt.target.nodeName isnt 'CHROME-EVENT-BRIDGE'
           message = {}
           message.type = evt.type
           message.detail = evt.detail
