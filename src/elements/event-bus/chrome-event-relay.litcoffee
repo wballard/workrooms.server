@@ -11,7 +11,7 @@ This is a space separated list of event names to fire automatically.
     _ = require('lodash')
     uuid = require('node-uuid')
 
-    Polymer 'chrome-event-bridge',
+    Polymer 'chrome-event-relay',
       sessionid: uuid.v1()
       attached: ->
 
@@ -26,14 +26,23 @@ Relay events via Chrome messaging, this lets us go across tabs, background, and
 content pages.
 And don't relay messages you fired. Inifinite loop buddy!
 
-      relay: (evt) ->
-        if evt.target.nodeName isnt 'CHROME-EVENT-BRIDGE'
-          message = {}
-          message.type = evt.type
-          message.detail = evt.detail
-          message.from = @sessionid
-          console.log 'chrome relay', message
-          chrome.runtime.sendMessage message
+      relay: () ->
+        if arguments.length is 1
+          evt = arguments[0]
+          if evt?.target?.nodeName isnt 'CHROME-EVENT-RELAY'
+            message = {}
+            message.type = evt.type
+            message.detail = evt.detail
+            message.from = @sessionid
+            console.log 'chrome relay', message
+            chrome.runtime.sendMessage message
+         if arguments.length is 2
+            message = {}
+            message.type = arguments[0]
+            message.detail = arguments[1]
+            message.from = @sessionid
+            console.log 'chrome relay', message
+            chrome.runtime.sendMessage message
 
 Keep a strict subscription to only the events specified by attribute.
 

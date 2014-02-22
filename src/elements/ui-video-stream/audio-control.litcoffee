@@ -9,6 +9,8 @@ Not clear that this really warrants being its own component.
         @addEventListener 'stream', (evt) =>
           @stream = evt.detail
         @addEventListener 'audio.on', (evt) =>
+          console.log 'unmute'
           @stream?.getAudioTracks()?.forEach (x) -> x.enabled = true
         @addEventListener 'audio.off', (evt) =>
+          console.log 'mute'
           @stream?.getAudioTracks()?.forEach (x) -> x.enabled = false

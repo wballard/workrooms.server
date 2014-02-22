@@ -150,11 +150,11 @@ semaphore down a few more counts to keep it well below the threshold.
 
         @reconnectInterval = setInterval =>
           if @reconnectSemaphore++ > RECONNECT_TIMEOUT_THRESHOLD
-            if @localStream
+            if @localstream
               console.log 'trying to reconnect'
               @reconnectSemaphore = -(2 * RECONNECT_TIMEOUT_THRESHOLD)
               @disconnect()
-              @connect().addStream(@localStream)
+              @connect().addStream(@localstream)
         , RECONNECT_TIMEOUT
 
         @addEventListener 'callkeepalive', (evt) =>
@@ -244,7 +244,7 @@ This is the offer startup if we are on the outbound side.
 Setting a local stream is what really 'starts' the call, as it triggers the
 RTCPeerConnection to start negotiation.
 
-      localStreamChanged: (oldValue, newValue) ->
+      localstreamChanged: (oldValue, newValue) ->
         if newValue
           if @outbound?
             window.debugFakeReconnect = =>

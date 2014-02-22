@@ -1,5 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../local-stream/local-stream.html">
+<link rel="import" href="../ui-video-stream/audio-control.html">
+<link rel="import" href="../ui-video-stream/video-control.html">
 <link rel="import" href="../ui-local-video/ui-local-video.html">
 <link rel="import" href="../ui-video-call/ui-video-call.html">
 <link rel="import" href="../ui-toolbar/ui-toolbar.html">
@@ -7,12 +9,12 @@
 <link rel="import" href="../ui-input/ui-input.html">
 <link rel="import" href="../ui-user-profile/ui-user-profile.html">
 <link rel="import" href="../ui-hide/ui-hide.html">
-<link rel="import" href="../event-bus/chrome-event-bridge.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 
-<polymer-element name="conference-room" attributes="searchProfiles localStream calls serverConfig">
+<polymer-element name="conference-room" attributes="userprofiles localstream calls serverConfig">
 <template>
-  <chrome-event-bridge events="getuserprofile signout register call calls ice offer answer hangup autocomplete">
+  <video-control>
+  <audio-control>
   <local-stream id="local" audio video>
   <ui-sidebar id="sidebar">
   <span class="grid grid--gutters">
@@ -20,7 +22,7 @@
   </span>
   <span class="grid grid--gutters">
     <ul class="ui list grid-cell">
-      <template id="searchProfiles" repeat="{{profile in profiles}}">
+      <template id="searchresults" repeat="{{profile in profiles}}">
         <li class="profile">
           <ui-user-profile class="grid-cell" profile="{{profile}}"></ui-user-profile>
         </li>
@@ -29,21 +31,26 @@
   </span>
   </ui-sidebar>
   <ui-toolbar>
-    <ui-command-tool icon="fa-bars" command="sidebar"></ui-command-tool>
-    <ui-command-tool icon="fa-phone fa-rotate-135" command="hangup"></ui-command-tool>
-    <ui-right-toolbar>
-      <ui-command-tool icon="fa-sign-in" command="getuserprofile"></ui-command-tool>
-      <ui-command-tool icon="fa-sign-out" command="signout"></ui-command-tool>
-    </ui-right-toolbar>
+  <ui-command-tool icon="fa-bars" command="sidebar"></ui-command-tool>
+  <ui-toggle-tool icon="fa-eye" togglechanged="selfie"></ui-toggle-tool>
+  <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active></ui-toggle-tool>
+  <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active></ui-toggle-tool>
+  <ui-command-tool icon="fa-phone fa-rotate-135" command="hangup"></ui-command-tool>
+  <ui-command-tool icon="fa-superscript" command="debugcallself"></ui-command-tool>
+  <ui-right-toolbar>
+  <ui-command-tool icon="fa-sign-in" command="getuserprofile"></ui-command-tool>
+  <ui-command-tool icon="fa-sign-out" command="signout"></ui-command-tool>
+  </ui-right-toolbar>
   </ui-toolbar>
   <span class="calls">
-    <ui-local-video  stream="{{localStream}}"></ui-local-video>
+    <ui-local-video id="selfie" stream="{{localstream}}" userprofiles="{{userprofiles}}"></ui-local-video>
     <template id="calls" repeat="{{call in calls}}">
-      <ui-video-call outbound?="{{call.outbound}}" inbound?="{{call.inbound}}" callid="{{call.callid}}" userprofiles="{{call.userprofiles}}" localStream="{{localStream}}" config="{{serverConfig}}"></ui-video-call>
+      <ui-video-call outbound?="{{call.outbound}}" inbound?="{{call.inbound}}" callid="{{call.callid}}" userprofiles="{{call.userprofiles}}" localstream="{{localstream}}" config="{{serverConfig}}"></ui-video-call>
     </template>
   </span>
   </local-stream>
-  </chrome-event-bridge>
+  </audio-control>
+  </video-control>
 </template>
 <script src="./conference-room.js"></script>
 </polymer-element>

@@ -21,8 +21,9 @@ This fires a dynamic event based on `togglechanged`. Will fire a
             @removeAttribute('active')
           else
             @setAttribute('active', '')
+        @activeChanged()
       activeChanged: (oldValue, newValue) ->
-        if newValue?
+        if @active?
           @fire "#{@togglechanged}.on"
           @$.tool.classList.add('active')
         else

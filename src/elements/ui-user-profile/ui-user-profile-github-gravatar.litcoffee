@@ -9,5 +9,5 @@ This is an amalgamated profile object via OAuth sources.
       githubChanged: ->
         $(@$.gravatar).popup
           inline: true
-          title: @github.name
-          content: "@#{@github.login}"
+          title: @github?.name
+          content: "@#{@github?.login}"
