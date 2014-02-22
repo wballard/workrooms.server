@@ -20,6 +20,7 @@ Flag attribute indicating this is the inbound side of the call.
     rtc = require('webrtcsupport')
     uuid = require('node-uuid')
     _ = require('lodash')
+    bonzo = require('bonzo')
 
     RECONNECT_TIMEOUT_THRESHOLD = 3
     RECONNECT_TIMEOUT = 2 * 1000

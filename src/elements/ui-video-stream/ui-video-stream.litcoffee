@@ -9,8 +9,6 @@ Show a video stream with user interface.
 #Events
 ##stream
 Fires off when a stream is present.
-##playerready
-Fires off that this player is ready.
 
 #Methods
 ##display(stream)
@@ -19,6 +17,8 @@ Fires off that this player is ready.
     bonzo = require('bonzo')
 
     SNAPSHOT_TIMEOUT = 1 * 1000
+    IN_EFFECT = "fadeIn"
+    OUT_EFFECT = "fadeOut"
 
     Polymer 'ui-video-stream',
 
@@ -60,11 +60,11 @@ that trigger by presence, so we can hit them with the ?
 
       sourcemutedvideoChanged: (oldValue, newValue) ->
         if newValue?
-          bonzo(@$.video).hide()
-          bonzo(@$.snapshot).show()
+          bonzo(@$.video).removeClass(IN_EFFECT).addClass(OUT_EFFECT).hide()
+          bonzo(@$.snapshot).removeClass(OUT_EFFECT).addClass(IN_EFFECT).show()
         else
-          bonzo(@$.video).show()
-          bonzo(@$.snapshot).hide()
+          bonzo(@$.video).removeClass(OUT_EFFECT).addClass(IN_EFFECT).show()
+          bonzo(@$.snapshot).removeClass(IN_EFFECT).addClass(OUT_EFFECT).hide()
 
       display: (stream) ->
         if @hasAttribute('mutedaudio')
@@ -81,7 +81,6 @@ that trigger by presence, so we can hit them with the ?
           @$.video.play()
           bonzo(@$.loading).hide()
           @fire 'stream', stream
-          @fire 'playerready', @
         else
           @$.video.src = ''
           bonzo(@$.loading).show()

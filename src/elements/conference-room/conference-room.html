@@ -10,11 +10,12 @@
 <link rel="import" href="../ui-user-profile/ui-user-profile.html">
 <link rel="import" href="../ui-hide/ui-hide.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
+<link rel="stylesheet" type="text/css" href="../animate.css/animate.min.css">
 
 <polymer-element name="conference-room" attributes="userprofiles localstream calls serverConfig">
 <template>
-  <video-control>
-  <audio-control>
+  <video-control stream="{{localstream}}">
+  <audio-control stream="{{localstream}}">
   <local-stream id="local" audio video>
   <ui-sidebar id="sidebar">
   <span class="grid grid--gutters">
@@ -24,7 +25,7 @@
     <ul class="ui list grid-cell">
       <template id="searchresults" repeat="{{profile in profiles}}">
         <li class="profile">
-          <ui-user-profile class="grid-cell" profile="{{profile}}"></ui-user-profile>
+          <ui-user-profile class="grid-cell animated flipInX" profile="{{profile}}"></ui-user-profile>
         </li>
       </template>
     </ul>
@@ -43,9 +44,9 @@
   </ui-right-toolbar>
   </ui-toolbar>
   <span class="calls">
-    <ui-local-video id="selfie" stream="{{localstream}}" userprofiles="{{userprofiles}}"></ui-local-video>
+    <ui-local-video id="selfie" class="animated flipInX" stream="{{localstream}}" userprofiles="{{userprofiles}}"></ui-local-video>
     <template id="calls" repeat="{{call in calls}}">
-      <ui-video-call outbound?="{{call.outbound}}" inbound?="{{call.inbound}}" callid="{{call.callid}}" userprofiles="{{call.userprofiles}}" localstream="{{localstream}}" config="{{serverConfig}}"></ui-video-call>
+      <ui-video-call class="animated flipInX" outbound?="{{call.outbound}}" inbound?="{{call.inbound}}" callid="{{call.callid}}" userprofiles="{{call.userprofiles}}" localstream="{{localstream}}" config="{{serverConfig}}"></ui-video-call>
     </template>
   </span>
   </local-stream>
