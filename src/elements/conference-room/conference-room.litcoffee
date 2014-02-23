@@ -9,13 +9,13 @@ bubble up from contained elements, and messages are send back down
 via method calls and property sets. Nice and simple.
 
 #Attributes
-##serverConfig
-All the settings supplied through by the server.
 ##localstream
 This is your local video/audio data stream.
 ##calls
 Array of all active calls metadata. These aren't calls themselves, just
 identifiers used to data bind and generate `ui-video-call` elements.
+##userprofiles
+All the known profiles for the current user.
 
     uuid = require('node-uuid')
     _ = require('lodash')
@@ -24,73 +24,39 @@ identifiers used to data bind and generate `ui-video-call` elements.
 
     Polymer 'conference-room',
       userprofiles: {}
+      calls: []
       attached: ->
-        @calls = []
+
 
         @addEventListener 'error', (err) ->
           console.log err
 
-WebRTC kicks off interaction when it has something to share, namely a local
-stream of data to transmit. Listen for this stream and set it so that
-it can be bound by all the contained calls.
+WebRTC can only kick off interaction when it has something to share, namely a
+local stream of data to transmit. Listen for this stream and set it so that it
+can be bound by all the contained calls.
 
         @addEventListener 'localstream', (evt) =>
           @localstream = evt.detail
-          @fire 'register',
-            runtime: chrome.runtime.id
-            calls: @calls
+          @fire 'getcalls', {}
+          @fire 'getuserprofiles', {}
 
-When the server says hello, tell it about the local calls we may already have.
-This lets the server live through a crash by having all the clients keep it
-up to date.
+All the calls known to the application, make sure there are visual elements.
 
-        document.addEventListener 'hello', (evt) =>
-          @fire 'register',
-            runtime: chrome.runtime.id
-            calls: @calls
-
-Capture the config from the server, this has important settings like where to
-do STUN/TURN.
+        document.addEventListener 'calls', (evt) =>
+          calls = _.groupBy evt.detail, (x) -> x.id
+          console.log 'calls', calls, evt.detail
+          visibleCalls = _.map @calls, (x) -> x.id
+          currentCalls = _.map evt.detail, (x) -> x.id
+          console.log visibleCalls, currentCalls
+          for id in  _.difference(currentCalls, visibleCalls)
+            console.log 'add', id
+            @calls.push calls[id][0]
+          for id in _.difference(visibleCalls, currentCalls)
+            console.log 'remove', id
+            _.remove @calls, (x) -> x.id is id
 
         document.addEventListener 'userprofiles', (evt) =>
           @userprofiles = evt.detail
-          console.log 'profiles', @userprofiles
-
-        document.addEventListener 'configured', (evt) =>
-          @serverConfig = evt.detail
-          window.debugCallSelf = =>
-            @fire 'call', to: evt.detail.sessionid
-          @addEventListener 'debugcallself', =>
-            window.debugCallSelf()
-          window.debugCallFail = =>
-            @fire 'call', to: 'fail'
-
-Set up inbound and outbound calls when asked by adding an element via data
-binding. Polymer magic.
-
-        document.addEventListener 'outboundcall', (evt) =>
-          @calls.push evt.detail
-          @fire 'calls', @calls
-
-        document.addEventListener 'inboundcall', (evt) =>
-          ###
-          url = evt?.detail?.userprofiles?.github?.avatar_url
-          callToast = webkitNotifications.createNotification url, 'Call From', evt.detail.userprofiles.github.name
-          callToast.onclick = ->
-            chrome.runtime.sendMessage
-              showConferenceTab: true
-          callToast.show()
-          ###
-          @calls.push evt.detail
-          @fire 'calls', @calls
-
-        document.addEventListener 'hangup', (evt) =>
-          console.log 'hangup', evt
-          _.forEach evt?.detail?.calls or [], (hangupCall) =>
-            _.remove @calls, (call) ->
-              console.log 'hangup', call, @calls
-              call.callid is hangupCall.callid
-          @fire 'calls', @calls
 
 In call options, most important of which is mute audio / mute video. This just
 fires an event, counting on the individual calls to listen for it and then
@@ -111,6 +77,7 @@ send to one another peer-to-peer.
         @addEventListener 'video.off', (evt) ->
           muteStatus.sourcemutedvideo = true
           @fire 'mutestatus', muteStatus
+        bonzo(@$.selfie).hide()
         @addEventListener 'selfie.on', ->
           bonzo(@$.selfie).show()
         @addEventListener 'selfie.off', ->

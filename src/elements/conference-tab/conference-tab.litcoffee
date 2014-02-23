@@ -36,6 +36,7 @@ Of course, chrome events don't follow the pattern for dom elements...
 
 And restore from local storage...
 
-        chrome.storage.local.get 'conference', (conference) ->
-          chrome.runtime.sendMessage
-            showConferenceTab: true
+        chrome.storage.local.get 'conference', (config) ->
+          if config.conference
+            chrome.runtime.sendMessage
+              showConferenceTab: true

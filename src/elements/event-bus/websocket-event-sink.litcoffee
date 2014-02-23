@@ -34,14 +34,24 @@ Relay events along to the websocket, giving the signalling server the chance
 to share messages with other clients. But, really important to not relay
 messages you posted, otherwise it's essentially an infinite loop.
 
-      relay: (evt) ->
-        if evt.target isnt @
-          console.log 'websocket relay', evt.type, evt.detail
+      relay: ->
+        if arguments.length is 1
+          evt = arguments[0]
+          if evt.target isnt @
+            console.log 'websocket relay', evt.type, evt.detail
+            @socket?.send JSON.stringify(
+              type: evt.type
+              detail: evt.detail
+              from: @sessionid
+            )
+        if arguments.length is 2
+          console.log 'websocket relay', arguments[0], arguments[1]
           @socket?.send JSON.stringify(
-            type: evt.type
-            detail: evt.detail
+            type: arguments[0]
+            detail: arguments[1]
             from: @sessionid
           )
+          @fire arguments[0], arguments[1]
 
 Keep a strict subscription to only the events specified by attribute.
 

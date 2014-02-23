@@ -43,6 +43,7 @@ And don't relay messages you fired. Inifinite loop buddy!
             message.from = @sessionid
             console.log 'chrome relay', message
             chrome.runtime.sendMessage message
+            @fire arguments[0], arguments[1]
 
 Keep a strict subscription to only the events specified by attribute.
 

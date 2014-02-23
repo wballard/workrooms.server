@@ -12,7 +12,7 @@
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 <link rel="stylesheet" type="text/css" href="../animate.css/animate.min.css">
 
-<polymer-element name="conference-room" attributes="userprofiles localstream calls serverConfig">
+<polymer-element name="conference-room" attributes="localstream calls userprofiles">
 <template>
   <video-control stream="{{localstream}}">
   <audio-control stream="{{localstream}}">
@@ -37,7 +37,6 @@
   <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active></ui-toggle-tool>
   <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active></ui-toggle-tool>
   <ui-command-tool icon="fa-phone fa-rotate-135" command="hangup"></ui-command-tool>
-  <ui-command-tool icon="fa-superscript" command="debugcallself"></ui-command-tool>
   <ui-right-toolbar>
   <ui-command-tool icon="fa-sign-in" command="getuserprofile"></ui-command-tool>
   <ui-command-tool icon="fa-sign-out" command="signout"></ui-command-tool>
@@ -46,7 +45,7 @@
   <span class="calls">
     <ui-local-video id="selfie" class="animated flipInX" stream="{{localstream}}" userprofiles="{{userprofiles}}"></ui-local-video>
     <template id="calls" repeat="{{call in calls}}">
-      <ui-video-call class="animated flipInX" outbound?="{{call.outbound}}" inbound?="{{call.inbound}}" callid="{{call.callid}}" userprofiles="{{call.userprofiles}}" localstream="{{localstream}}" config="{{serverConfig}}"></ui-video-call>
+      <ui-video-call class="animated flipInX" outbound?="{{call.outbound}}" inbound?="{{call.inbound}}" callid="{{call.callid}}" userprofiles="{{call.userprofiles}}" localstream="{{localstream}}" config="{{call.config}}"></ui-video-call>
     </template>
   </span>
   </local-stream>

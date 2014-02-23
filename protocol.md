@@ -40,6 +40,14 @@ their socket connection. This client identifier is thus a `sessionid`.
 On start, each client allocates `sessionid` used for the runtime life
 of the client.
 
+###hello
+The server will send a simple message on any connect or reconnect.
+```
+{
+  type: 'hello'
+}
+```
+
 ###register
 On connection or reconnection after a network interruption, a client
 must signal:
@@ -56,6 +64,16 @@ must signal:
 Initially, calls is an empty array, but on reconnect will contain
 metadata of active calls in the client that were supplied by
 `inboundcall` and `outboundcall`.
+
+###configured
+Once registered, the server will send back configuration, this includes
+settings for OAuth and ICE.
+```
+{
+  type: 'configured',
+  detail: ...
+}
+```
 
 ###userprofile
 Once a client has captured a local video stream, authenticated via
@@ -103,6 +121,7 @@ completed.
 {
   type: 'outboundcall',
   detail: {
+    id: unique-side-guid,
     outbound: true,
     callid: callid,
     fromsessionid: sessionid,
@@ -119,6 +138,7 @@ completed.
 {
   type: 'inboundcall',
   detail: {
+    id: unique-side-guid,
     inbound: true,
     callid: callid,
     fromsessionid: sessionid,
