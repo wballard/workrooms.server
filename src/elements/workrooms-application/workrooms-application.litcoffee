@@ -75,14 +75,13 @@ Track inbound and outbound calls when asked into the local calls array.
           @$.local.relay 'calls', @calls
 
         @addEventListener 'inboundcall', (evt) =>
-          ###
-          url = evt?.detail?.userprofiles?.github?.avatar_url
-          callToast = webkitNotifications.createNotification url, 'Call From', evt.detail.userprofiles.github.name
-          callToast.onclick = ->
-            chrome.runtime.sendMessage
-              showConferenceTab: true
-          callToast.show()
-          ###
+          if not @$.tab.visible?
+            url = evt?.detail?.userprofiles?.github?.avatar_url
+            callToast = webkitNotifications.createNotification url, 'Call From', evt.detail.userprofiles.github.name
+            callToast.onclick = ->
+              chrome.runtime.sendMessage
+                showConferenceTab: true
+            callToast.show()
           evt.detail.config = @serverconfig
           @calls.push evt.detail
           @$.local.relay 'calls', @calls
