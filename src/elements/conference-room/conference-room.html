@@ -43,7 +43,7 @@
   </ui-right-toolbar>
   </ui-toolbar>
   <span class="calls">
-    <ui-local-video id="selfie" class="animated flipInX" stream="{{localstream}}" userprofiles="{{userprofiles}}"></ui-local-video>
+    <ui-local-video id="selfie" stream="{{localstream}}" userprofiles="{{userprofiles}}"></ui-local-video>
     <template id="calls" repeat="{{call in calls}}">
       <ui-video-call class="animated flipInX" outbound?="{{call.outbound}}" inbound?="{{call.inbound}}" callid="{{call.callid}}" userprofiles="{{call.userprofiles}}" localstream="{{localstream}}" config="{{call.config}}"></ui-video-call>
     </template>

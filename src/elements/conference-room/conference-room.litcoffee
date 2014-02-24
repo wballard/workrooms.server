@@ -17,6 +17,7 @@ identifiers used to data bind and generate `ui-video-call` elements.
 ##userprofiles
 All the known profiles for the current user.
 
+    require('../../elementmixin.litcoffee')
     uuid = require('node-uuid')
     _ = require('lodash')
     qwery = require('qwery')
@@ -79,9 +80,9 @@ send to one another peer-to-peer.
           @fire 'mutestatus', muteStatus
         bonzo(@$.selfie).hide()
         @addEventListener 'selfie.on', ->
-          bonzo(@$.selfie).show()
+          @$.selfie.showAnimated()
         @addEventListener 'selfie.off', ->
-          bonzo(@$.selfie).hide()
+          @$.selfie.hideAnimated()
 
 Administrative actions on the tool and sidebar go here.
 

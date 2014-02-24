@@ -23,7 +23,6 @@ tabs with content triggering a click-to-dial.
               chrome.storage.local.set conference: true
               @setAttribute 'visible', ''
               chrome.tabs.onRemoved.addListener (id) =>
-                console.log 'detabbing', tab.id, id
                 if id is tab.id
                   chrome.storage.local.set conference: false
                   @removeAttribute 'visible'
