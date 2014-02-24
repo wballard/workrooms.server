@@ -68,7 +68,7 @@ Each area has html templates, less styles, and litcoffee source.
 Drive the hot reload.
 
       gulp.src 'src/**'
-        .pipe watch()
+        .pipe watch(emit: 'all')
         .pipe plumber()
         .pipe concat('all')
         .pipe gulp.dest 'build'

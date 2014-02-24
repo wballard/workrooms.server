@@ -45,16 +45,13 @@ All the calls known to the application, make sure there are visual elements.
 
         document.addEventListener 'calls', (evt) =>
           calls = _.groupBy evt.detail, (x) -> x.id
-          console.log 'calls', calls, evt.detail
           visibleCalls = _.map @calls, (x) -> x.id
           currentCalls = _.map evt.detail, (x) -> x.id
-          console.log visibleCalls, currentCalls
-          for id in  _.difference(currentCalls, visibleCalls)
-            console.log 'add', id
+          _.difference(currentCalls, visibleCalls).forEach (id) =>
             @calls.push calls[id][0]
-          for id in _.difference(visibleCalls, currentCalls)
-            console.log 'remove', id
-            _.remove @calls, (x) -> x.id is id
+          _.difference(visibleCalls, currentCalls).forEach (id) =>
+            @shadowRoot.querySelector("#A#{id}").hideAnimated =>
+              _.remove @calls, (x) -> x.id is id
 
         document.addEventListener 'userprofiles', (evt) =>
           @userprofiles = evt.detail
@@ -78,10 +75,11 @@ send to one another peer-to-peer.
         @addEventListener 'video.off', (evt) ->
           muteStatus.sourcemutedvideo = true
           @fire 'mutestatus', muteStatus
-        bonzo(@$.selfie).hide()
         @addEventListener 'selfie.on', ->
+          console.log 'onn', @$.selfie
           @$.selfie.showAnimated()
         @addEventListener 'selfie.off', ->
+          console.log 'off'
           @$.selfie.hideAnimated()
 
 Administrative actions on the tool and sidebar go here.

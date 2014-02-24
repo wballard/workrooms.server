@@ -25,7 +25,7 @@
     <ul class="ui list grid-cell">
       <template id="searchresults" repeat="{{profile in profiles}}">
         <li class="profile">
-          <ui-user-profile class="grid-cell animated flipInX" profile="{{profile}}"></ui-user-profile>
+          <ui-user-profile class="grid-cell" profile="{{profile}}"></ui-user-profile>
         </li>
       </template>
     </ul>
@@ -45,7 +45,7 @@
   <span class="calls">
     <ui-local-video id="selfie" stream="{{localstream}}" userprofiles="{{userprofiles}}"></ui-local-video>
     <template id="calls" repeat="{{call in calls}}">
-      <ui-video-call class="animated flipInX" outbound?="{{call.outbound}}" inbound?="{{call.inbound}}" callid="{{call.callid}}" userprofiles="{{call.userprofiles}}" localstream="{{localstream}}" config="{{call.config}}"></ui-video-call>
+      <ui-video-call id="A{{call.id}}" outbound?="{{call.outbound}}" inbound?="{{call.inbound}}" callid="{{call.callid}}" userprofiles="{{call.userprofiles}}" localstream="{{localstream}}" config="{{call.config}}"></ui-video-call>
     </template>
   </span>
   </local-stream>

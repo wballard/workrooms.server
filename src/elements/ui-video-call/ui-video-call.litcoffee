@@ -17,6 +17,7 @@ Flag attribute indicating this is the outbound side of the call.
 ##inbound
 Flag attribute indicating this is the inbound side of the call.
 
+    require('../../elementmixin.litcoffee')
     rtc = require('webrtcsupport')
     uuid = require('node-uuid')
     _ = require('lodash')
@@ -142,6 +143,7 @@ The document acts as an event bus, so we're hooking up events to the document
 and the element itself when it is attached to the DOM.
 
       attached: ->
+        @showAnimated()
 
 Call keep alives, when these fail -- it is time to reconnect the call. This is
 reall no more complicated than disconnecting and reconnecting, with each side

@@ -4,10 +4,11 @@ A general purpose user profile display tile.
 ##profile
 This is an amalgamated profile object via OAuth sources.
 
-    uuid = require('node-uuid')
+    require('../../elementmixin.litcoffee')
 
     Polymer 'ui-user-profile',
       attached: ->
+        @showAnimated()
 
 Click to dial anywhere on the row for now.
 
