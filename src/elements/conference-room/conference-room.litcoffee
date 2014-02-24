@@ -17,7 +17,7 @@ identifiers used to data bind and generate `ui-video-call` elements.
 ##userprofiles
 All the known profiles for the current user.
 
-    require('../../elementmixin.litcoffee')
+    require('../elementmixin.litcoffee')
     uuid = require('node-uuid')
     _ = require('lodash')
     qwery = require('qwery')

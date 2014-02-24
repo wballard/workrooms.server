@@ -12,9 +12,8 @@ Showing with animation and a callback that fires once it is done.
           callback() if callback
         bonzo(@)
           .show()
-          .addClass('animated')
-          .addClass('fadeInDown')
-          .removeClass('fadeOutDown')
+          .addClass('fadeIn')
+          .removeClass('fadeOut')
 
 Hiding with animation and a callback that fires once it is done.
 
@@ -25,6 +24,5 @@ Hiding with animation and a callback that fires once it is done.
           bonzo(@).hide()
           callback() if callback
         bonzo(@)
-          .addClass('animated')
-          .addClass('fadeOutDown')
-          .removeClass('fadeInDown')
+          .addClass('fadeOut')
+          .removeClass('fadeIn')

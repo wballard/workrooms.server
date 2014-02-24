@@ -17,7 +17,7 @@ Flag attribute indicating this is the outbound side of the call.
 ##inbound
 Flag attribute indicating this is the inbound side of the call.
 
-    require('../../elementmixin.litcoffee')
+    require('../elementmixin.litcoffee')
     rtc = require('webrtcsupport')
     uuid = require('node-uuid')
     _ = require('lodash')

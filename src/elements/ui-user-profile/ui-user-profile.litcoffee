@@ -4,7 +4,7 @@ A general purpose user profile display tile.
 ##profile
 This is an amalgamated profile object via OAuth sources.
 
-    require('../../elementmixin.litcoffee')
+    require('../elementmixin.litcoffee')
 
     Polymer 'ui-user-profile',
       attached: ->

@@ -8,15 +8,12 @@ build script and watch for changes.
     rename = require 'gulp-rename'
     flatten = require 'gulp-flatten'
     watch = require 'gulp-watch'
-    concat = require 'gulp-continuous-concat'
+    concat = require 'gulp-concat'
     plumber = require 'gulp-plumber'
 
-    gulp.task 'default', ->
+All of the semi status stuff, don't bother to rebuild as often
 
-The chrome app manifest has no transforms.
-
-      gulp.src 'manifest.json', {cwd: 'src'}
-        .pipe gulp.dest 'build'
+    gulp.task 'assets', ->
 
 Sweep up static assest from all over.
 
@@ -35,6 +32,15 @@ Sweep up static assest from all over.
       gulp.src '**', {cwd: 'bower_components'}
         .pipe gulp.dest 'build/bower_components/'
 
+And our scripts
+
+    gulp.task 'source', ->
+
+The chrome app manifest has no transforms.
+
+      gulp.src 'manifest.json', {cwd: 'src'}
+        .pipe gulp.dest 'build'
+
 Map source directories to target build directories, then run the pipelines
 for each.
 
@@ -47,29 +53,25 @@ Each area has html templates, less styles, and litcoffee source.
 
       for src, dest of targets
         gulp.src '**/*.litcoffee', {cwd: src, read: false}
-          .pipe watch {read: false}
           .pipe browserify
             transform: ['coffeeify', 'browserify-data']
             debug: true
           .pipe rename extname: '.js'
           .pipe gulp.dest dest
-          .pipe concat('all')
         gulp.src '**/*.less', {cwd: src}
-          .pipe watch()
           .pipe less()
           .pipe gulp.dest dest
         gulp.src '**/*.html', {cwd: src}
-          .pipe watch()
           .pipe gulp.dest dest
         gulp.src '**/*.svg', {cwd: src}
-          .pipe watch()
           .pipe gulp.dest dest
 
 Drive the hot reload.
 
-      gulp.src 'src/**'
-        .pipe watch(emit: 'all')
-        .pipe plumber()
+    gulp.task 'reloader', ['source'], ->
+      gulp.src 'src/**/*.*'
         .pipe concat('all')
         .pipe gulp.dest 'build'
 
+    gulp.task 'default', ['assets', 'source'], ->
+      gulp.watch 'src/**', ['reloader']
