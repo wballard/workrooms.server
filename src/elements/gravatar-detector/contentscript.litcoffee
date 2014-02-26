@@ -19,32 +19,43 @@ minimum amount of injection possible to avoid breaking pages.
 
     chrome.runtime.onMessage.addListener (message, sender, respond) ->
       if message.type is 'online'
-        isOnlineSignals[message.detail.gravatar]?.show(message.detail)
-
-    processImageForGravatar = (img) ->
-      if img?.src?.match(gravatarRegex)
-
-Try to capture the original styling and then build up a similarly styled
-replacement.
-
-        gravatarToCall = urlparse(img.src).path.split('/')?[2]
+        isOnlineSignals[message.detail.userprofiles?.github?.gravatar_id]?.show(message.detail)
+        isOnlineSignals[message.detail.userprofiles?.github?.id]?.show(message.detail)
 
 Ask the server if this users is online, with the debounce to not be
 a chatterbox in particular on pages like commits where a user will be
 listed multiple times.
 
-        if not isOnlineSignals[gravatarToCall]
-          isOnlineSignals[gravatarToCall] = _.debounce ->
+    askIfOnline = (img, userid, gravatarid) ->
+      id = userid or gravatarid
+      if not isOnlineSignals[id]
+        isOnlineSignals[id] = _.debounce ->
+          if userid
             chrome.runtime.sendMessage
               type: 'isonline'
               detail:
-                gravatar: gravatarToCall
-          , 300
-          isOnlineSignals[gravatarToCall].images = []
-          isOnlineSignals[gravatarToCall].show = (detail) ->
-            _.each isOnlineSignals[gravatarToCall].images, (img) -> gravatarImageOnline(img, detail)
-        isOnlineSignals[gravatarToCall].images.push img
-        isOnlineSignals[gravatarToCall]()
+                userid: userid
+          if gravatarid
+            chrome.runtime.sendMessage
+              type: 'isonline'
+              detail:
+                gravatarid: gravatarid
+        , 300
+        isOnlineSignals[id].images = []
+        isOnlineSignals[id].show = (detail) ->
+          isOnlineSignals[id].images.forEach (img) ->
+            gravatarImageOnline(img, detail)
+      isOnlineSignals[id].images.push img
+      isOnlineSignals[id]()
+
+    processImageForGravatar = (img) ->
+      if img?.getAttribute('data-user')
+        askIfOnline img, img.getAttribute('data-user')
+      else if img?.src?.match(gravatarRegex)
+        gravatarToCall = urlparse(img.src).path.split('/')?[2]
+        if gravatarToCall
+          askIfOnline img, undefined, gravatarToCall
+
 
 Jam in a replacement element to take over the gravatar with the link.
 

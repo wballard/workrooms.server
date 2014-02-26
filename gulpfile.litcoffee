@@ -68,9 +68,10 @@ Each area has html templates, less styles, and litcoffee source.
 Drive the hot reload.
 
     gulp.task 'reloader', ['source'], ->
+      console.log 'reloader'
       gulp.src 'src/**/*.*'
         .pipe concat('all')
         .pipe gulp.dest 'build'
 
     gulp.task 'default', ['assets', 'source'], ->
-      gulp.watch 'src/**', ['reloader']
+      gulp.watch 'src/**/*.*', ['reloader']

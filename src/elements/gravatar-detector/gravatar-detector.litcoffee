@@ -17,6 +17,7 @@ Inject into an individual tab. Nothing fancy here except pay
 attention to the paths of the files.
 
     inject = (tab) ->
+      console.log 'injecting', tab
       ret = chrome.tabs.executeScript tab.id,
         file: '/bower_components/gravatar-detector/contentscript.js'
         allFrames: true

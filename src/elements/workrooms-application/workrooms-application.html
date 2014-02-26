@@ -14,8 +14,10 @@
   <!--send along events to the extension from the websocket-->
   <chrome-event-relay id="conference" to="conference" events="configured calls userprofiles ice offer answer hangup autocomplete">
   <!--send along events to all tabs coming from the websocket, used in content scripts-->
-  <chrome-tab-event-relay events="online">
+  <chrome-tab-event-relay sendevents="online" listenevents="">
   <websocket-event-sink id="server" events="userprofile register call ice offer answer hangup autocomplete isonline" server="{{config.signallingServer}}">
+  <chrome-tab-event-relay sendevents="" listenevents="isonline call">
+  </chrome-event-source>
   <!--this will get chrome messages that need a chance at the socket-->
   <chrome-event-source name="background">
   <chrome-devreloader config="{{ config }}"></chrome-devreloader>
