@@ -8,12 +8,15 @@
     <script src="/bower_components/jquery-ui/ui/jquery-ui.js"></script>
     <link rel="import" href="/bower_components/conference-room/conference-room.html">
     <link rel="import" href="/bower_components/event-bus/chrome-event-relay.html">
+    <link rel="import" href="/bower_components/event-bus/chrome-event-source.html">
   </head>
   <body>
-    <chrome-event-relay id="relay" events="getuserprofile
+    <chrome-event-source name="conference">
+    <chrome-event-relay to="background" events="getuserprofile
     getuserprofiles signout call
     ice offer answer hangup autocomplete getcalls">
     <conference-room></conference-room>
     </chrome-event-relay>
+    </chrome-event-source>
   </body>
 </html>

@@ -191,6 +191,7 @@ yourself for testing.
         document.addEventListener 'ice', (evt) =>
           if evt?.detail?.peerid isnt @peerid and event?.detail?.signal and event?.detail?.callid is @callid
             if evt?.detail?.candidate
+              console.log 'adding ice', evt?.detail?.candidate
               @peerConnection.addIceCandidate(new rtc.IceCandidate(evt.detail.candidate))
 
 Inbound side SDP needs to make sure we get an offer, which it will then answer.

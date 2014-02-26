@@ -7,6 +7,9 @@ extension API, but also adds a couple features:
 #Attributes
 ##visible
 If present, indicates that the tab is being show.
+#Events
+##conferencetabvisible
+Fired when the tab is show
 
     Polymer 'conference-tab',
 
@@ -22,6 +25,7 @@ tabs with content triggering a click-to-dial.
               chrome.tabs.update tab.id, active: true
               chrome.storage.local.set conference: true
               @setAttribute 'visible', ''
+              @fire 'conferencetabvisible'
               chrome.tabs.onRemoved.addListener (id) =>
                 if id is tab.id
                   chrome.storage.local.set conference: false

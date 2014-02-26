@@ -30,11 +30,18 @@ elements that actually do work!
 
       attached: ->
 
+When we have a connection to this, the background page, connect through to
+the conference tab port.
+
+        @addEventListener 'chromeconnect', (evt) =>
+          if evt.detail.name is 'background'
+            @$.conference.connect()
+
         @addEventListener 'calls', (evt) =>
           @$.icon.drawIcon(@calls)
 
         @addEventListener 'getcalls', (evt) =>
-          @$.local.relay 'calls', @calls
+          @$.conference.relay 'calls', @calls
 
 When the server says hello, tell it about the local calls we may already have.
 This lets the server live through a crash by having all the clients keep it
@@ -43,11 +50,11 @@ up to date.
         @addEventListener 'hello', =>
           setTimeout =>
             @$.icon.drawIcon(@calls)
-          , 1000
+          , 1500
           @$.github.fire 'register',
             runtime: chrome.runtime.id
             calls: @calls
-          @$.local.relay 'calls', @calls
+          @$.conference.relay 'calls', @calls
 
 Once you have registered with the server, the configuration will come.
 
@@ -65,14 +72,14 @@ Keep track of all userprofiles for the current user.
         @addEventListener 'userprofiles', (evt) =>
           @userprofiles = evt.detail
         @addEventListener 'getuserprofiles', =>
-          @$.local.relay 'userprofiles', @userprofiles
+          @$.conference.relay 'userprofiles', @userprofiles
 
 Track inbound and outbound calls when asked into the local calls array.
 
         @addEventListener 'outboundcall', (evt) =>
           evt.detail.config = @serverconfig
           @calls.push evt.detail
-          @$.local.relay 'calls', @calls
+          @$.conference.relay 'calls', @calls
 
         @addEventListener 'inboundcall', (evt) =>
           if not @$.tab.visible?
@@ -84,7 +91,7 @@ Track inbound and outbound calls when asked into the local calls array.
             callToast.show()
           evt.detail.config = @serverconfig
           @calls.push evt.detail
-          @$.local.relay 'calls', @calls
+          @$.conference.relay 'calls', @calls
 
         @addEventListener 'hangup', (evt) =>
           console.log 'hangup', evt
@@ -92,4 +99,4 @@ Track inbound and outbound calls when asked into the local calls array.
             _.remove @calls, (call) ->
               console.log 'hangup', call
               call.callid is hangupCall.callid
-          @$.local.relay 'calls', @calls
+          @$.conference.relay 'calls', @calls

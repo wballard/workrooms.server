@@ -4,7 +4,10 @@
 <polymer-element name="ui-toggle-tool" attributes="icon togglechanged active">
 <template>
   <a id="tool" class="item">
-    <i class="fa {{ icon }}"></i>
+    <span class="fa-stack">
+      <i id="icon" class="fa {{ icon }} fa-stack-1x"></i>
+      <i id="overlay" class="fa disabled"></i>
+    </span>
     <content></content>
   </a>
 </template>

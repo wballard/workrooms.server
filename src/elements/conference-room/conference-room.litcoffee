@@ -28,7 +28,6 @@ All the known profiles for the current user.
       calls: []
       attached: ->
 
-
         @addEventListener 'error', (err) ->
           console.log err
 
@@ -76,10 +75,8 @@ send to one another peer-to-peer.
           muteStatus.sourcemutedvideo = true
           @fire 'mutestatus', muteStatus
         @addEventListener 'selfie.on', ->
-          console.log 'onn', @$.selfie
           @$.selfie.showAnimated()
         @addEventListener 'selfie.off', ->
-          console.log 'off'
           @$.selfie.hideAnimated()
 
 Administrative actions on the tool and sidebar go here.
@@ -99,7 +96,6 @@ Show those results via data binding. This message is coming back in from the
 server.
 
         document.addEventListener 'autocomplete', (evt) =>
-          console.log 'a', evt.detail.results
           @$.searchresults.model =
             profiles: evt.detail.results
 

@@ -7,7 +7,6 @@ build script and watch for changes.
     browserify = require 'gulp-browserify'
     rename = require 'gulp-rename'
     flatten = require 'gulp-flatten'
-    watch = require 'gulp-watch'
     concat = require 'gulp-concat'
     plumber = require 'gulp-plumber'
 
