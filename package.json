@@ -34,6 +34,6 @@
   },
   "scripts": {
     "install": "bower install",
-    "start": "nodemon --exec 'gulp' --require coffee-script/register --gulpfile gulpfile.litcoffee"
+    "start": "nodemon  --exec 'gulp' --require coffee-script/register --gulpfile gulpfile.litcoffee"
   }
 }

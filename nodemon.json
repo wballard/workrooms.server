@@ -1,4 +1,5 @@
 {
-  "ignore": ["build/*", "src/*"],
-  "verbose": true
+  "ignore": ["build/*", ".git"],
+  "verbose": false,
+  "ext": "less html litcoffee yaml"
 }

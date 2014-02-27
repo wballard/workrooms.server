@@ -73,5 +73,4 @@ Drive the hot reload.
         .pipe concat('all')
         .pipe gulp.dest 'build'
 
-    gulp.task 'default', ['assets', 'source'], ->
-      gulp.watch 'src/**/*.*', ['reloader']
+    gulp.task 'default', ['reloader', 'assets', 'source']
