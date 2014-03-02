@@ -17,17 +17,15 @@ This fires a dynamic event based on `togglechanged`. Will fire a
     bonzo = require('bonzo')
 
     Polymer 'ui-toggle-tool',
+      active: false
       attached: ->
-        @addEventListener 'click', ->
-          if @hasAttribute('active')
-            @removeAttribute('active')
-          else
-            @setAttribute('active', '')
+        @addEventListener 'click', =>
+          @active = not @active
         @activeChanged()
-      activeChanged: (oldValue, newValue) ->
-        if @active?
+      activeChanged: ->
+        if @active
           @fire "#{@togglechanged}.on"
-          #@$.tool.classList.add('active')
+          @$.tool.classList.add('active')
           bonzo(@$.overlay).hide()
         else
           @fire "#{@togglechanged}.off"

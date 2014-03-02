@@ -2,16 +2,16 @@
 <link rel="import" href="../local-stream/local-stream.html">
 <link rel="import" href="../ui-video-stream/audio-control.html">
 <link rel="import" href="../ui-video-stream/video-control.html">
-<link rel="import" href="../ui-local-video/ui-local-video.html">
 <link rel="import" href="../ui-video-call/ui-video-call.html">
 <link rel="import" href="../ui-toolbar/ui-toolbar.html">
 <link rel="import" href="../ui-sidebar/ui-sidebar.html">
 <link rel="import" href="../ui-input/ui-input.html">
 <link rel="import" href="../ui-user-profile/ui-user-profile.html">
+<link rel="import" href="../ui-user-profile/ui-user-profile-github-gravatar.html">
 <link rel="import" href="../ui-hide/ui-hide.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 
-<polymer-element name="conference-room" attributes="localstream calls userprofiles">
+<polymer-element name="conference-room" attributes="localstream calls userprofiles audioon videoon">
 <template>
   <video-control stream="{{localstream}}">
   <audio-control stream="{{localstream}}">
@@ -33,8 +33,8 @@
   <ui-toolbar>
   <ui-command-tool icon="fa-bars" command="sidebar"></ui-command-tool>
   <ui-toggle-tool icon="fa-eye" togglechanged="selfie"></ui-toggle-tool>
-  <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active></ui-toggle-tool>
-  <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active></ui-toggle-tool>
+  <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active="{{videoon}}"></ui-toggle-tool>
+  <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active="{{audioon}}"></ui-toggle-tool>
   <ui-command-tool icon="fa-phone fa-rotate-135" command="hangup"></ui-command-tool>
   <ui-right-toolbar>
   <ui-command-tool icon="fa-sign-in" command="getuserprofile"></ui-command-tool>
@@ -42,9 +42,33 @@
   </ui-right-toolbar>
   </ui-toolbar>
   <span class="calls">
-    <ui-local-video id="selfie" stream="{{localstream}}" userprofiles="{{userprofiles}}"></ui-local-video>
+    <div id="selfie" class="ui tile video">
+      <section>
+        <ui-video-stream stream="{{localstream}}" mutedaudio mirror></ui-video-stream>
+        <ui-toolbar>
+        <template bind if="{{userprofiles.github}}">
+          <ui-user-profile-github-gravatar github="{{userprofiles.github}}">
+          </ui-user-profile-github-gravatar>
+        </template>
+        </ui-toolbar>
+      </section>
+    </div>
     <template id="calls" repeat="{{call in calls}}">
-      <ui-video-call id="A{{call.id}}" outbound?="{{call.outbound}}" inbound?="{{call.inbound}}" callid="{{call.callid}}" userprofiles="{{call.userprofiles}}" localstream="{{localstream}}" config="{{call.config}}"></ui-video-call>
+      <ui-video-call id="A{{call.id}}" outbound?="{{call.outbound}}" inbound?="{{call.inbound}}" callid="{{call.callid}}" 
+      localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}" 
+      remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}" config="{{call.config}}">
+      <div class="ui tile video">
+        <section>
+          <ui-video-stream stream="{{call.remotestream}}" audio="{{call.remoteaudio}}" video="{{call.remotevideo}}"></ui-video-stream>
+          <ui-toolbar>
+          <template bind if="{{call.userprofiles.github}}">
+            <ui-user-profile-github-gravatar github="{{call.userprofiles.github}}">
+            </ui-user-profile-github-gravatar>
+          </template>
+          </ui-toolbar>
+        </section>
+      </div>
+      </ui-video-call>
     </template>
   </span>
   </local-stream>

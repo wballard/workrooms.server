@@ -1,17 +1,11 @@
 Show a video stream with user interface.
 
 #Attributes
-##sourcemutedvideo
-##sourcemutedaudio
+##audio
+##video
 ##mirror
 ##mutedaudio
-
-#Events
 ##stream
-Fires off when a stream is present.
-
-#Methods
-##display(stream)
 
     _ = require('lodash')
     bonzo = require('bonzo')
@@ -45,28 +39,28 @@ the video plays.
             @$.snapshot.setAttribute('src', @$.takesnapshot.toDataURL('image/png'))
           takeSnapshot()
           setInterval =>
-            if not @hasAttribute('sourcemutedvideo') or @getAttribute('sourcemutedvideo') is 'false'
+            if not @video is 'false'
               takeSnapshot()
           , SNAPSHOT_TIMEOUT
 
 Looking for attributes to mute. This is a neat trick as these are attributes
 that trigger by presence, so we can hit them with the ?
 
-      sourcemutedaudioChanged: (oldValue, newValue) ->
-        if newValue?
-          bonzo(@$.sourcemutedaudio).show()
-        else
+      audioChanged: ->
+        if @audio
           bonzo(@$.sourcemutedaudio).hide()
-
-      sourcemutedvideoChanged: (oldValue, newValue) ->
-        if newValue?
-          bonzo(@$.video).removeClass(IN_EFFECT).addClass(OUT_EFFECT).hide()
-          bonzo(@$.snapshot).removeClass(OUT_EFFECT).addClass(IN_EFFECT).show()
         else
+          bonzo(@$.sourcemutedaudio).show()
+
+      videoChanged: ->
+        if @video
           bonzo(@$.video).removeClass(OUT_EFFECT).addClass(IN_EFFECT).show()
           bonzo(@$.snapshot).removeClass(IN_EFFECT).addClass(OUT_EFFECT).hide()
+        else
+          bonzo(@$.video).removeClass(IN_EFFECT).addClass(OUT_EFFECT).hide()
+          bonzo(@$.snapshot).removeClass(OUT_EFFECT).addClass(IN_EFFECT).show()
 
-      display: (stream) ->
+      streamChanged: ->
         if @hasAttribute('mutedaudio')
           @$.video.setAttribute('muted', '')
         else
@@ -76,11 +70,10 @@ that trigger by presence, so we can hit them with the ?
            .css('-webkit-transform', 'scaleX(-1)')
           bonzo(@$.snapshot)
            .css('-webkit-transform', 'scaleX(-1)')
-        if stream
-          @$.video.src = URL.createObjectURL(stream)
+        if @stream
+          @$.video.src = URL.createObjectURL(@stream)
           @$.video.play()
           bonzo(@$.loading).hide()
-          @fire 'stream', stream
         else
           @$.video.src = ''
           bonzo(@$.loading).show()

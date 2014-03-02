@@ -1,22 +1,10 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../ui-video-stream/ui-video-stream.html">
-<link rel="import" href="../ui-toolbar/ui-toolbar.html">
-<link rel="import" href="../ui-user-profile/ui-user-profile-github-gravatar.html">
 <link rel="stylesheet" type="text/css" href="./ui-video-call.css">
 
-<polymer-element name="ui-video-call" attributes="callid userprofiles inbound outbound localstream config">
+<polymer-element name="ui-video-call" attributes="callid userprofiles inbound outbound localstream remotestream config localaudio localvideo remoteaudio remotevideo">
 <template>
-    <div class="ui tile video">
-      <section>
-        <ui-video-stream id="player"></ui-video-stream>
-        <ui-toolbar>
-        <template bind if="{{userprofiles.github}}">
-          <ui-user-profile-github-gravatar github="{{userprofiles.github}}">
-          </ui-user-profile-github-gravatar>
-        </template>
-        </ui-toolbar>
-      </section>
-    </div>
+  <content></content>
 </template>
 <script src="./ui-video-call.js"></script>
 </polymer-element>

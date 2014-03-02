@@ -24,6 +24,8 @@ All the known profiles for the current user.
     bonzo = require('bonzo')
 
     Polymer 'conference-room',
+      audioon: true
+      videoon: true
       userprofiles: {}
       calls: []
       attached: ->
@@ -52,31 +54,16 @@ All the calls known to the application, make sure there are visual elements.
             @shadowRoot.querySelector("#A#{id}").hideAnimated =>
               _.remove @calls, (x) -> x.id is id
 
+User profiles coming in from the server are captured here.
+
         document.addEventListener 'userprofiles', (evt) =>
           @userprofiles = evt.detail
 
-In call options, most important of which is mute audio / mute video. This just
-fires an event, counting on the individual calls to listen for it and then
-send to one another peer-to-peer.
+Show and hide the selfie -- this really needs to be data bound instead.
 
-        muteStatus =
-          sourcemutedvideo: false
-          sourcemutedaudio: false
-        @addEventListener 'audio.on', (evt) ->
-          muteStatus.sourcemutedaudio = false
-          @fire 'mutestatus', muteStatus
-        @addEventListener 'audio.off', (evt) ->
-          muteStatus.sourcemutedaudio = true
-          @fire 'mutestatus', muteStatus
-        @addEventListener 'video.on', (evt) ->
-          muteStatus.sourcemutedvideo = false
-          @fire 'mutestatus', muteStatus
-        @addEventListener 'video.off', (evt) ->
-          muteStatus.sourcemutedvideo = true
-          @fire 'mutestatus', muteStatus
-        @addEventListener 'selfie.on', ->
+        @addEventListener 'selfie.on', =>
           @$.selfie.showAnimated()
-        @addEventListener 'selfie.off', ->
+        @addEventListener 'selfie.off', =>
           @$.selfie.hideAnimated()
 
 Administrative actions on the tool and sidebar go here.

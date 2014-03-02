@@ -3,13 +3,24 @@ bit of a base element to extend.
 
 
 #Events
-##signal
-A message from RTC that needs to be shared with peers via the
-signalling server.
 ##ice
 A NAT traversal message for WebRTC, sent to peers via signalling
+##offer
+WebRTC message to communicate config and willingness to make a call.
+##answer
+WebRTC message after an `offer` is accepted, sent back to the originator
+of the `offer`.
 
 #Attributes
+##callid
+This will be the same on both peers of the call.
+##config
+Settings, most important property is the `iceServers` array, used to communicate
+ICE protocol setup.
+##localstream
+Media stream originating locally, this is communicated to peers.
+##remotestream
+Media stream beamed over WebRTC from the other peer.
 ##peerid
 This is the identifier of this side of the running call.
 ##outbound
@@ -21,7 +32,6 @@ Flag attribute indicating this is the inbound side of the call.
     rtc = require('webrtcsupport')
     uuid = require('node-uuid')
     _ = require('lodash')
-    bonzo = require('bonzo')
 
     RECONNECT_TIMEOUT_THRESHOLD = 3
     RECONNECT_TIMEOUT = 2 * 1000
@@ -39,7 +49,7 @@ is tried.
 This is the default implementation until data is connected.
 
       send: (type, detail) ->
-        console.log 'WARNING, data not connected', message
+        console.log 'WARNING, data not connected', detail
 
       created: ->
         @peerid = uuid.v1()
@@ -75,9 +85,9 @@ Video streams coming over RTC need to be displayed.
 
         #display hookup and removal
         @peerConnection.onaddstream = (evt) =>
-          @$.player.display evt.stream
+          @remotestream = evt.stream
         @peerConnection.onremovestream = (evt) =>
-          @$.player.display null
+          @remotestream = null
 
 If there is a disconnection, get back to initial state.
 
@@ -131,7 +141,7 @@ And then handle it remotedly with
 And let everything go.
 
       disconnect: ->
-        @$.player.display null
+        @remotestream = null
         if @keepaliveInterval?
           clearInterval @keepaliveInterval
           @keepaliveInterval = undefined
@@ -167,21 +177,11 @@ Mute control, bridge this across to peers. This side will do the actual work
 of switching off parts of the stream, and then relay to the far side to do the
 visual work of updating visual status of the mute.
 
-        document.addEventListener 'mutestatus', (evt) =>
-          @send 'peermutestatus', evt.detail
+        @addEventListener 'remoteaudio', (evt) =>
+          @remoteaudio = evt.detail.state
+        @addEventListener 'remotevideo', (evt) =>
+          @remotevideo = evt.detail.state
 
-        @addEventListener 'peermutestatus', (evt) =>
-          message = evt.detail
-          if message.sourcemutedaudio?
-            if message.sourcemutedaudio
-              @$.player.setAttribute('sourcemutedaudio')
-            else
-              @$.player.removeAttribute('sourcemutedaudio')
-          if message.sourcemutedvideo?
-            if message.sourcemutedvideo
-              @$.player.setAttribute('sourcemutedvideo')
-            else
-              @$.player.removeAttribute('sourcemutedvideo')
 
 ICE messages just add in, there is now offer/answer -- just make sure to not
 add your own peer side messages.  And make sure it is a server signal, not just
@@ -250,8 +250,10 @@ RTCPeerConnection to start negotiation.
 
       localstreamChanged: (oldValue, newValue) ->
         if newValue
-          if @outbound?
-            window.debugFakeReconnect = =>
-              @connect().addStream(newValue)
           @connect().addStream(newValue)
 
+      localaudioChanged: ->
+        @send 'remoteaudio', state: @localaudio
+
+      localvideoChanged: ->
+        @send 'remotevideo', state: @localvideo
