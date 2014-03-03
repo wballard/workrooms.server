@@ -26,21 +26,13 @@ All the known profiles for the current user.
     Polymer 'conference-room',
       audioon: true
       videoon: true
+      screenon: true
       userprofiles: {}
       calls: []
       attached: ->
 
         @addEventListener 'error', (err) ->
           console.log err
-
-WebRTC can only kick off interaction when it has something to share, namely a
-local stream of data to transmit. Listen for this stream and set it so that it
-can be bound by all the contained calls.
-
-        @addEventListener 'localstream', (evt) =>
-          @localstream = evt.detail
-          @fire 'getcalls', {}
-          @fire 'getuserprofiles', {}
 
 All the calls known to the application, make sure there are visual elements.
 
@@ -58,6 +50,7 @@ User profiles coming in from the server are captured here.
 
         document.addEventListener 'userprofiles', (evt) =>
           @userprofiles = evt.detail
+          @fire 'call', to: evt.detail.sessionid
 
 Show and hide the selfie -- this really needs to be data bound instead.
 
@@ -91,3 +84,10 @@ This is just debug code. Remove later. Really. No fooling.
         setTimeout =>
           @fire 'sidebar'
 
+WebRTC can only kick off interaction when it has something to share, namely a
+local stream of data to transmit. Listen for this stream and set it so that it
+can be bound by all the contained calls.
+
+      localstreamChanged: ->
+        @fire 'getcalls', {}
+        @fire 'getuserprofiles', {}

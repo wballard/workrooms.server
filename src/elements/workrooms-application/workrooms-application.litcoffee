@@ -19,6 +19,7 @@ Store configurations for each runtime id along with the code.
 
     Polymer 'workrooms-application',
       calls: []
+      screenshares: []
       userprofiles: {}
 
 This is the magic part, set config and watch the data binding fill in the
@@ -93,10 +94,23 @@ Track inbound and outbound calls when asked into the local calls array.
           @calls.push evt.detail
           @$.conference.relay 'calls', @calls
 
+        @addEventListener 'outboundscreen', (evt) =>
+          evt.detail.config = @serverconfig
+          @screenshares.push evt.detail
+
+        @addEventListener 'inboundscreen', (evt) =>
+          evt.detail.config = @serverconfig
+          @screenshares.push evt.detail
+
+        @$.background.addEventListener 'hangup', (evt) =>
+          evt.stopPropagation()
+          @calls.concat(@screenshares).forEach (call) =>
+            @$.server.relay 'hangup', call
+
         @addEventListener 'hangup', (evt) =>
-          console.log 'hangup', evt
-          _.forEach evt?.detail?.calls or [], (hangupCall) =>
-            _.remove @calls, (call) ->
-              console.log 'hangup', call
-              call.callid is hangupCall.callid
-          @$.conference.relay 'calls', @calls
+          if evt.detail
+            hangupCall = evt.detail
+            _.remove @calls, (call) -> call.callid is hangupCall.callid
+            _.remove @screenshares, (call) -> call.callid is hangupCall.callid
+            console.log 'remaining', @calls, @screenshares
+            @$.conference.relay 'calls', @calls

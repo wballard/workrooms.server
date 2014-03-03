@@ -30,7 +30,8 @@
     "gulp-flatten": "0.0.2",
     "gulp-concat": "~2.1.7",
     "gulp-plumber": "~0.5.6",
-    "gulp-continuous-concat": "~0.1.1"
+    "gulp-continuous-concat": "~0.1.1",
+    "getscreenmedia": "~0.2.1"
   },
   "scripts": {
     "install": "bower install",

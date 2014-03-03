@@ -11,11 +11,11 @@
 <link rel="import" href="../ui-hide/ui-hide.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 
-<polymer-element name="conference-room" attributes="localstream calls userprofiles audioon videoon">
+<polymer-element name="conference-room" attributes="localstream calls userprofiles audioon videoon screenon">
 <template>
   <video-control stream="{{localstream}}">
   <audio-control stream="{{localstream}}">
-  <local-stream id="local" audio video>
+  <local-stream id="local" audio video stream="{{localstream}}">
   <ui-sidebar id="sidebar">
   <span class="grid grid--gutters">
     <ui-input class="grid-cell" icon="fa-search" placeholder="Search..."></ui-input>
@@ -35,6 +35,7 @@
   <ui-toggle-tool icon="fa-eye" togglechanged="selfie"></ui-toggle-tool>
   <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active="{{videoon}}"></ui-toggle-tool>
   <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active="{{audioon}}"></ui-toggle-tool>
+  <ui-toggle-tool icon="fa-laptop" togglechanged="screen" active="{{screenon}}"></ui-toggle-tool>
   <ui-command-tool icon="fa-phone fa-rotate-135" command="hangup"></ui-command-tool>
   <ui-right-toolbar>
   <ui-command-tool icon="fa-sign-in" command="getuserprofile"></ui-command-tool>
@@ -65,6 +66,7 @@
             <ui-user-profile-github-gravatar github="{{call.userprofiles.github}}">
             </ui-user-profile-github-gravatar>
           </template>
+          <ui-command-tool icon="fa-laptop" command="sharescreen" detail="{{call}}"></ui-command-tool>
           </ui-toolbar>
         </section>
       </div>

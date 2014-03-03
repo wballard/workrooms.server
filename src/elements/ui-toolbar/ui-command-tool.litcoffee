@@ -13,5 +13,5 @@ This fires a dynamic event based on `command`.
 
     Polymer 'ui-command-tool',
       attached: ->
-        @addEventListener 'click', ->
-          @fire @command
+        @addEventListener 'click', =>
+          @fire @command, @detail

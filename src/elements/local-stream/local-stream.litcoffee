@@ -16,6 +16,7 @@ Bad stuff. Fires.
 Fires when a stream is available, also after then `stream` property is set.
 
     getUserMedia = require('getusermedia')
+    getScreenMedia = require('getscreenmedia')
 
     Polymer 'local-stream',
       attached: ->
@@ -24,12 +25,11 @@ Fires when a stream is available, also after then `stream` property is set.
           audio: @hasAttribute('audio')
         getUserMedia mediaConstraints, (err, stream) =>
           if err
-            @fire 'error',
-              stream: stream
-              error: err
+            @fire 'error', err
           else
             @stream = stream
-            @fire 'localstream', stream
-        @addEventListener 'getlocalstream', =>
-          if @stream
-            @fire 'localstream', @stream
+        getScreenMedia (err, stream) =>
+          if err
+            @fire 'error', err
+          else
+            @screenstream = stream
