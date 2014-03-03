@@ -86,8 +86,6 @@ is the *click to dial*.
             type: 'call'
             detail:
               to: detail.sessionid
-          chrome.runtime.sendMessage
-            showConferenceTab: true
 
 Now, look all through the document for all images and process em!
 

@@ -11,7 +11,7 @@
 <link rel="import" href="../ui-hide/ui-hide.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 
-<polymer-element name="conference-room" attributes="localstream calls userprofiles audioon videoon screenon">
+<polymer-element name="conference-room" attributes="localstream calls userprofiles audioon videoon">
 <template>
   <video-control stream="{{localstream}}">
   <audio-control stream="{{localstream}}">
@@ -35,7 +35,6 @@
   <ui-toggle-tool icon="fa-eye" togglechanged="selfie"></ui-toggle-tool>
   <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active="{{videoon}}"></ui-toggle-tool>
   <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active="{{audioon}}"></ui-toggle-tool>
-  <ui-toggle-tool icon="fa-laptop" togglechanged="screen" active="{{screenon}}"></ui-toggle-tool>
   <ui-command-tool icon="fa-phone fa-rotate-135" command="hangup"></ui-command-tool>
   <ui-right-toolbar>
   <ui-command-tool icon="fa-sign-in" command="getuserprofile"></ui-command-tool>

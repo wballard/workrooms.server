@@ -34,7 +34,7 @@ Flag attribute indicating this is the inbound side of the call.
     _ = require('lodash')
 
     RECONNECT_TIMEOUT_THRESHOLD = 3
-    RECONNECT_TIMEOUT = 4 * 1000
+    RECONNECT_TIMEOUT = 2 * 1000
     KEEPALIVE_TIMEOUT = 1 * 1000
 
     Polymer 'ui-video-call',
@@ -163,7 +163,7 @@ Now the tricky part is to keep from *flapping*, so we'll take that reconnection
 semaphore down a few more counts to keep it well below the threshold.
 
         @reconnectInterval = setInterval =>
-          if (@reconnectSemaphore++ > RECONNECT_TIMEOUT_THRESHOLD)
+          if (@reconnectSemaphore++ > RECONNECT_TIMEOUT_THRESHOLD) and @localstream
             console.log 'trying to reconnect'
             @reconnectSemaphore = -(2 * RECONNECT_TIMEOUT_THRESHOLD)
             @disconnect()

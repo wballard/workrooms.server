@@ -26,7 +26,6 @@ All the known profiles for the current user.
     Polymer 'conference-room',
       audioon: true
       videoon: true
-      screenon: true
       userprofiles: {}
       calls: []
       attached: ->

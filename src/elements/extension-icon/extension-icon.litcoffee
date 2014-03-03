@@ -11,6 +11,13 @@ Pixels, as an integer.
 
     Polymer 'extension-icon',
       size: 19
+      attached: ->
+        console.log 'hi icon'
+
+Of course, chrome events don't follow the pattern for dom elements...
+
+        chrome.browserAction.onClicked.addListener =>
+          @fire 'showconferencetab'
 
 This is a fun one. This is an invisible element for sure, but unless the
 canvas is 'in the DOM' -- `attached` in Polymer parlance, the `fillText`

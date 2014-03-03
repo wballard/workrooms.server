@@ -16,7 +16,6 @@ Bad stuff. Fires.
 Fires when a stream is available, also after then `stream` property is set.
 
     getUserMedia = require('getusermedia')
-    getScreenMedia = require('getscreenmedia')
 
     Polymer 'local-stream',
       attached: ->
@@ -28,8 +27,3 @@ Fires when a stream is available, also after then `stream` property is set.
             @fire 'error', err
           else
             @stream = stream
-        getScreenMedia (err, stream) =>
-          if err
-            @fire 'error', err
-          else
-            @screenstream = stream
