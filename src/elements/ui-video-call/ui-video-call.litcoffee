@@ -34,8 +34,8 @@ Flag attribute indicating this is the inbound side of the call.
     _ = require('lodash')
 
     RECONNECT_TIMEOUT_THRESHOLD = 3
-    RECONNECT_TIMEOUT = 2 * 1000
-    KEEPALIVE_TIMEOUT = 2 * RECONNECT_TIMEOUT
+    RECONNECT_TIMEOUT = 4 * 1000
+    KEEPALIVE_TIMEOUT = 1 * 1000
 
     Polymer 'ui-video-call',
 
@@ -94,13 +94,14 @@ If there is a disconnection, get back to initial state.
         @peerConnection.oniceconnectionstatechange = (evt) =>
           if @peerConnection?.iceConnectionState is 'disconnected'
             @disconnect()
-          if @peerConnection?.iceConnectionState is 'connected'
-            @reconnectSemaphore = 0
-            @keepaliveInterval = setInterval =>
-              @send 'callkeepalive',
-                callid: @callid
-                peerid: @peerid
-            , KEEPALIVE_TIMEOUT
+
+Set up a peer-to-peer keep alive timer.
+
+        @keepaliveInterval = setInterval =>
+          @send 'callkeepalive',
+            callid: @callid
+            peerid: @peerid
+        , KEEPALIVE_TIMEOUT
 
 On a request to negotiate, send along the offer from the outbound side to
 start up the sequence.
@@ -162,12 +163,11 @@ Now the tricky part is to keep from *flapping*, so we'll take that reconnection
 semaphore down a few more counts to keep it well below the threshold.
 
         @reconnectInterval = setInterval =>
-          if @reconnectSemaphore++ > RECONNECT_TIMEOUT_THRESHOLD
-            if @localstream
-              console.log 'trying to reconnect'
-              @reconnectSemaphore = -(2 * RECONNECT_TIMEOUT_THRESHOLD)
-              @disconnect()
-              @connect().addStream(@localstream)
+          if (@reconnectSemaphore++ > RECONNECT_TIMEOUT_THRESHOLD)
+            console.log 'trying to reconnect'
+            @reconnectSemaphore = -(2 * RECONNECT_TIMEOUT_THRESHOLD)
+            @disconnect()
+            @connect().addStream(@localstream)
         , RECONNECT_TIMEOUT
 
         @addEventListener 'callkeepalive', (evt) =>
