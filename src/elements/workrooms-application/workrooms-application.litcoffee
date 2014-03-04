@@ -57,11 +57,18 @@ up to date.
             calls: @calls
           @$.conference.relay 'calls', @calls
 
+Signing in re-runs the github auth sequence.
+
+        @addEventListener 'login', =>
+          @$.github.login()
+        @addEventListener 'logout', =>
+          @$.github.logout()
+
 Once you have registered with the server, the configuration will come.
 
         @addEventListener 'configured', (evt) =>
           @serverconfig = evt.detail
-          @$.github.login()
+          @fire 'signin'
           @$.icon.drawIcon()
           window.debugCallSelf = =>
             @$.server.relay 'call', to: evt.detail.sessionid
@@ -72,7 +79,6 @@ Keep track of all userprofiles for the current user.
 
         @addEventListener 'userprofiles', (evt) =>
           @userprofiles = evt.detail
-        @addEventListener 'getuserprofiles', =>
           @$.conference.relay 'userprofiles', @userprofiles
 
 Track inbound and outbound calls when asked into the local calls array.

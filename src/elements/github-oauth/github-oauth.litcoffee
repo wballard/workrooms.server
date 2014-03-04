@@ -24,18 +24,22 @@ Call this to force the login sequence.
 
     Polymer 'github-oauth',
       inProgress: false
+
+Auto login on attach.
+
       attached: ->
-        document.addEventListener 'getuserprofile', =>
-          if @userProfile
-            @fire 'userprofile', @userProfile
-          else
-            @login()
+        if @userProfile
+          @fire 'userprofile', @userProfile
+        else
+          @login()
 
 Little debounce to avoid double login as the `clientid` and `clientsecret`
 are set typically in sequence.
 
       login: ->
-        if @inProgress
+        if @userProfile
+          @fire 'userprofile', @userProfile
+        else if @inProgress
           return
         else
           @inProgress = true
@@ -48,3 +52,9 @@ are set typically in sequence.
               info.profile_source = 'github'
               @userProfile = info
               @fire 'userprofile', @userProfile
+
+Login just straight calls, clearing the tokens out, no debounce, no gui.
+
+      logout: ->
+        @userProfile = null
+        github.logout()

@@ -95,7 +95,16 @@ var gh = (function() {
       removeCachedToken: function(token_to_remove) {
         if (access_token == token_to_remove)
           access_token = null;
+      },
+
+      clearCachedToken: function() {
+        chrome.identity.removeCachedAuthToken({token: access_token}, function() {
+          console.log(arguments);
+          console.log(access_token, 'no longer cached');
+          access_token = null;
+        });
       }
+
     }
   })();
 
@@ -161,7 +170,8 @@ var gh = (function() {
         if (error) callback(error);
         else getUserInfo(clientId, clientSecret, access_token, callback);
       })
-    }
+    },
+    logout: tokenFetcher.clearCachedToken
   };
 })();
 

@@ -78,8 +78,6 @@ server.
           @$.searchresults.model =
             profiles: evt.detail.results
 
-This is just debug code. Remove later. Really. No fooling.
-
         setTimeout =>
           @fire 'sidebar'
 
@@ -89,4 +87,4 @@ can be bound by all the contained calls.
 
       localstreamChanged: ->
         @fire 'getcalls', {}
-        @fire 'getuserprofiles', {}
+        @fire 'login', {}
