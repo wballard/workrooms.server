@@ -86,6 +86,7 @@ is the *click to dial*.
             type: 'call'
             detail:
               to: detail.sessionid
+              showTab: true
 
 Now, look all through the document for all images and process em!
 

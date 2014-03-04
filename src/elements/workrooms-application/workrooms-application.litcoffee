@@ -77,6 +77,10 @@ Keep track of all userprofiles for the current user.
 
 Track inbound and outbound calls when asked into the local calls array.
 
+        @$.gravatars.addEventListener 'call', (evt) =>
+          if evt.detail.showTab
+            @$.icon.fire 'showconferencetab'
+
         @addEventListener 'outboundcall', (evt) =>
           evt.detail.config = @serverconfig
           if not @$.tab.visible?
