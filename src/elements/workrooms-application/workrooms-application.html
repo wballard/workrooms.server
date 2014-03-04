@@ -14,6 +14,7 @@
 <template>
   <!--send along events to the extension from the websocket-->
   <chrome-event-relay id="conference" to="conference" events="configured calls userprofiles ice offer answer autocomplete">
+  <chrome-event-relay id="screenshare" to="screenshare" events="configured ice offer answer">
   <!--send along events to all tabs coming from the websocket, used in content scripts-->
   <chrome-tab-event-relay sendevents="online" listenevents="">
   <screenshare-tab>
@@ -32,6 +33,7 @@
   </websocket-event-sink>
   </screenshare-tab>
   </chrome-tab-event-relay>
+  </chrome-event-relay>
   </chrome-event-relay>
 </template>
 <script src="./workrooms-application.js"></script>

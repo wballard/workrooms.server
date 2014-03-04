@@ -33,7 +33,7 @@ Sweep up static assest from all over.
 
 And our scripts
 
-    gulp.task 'source', ->
+    gulp.task 'source', ['assets'], ->
 
 The chrome app manifest has no transforms.
 
@@ -51,6 +51,7 @@ for each.
 Each area has html templates, less styles, and litcoffee source.
 
       for src, dest of targets
+        console.log 'compiling', src
         gulp.src '**/*.litcoffee', {cwd: src, read: false}
           .pipe browserify
             transform: ['coffeeify', 'browserify-data']
@@ -67,10 +68,8 @@ Each area has html templates, less styles, and litcoffee source.
 
 Drive the hot reload.
 
-    gulp.task 'reloader', ['source', 'assets'], ->
-      console.log 'reloader'
       gulp.src 'src/**/*.*'
         .pipe concat('all')
         .pipe gulp.dest 'build'
 
-    gulp.task 'default', ['reloader']
+    gulp.task 'default', ['source']

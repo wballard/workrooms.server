@@ -5,7 +5,7 @@ This bridges DOM events into Chrome.
 ##events
 This is a space separated list of event names that will be relayed.
 ##to
-Name of a Chrome event port.
+Named message channel.
 
 #Methods
 ##connect
@@ -16,11 +16,6 @@ Open up a Chrome port `to` a named connection. This will send along a
 
     Polymer 'chrome-event-relay',
       attached: ->
-        @connect()
-
-      connect: ->
-        @port = chrome.runtime.connect name: @to
-        @relay 'chromeconnect', name: @to
 
 Relay events via Chrome messaging, this lets us go across tabs, background, and
 content pages.
@@ -33,14 +28,16 @@ And don't relay messages you fired. Inifinite loop buddy!
             message = {}
             message.type = evt.type
             message.detail = evt.detail
+            message.name = @to
             console.log 'chrome relay', message.type, message
-            @port.postMessage message
+            chrome.runtime.sendMessage message
           if arguments.length is 2
             message = {}
             message.type = arguments[0]
             message.detail = arguments[1]
+            message.name = @to
             console.log 'chrome relay', message.type, message
-            @port.postMessage message
+            chrome.runtime.sendMessage message
             @fire arguments[0], arguments[1]
         catch err
           if err.message is "Attempting to use a disconnected port object"

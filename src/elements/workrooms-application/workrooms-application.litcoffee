@@ -16,6 +16,7 @@ Store configurations for each runtime id along with the code.
     _ = require('lodash')
     config = require('../../config.yaml')
     config = config[chrome.runtime.id] or config['default']
+    getUserMedia = require('getusermedia')
 
     Polymer 'workrooms-application',
       calls: []
@@ -30,13 +31,6 @@ elements that actually do work!
         @config = config
 
       attached: ->
-
-When we have a connection to this, the background page, connect through to
-the conference tab port.
-
-        @addEventListener 'chromeconnect', (evt) =>
-          if evt.detail.name is 'background'
-            @$.conference.connect()
 
         @addEventListener 'calls', (evt) =>
           @$.icon.drawIcon(@calls)
@@ -101,6 +95,9 @@ Track inbound and outbound calls when asked into the local calls array.
           @calls.push evt.detail
           @$.conference.relay 'calls', @calls
 
+Screenshare handling. This sets up tracking of screen 'calls' and handles asking
+the user for which screen to share.
+
         @addEventListener 'outboundscreen', (evt) =>
           evt.detail.config = @serverconfig
           @screenshares.push evt.detail
@@ -109,12 +106,16 @@ Track inbound and outbound calls when asked into the local calls array.
           evt.detail.config = @serverconfig
           @screenshares.push evt.detail
 
+Hangup handling, when this is coming in the background channel, that
+is a signal to hang up all calls. When from the server, it is information to hang
+up one call.
+
         @$.background.addEventListener 'hangup', (evt) =>
           evt.stopPropagation()
           @calls.concat(@screenshares).forEach (call) =>
             @$.server.relay 'hangup', call
 
-        @addEventListener 'hangup', (evt) =>
+        @$.server.addEventListener 'hangup', (evt) =>
           if evt.detail
             hangupCall = evt.detail
             _.remove @calls, (call) -> call.callid is hangupCall.callid
