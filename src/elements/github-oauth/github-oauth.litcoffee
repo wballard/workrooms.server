@@ -28,15 +28,23 @@ Call this to force the login sequence.
 Auto login on attach.
 
       attached: ->
-        if @userProfile
-          @fire 'userprofile', @userProfile
-        else
-          @login()
 
-Little debounce to avoid double login as the `clientid` and `clientsecret`
-are set typically in sequence.
+The signallying server will validate any ouath client, so it is valid to cache
+that information here -- skips a trip to the server and makes profiles live
+through Chrome sessions.
+
+        document.addEventListener 'valid', (evt) ->
+          chrome.storage.local.set github: evt.detail.userprofiles.github
+        chrome.storage.local.get 'github', (config) =>
+          console.log 'loading github profile', config
+          @userProfile = config.github
+
+Log in by going to github.
+As a happy privacy feature, the email is deleted here on your client and never
+sent along to the signalling server.
 
       login: ->
+        console.log 'log in to github', @
         if @userProfile
           @fire 'userprofile', @userProfile
         else if @inProgress
@@ -48,6 +56,7 @@ are set typically in sequence.
               @inProgress = false
               @fire 'error', error
             else
+              delete info.email
               @inProgress = false
               info.profile_source = 'github'
               @userProfile = info
@@ -56,5 +65,7 @@ are set typically in sequence.
 Login just straight calls, clearing the tokens out, no debounce, no gui.
 
       logout: ->
-        @userProfile = null
-        github.logout()
+        chrome.storage.local.remove 'github', =>
+          @userProfile = null
+          github.logout()
+

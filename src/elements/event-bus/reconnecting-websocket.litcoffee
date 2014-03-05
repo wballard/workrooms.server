@@ -20,10 +20,12 @@ A reference to the contained WebSocket in case you need to poke under the hood.
 This may work on the client or the server. Because we love you.
 
     WebSocket = WebSocket or require('ws')
+    RECONNECT_TIMEOUT = 3 * 1000
 
     class ReconnectingWebSocket
-      constructor: (@url) ->
+      constructor: (@url, reconnectTimeout) ->
         @forceclose = false
+        @reconnectTimeout = reconnectTimeout or RECONNECT_TIMEOUT
         @readyState = WebSocket.CONNECTING
         @connectionCount = 0
         @connect()
@@ -44,7 +46,7 @@ The all powerful connect function, sets up events and error handling.
             @onclose(event)
           else
             @readyState = WebSocket.CONNECTING
-            @connect()
+            setTimeout @connect, @reconnectTimeout
         @ws.onmessage = (event) =>
           @onmessage(event)
         @ws.onerror = (event) =>

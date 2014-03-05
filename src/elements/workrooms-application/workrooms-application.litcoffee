@@ -49,7 +49,7 @@ up to date.
           @$.github.fire 'register',
             runtime: chrome.runtime.id
             calls: @calls
-          @$.conference.relay 'calls', @calls
+          @$.github.login()
 
 Signing in re-runs the github auth sequence.
 
@@ -57,6 +57,7 @@ Signing in re-runs the github auth sequence.
           @$.github.login()
         @addEventListener 'logout', =>
           @$.github.logout()
+          @fire 'userprofiles', {}
 
 Once you have registered with the server, the configuration will come.
 

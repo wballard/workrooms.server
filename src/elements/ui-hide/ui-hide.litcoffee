@@ -1,11 +1,15 @@
 Hide if hidden.
 
-    bonzo = require('bonzo')
-    _ = require('lodash')
+    require('../elementmixin.litcoffee')
 
     Polymer 'ui-hide',
       hideChanged: (oldValue, newValue) ->
-        if _.keys(newValue or {}).length
-          bonzo(@).hide()
+        if newValue
+          @hideAnimated()
         else
-          bonzo(@).show()
+          @showAnimated()
+      showChanged: (oldValue, newValue) ->
+        if newValue
+          @showAnimated()
+        else
+          @hideAnimated()
