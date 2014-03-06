@@ -11,7 +11,15 @@ you can put any style names in here to use other than FontAwesome.
 #Events
 This fires a dynamic event based on `command`.
 
+    bonzo = require('bonzo')
+
     Polymer 'ui-command-tool',
       attached: ->
+        bonzo(@$.spinner).hide()
         @addEventListener 'click', =>
           @fire @command, @detail
+          bonzo(@$.spinner).show()
+          setTimeout =>
+            bonzo(@$.spinner).hide()
+          , 1000
+
