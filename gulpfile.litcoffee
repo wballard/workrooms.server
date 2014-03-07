@@ -55,7 +55,6 @@ Each area has html templates, less styles, and litcoffee source.
         gulp.src '**/*.litcoffee', {cwd: src, read: false}
           .pipe browserify
             transform: ['coffeeify', 'browserify-data']
-            debug: true
           .pipe rename extname: '.js'
           .pipe gulp.dest dest
         gulp.src '**/*.less', {cwd: src}

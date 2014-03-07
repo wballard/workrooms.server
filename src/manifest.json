@@ -21,7 +21,6 @@
     "identity",
     "pushMessaging",
     "tabCapture",
-    "desktopCapture",
     "tabs",
     "notifications",
     "http://*/",
