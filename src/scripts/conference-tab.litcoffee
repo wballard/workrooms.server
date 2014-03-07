@@ -3,32 +3,33 @@ extension API, but also adds a couple features:
 
 * restores tab state, useful especially with `chrome-devreloader`
 * makes the tab a singleton
+* provides an event 'pipe' to send messages from the background
+  page and websockets along to the tab
 
-#Attributes
-##visible
-If present, indicates that the tab is being show.
-#Events
-##conferencetabvisible
-Fired when the tab is show
+    EventEmitter = require('events').EventEmitter
 
-    Polymer 'conference-tab',
+    module.exports = 
+      class ConferenceTab extends EventEmitter
 
-Using messages to trigger the tab show. These are extension messages
-rather than DOM events since we will be going between the extension and
-tabs with content triggering a click-to-dial.
+And restore from local storage...
 
-      attached: ->
-        @addEventListener 'showconferencetab', ->
+        constructor: ->
+          chrome.storage.local.get 'conference', (config) =>
+            @show() if config.conference
+
+Showing sets local storage memory and fires off `conferencetabvisible`.
+
+        show: ->
           conferenceURL = chrome.runtime.getURL('/tabs/conference.html')
           remember = (tab) =>
             chrome.tabs.update tab.id, active: true
             chrome.storage.local.set conference: true
-            @setAttribute 'visible', ''
-            @fire 'conferencetabvisible'
+            @visible = true
+            @emit 'conferencetabvisible'
             chrome.tabs.onRemoved.addListener (id) =>
               if id is tab.id
                 chrome.storage.local.set conference: false
-                @removeAttribute 'visible'
+                @visible = false
           chrome.tabs.query url: conferenceURL, (tabs) ->
             if tabs.length
               tabs.forEach remember
@@ -39,8 +40,3 @@ tabs with content triggering a click-to-dial.
               , remember
 
 
-And restore from local storage...
-
-        chrome.storage.local.get 'conference', (config) =>
-          if config.conference
-            @fire 'showconferencetab'

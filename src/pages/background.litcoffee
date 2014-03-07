@@ -4,4 +4,8 @@ Originally, this was in Polymer, but 0.2.0 broke custom element support in backg
 which in some sense it no big deal as this isn't really a 'page' at all. So -- code it is!
 
     ExtensionIcon = require('../scripts/extension-icon.litcoffee')
+    ConferenceTab = require('../scripts/conference-tab.litcoffee')
     icon = new ExtensionIcon()
+    conferenceTab = new ConferenceTab()
+
+    icon.on 'showconferencetab', conferenceTab.show
