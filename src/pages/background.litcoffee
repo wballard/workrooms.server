@@ -24,6 +24,7 @@ which in some sense it no big deal as this isn't really a 'page' at all. So -- c
     gravatars = new GravatarDetector()
     backgroundChannel = new ChromeEventEmitter('background')
     gravatarChannel = new ChromeEventEmitter('gravatar')
+    conferenceChannel = new ChromeEventEmitter('conference')
 
 Keep track of connected calls in this buffer.
 
@@ -67,13 +68,37 @@ When a profile comes in from github, send it along to the signalling server.
 
     icon.on 'showconferencetab', conferenceTab.show
 
-##Hook content script in to detect gravatars
+##Gravatar Detection
 
     backgroundChannel.on 'isonline', (detail) ->
       signallingServer.send 'isonline', detail
 
+    signallingServer.on 'online', (detail) ->
+      gravatarChannel.send 'online', detail, true
+
+##Call Tracking
+
+    conferenceChannel.on 'calls', (calls) ->
+      icon.drawIcon calls
+
     backgroundChannel.on 'call', (detail) ->
       signallingServer.send 'call', detail
 
-    signallingServer.on 'online', (detail) ->
-      gravatarChannel.send 'online', detail, true
+    backgroundChannel.on 'getcalls', (detail) ->
+      conferenceChannel.send 'calls', calls
+
+    signallingServer.on 'outboundcall', (detail) ->
+      detail.config = serverConfig
+      calls.push detail
+      conferenceChannel.send 'calls', calls
+
+    signallingServer.on 'inboundcall', (detail) ->
+      detail.config = serverConfig
+      calls.push detail
+      conferenceChannel.send 'calls', calls
+      if not conferenceTab.visible
+        url = detail?.userprofiles?.github?.avatar_url
+        callToast = webkitNotifications.createNotification url, 'Call From', detail.userprofiles.github.name
+        callToast.onclick = =>
+          conferenceTab.show()
+        callToast.show()

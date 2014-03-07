@@ -13,6 +13,7 @@ Send a `name` message with object `detail` over chrome messaging on this
 channel.
 
         send: (name, detail, toAllTabs) ->
+          @emit name, detail
           console.log @channel, name, detail
           if toAllTabs
             chrome.tabs.query {}, (tabs) =>
