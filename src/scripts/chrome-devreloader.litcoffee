@@ -27,6 +27,8 @@ Object with settings, this is going to look for a property
                   save = {}
                   save[codeURL] = hash
                   chrome.storage.local.set save, ->
-                    chrome.runtime.reload() if reload
+                    setTimeout ->
+                      chrome.runtime.reload() if reload
+                    , 2000
           setTimeout reloadIfChanged, 1000
         reloadIfChanged()

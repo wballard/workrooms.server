@@ -5,14 +5,58 @@ which in some sense it no big deal as this isn't really a 'page' at all. So -- c
 
     config = require('../config.yaml')
     config = config[chrome.runtime.id] or config['default']
+    serverConfig = null
 
     require('../scripts/chrome-devreloader.litcoffee')(config)
     ExtensionIcon = require('../scripts/extension-icon.litcoffee')
     ConferenceTab = require('../scripts/conference-tab.litcoffee')
+    SignallingServer = require('../scripts/signalling-server.litcoffee')
+    GitHub = require('../scripts/github-oauth.litcoffee')
 
     console.log 'starting application'
 
     icon = new ExtensionIcon()
     conferenceTab = new ConferenceTab()
+    signallingServer = new SignallingServer(config)
+    github = new GitHub()
+
+Keep track of connected calls in this buffer.
+
+    calls = []
+    userprofiles = {}
+
+##Signalling Server Messages
+
+Hello from the server! Now it is time to register this client in order to
+get the rest of the configuration.
+
+    signallingServer.on 'hello', ->
+      signallingServer.send 'register',
+        runtime: chrome.runtime.id
+        calls: calls
+
+After we have registered, the server sends along a configuration, this is to
+protect -- or really to be able to switch -- ids for OAuth and STUN/TURN.
+
+    signallingServer.on 'configured', (config) ->
+      serverConfig = config
+      github.login(serverConfig.github)
+
+When valid, let our GitHub auth know.
+
+    signallingServer.on 'valid', ->
+      github?.validated()
+
+The server combines profile data into a unified set of userprofiles.
+
+    signallingServer.on 'userprofiles', (data) ->
+      userprofiles = data
+
+##Github login / logout messages
+
+When a profile comes in from github, send it along to the signalling server.
+
+    github.on 'userprofile', (profile) ->
+      signallingServer.send 'userprofile', profile
 
     icon.on 'showconferencetab', conferenceTab.show

@@ -1,5 +1,4 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../github-oauth/github-oauth.html">
 <link rel="import" href="../gravatar-detector/gravatar-detector.html">
 <link rel="import" href="../event-bus/chrome-event-relay.html">
 <link rel="import" href="../event-bus/chrome-event-source.html">
@@ -19,7 +18,6 @@
   </chrome-event-source>
   <!--this will get chrome messages that need a chance at the socket-->
   <chrome-event-source id="background" name="background">
-  <github-oauth id="github" clientid="{{ serverconfig.github.clientid }}" clientsecret="{{ serverconfig.github.clientsecret }}"></github-oauth>
   <gravatar-detector></gravatar-detector>
   </chrome-event-source>
   </websocket-event-sink>
