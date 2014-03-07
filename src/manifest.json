@@ -20,7 +20,6 @@
     "background",
     "identity",
     "pushMessaging",
-    "tabCapture",
     "tabs",
     "notifications",
     "http://*/",

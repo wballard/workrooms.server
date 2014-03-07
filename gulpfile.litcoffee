@@ -33,7 +33,7 @@ Sweep up static assest from all over.
 
 And our scripts
 
-    gulp.task 'source', ['assets'], ->
+    gulp.task 'source', ->
 
 The chrome app manifest has no transforms.
 
@@ -72,3 +72,4 @@ Drive the hot reload.
         .pipe gulp.dest 'build'
 
     gulp.task 'default', ['source']
+    gulp.task 'all', ['source', 'assets']
