@@ -2,8 +2,6 @@
 <link rel="import" href="../chrome-devreloader/chrome-devreloader.html">
 <link rel="import" href="../github-oauth/github-oauth.html">
 <link rel="import" href="../gravatar-detector/gravatar-detector.html">
-<link rel="import" href="../conference-tab/conference-tab.html">
-<link rel="import" href="../screenshare-tab/screenshare-tab.html">
 <link rel="import" href="../event-bus/chrome-event-relay.html">
 <link rel="import" href="../event-bus/chrome-event-source.html">
 <link rel="import" href="../event-bus/chrome-tab-event-relay.html">
@@ -17,7 +15,6 @@
   <chrome-event-relay id="screenshare" to="screenshare" events="configured ice offer answer">
   <!--send along events to all tabs coming from the websocket, used in content scripts-->
   <chrome-tab-event-relay sendevents="online" listenevents="">
-  <screenshare-tab>
   <websocket-event-sink id="server" events="userprofile register call sharescreen ice offer answer hangup autocomplete isonline" server="{{config.signallingServer}}">
   <chrome-tab-event-relay id="gravatars" sendevents="" listenevents="isonline call">
   </chrome-event-source>
@@ -26,11 +23,8 @@
   <chrome-devreloader config="{{ config }}"></chrome-devreloader>
   <github-oauth id="github" clientid="{{ serverconfig.github.clientid }}" clientsecret="{{ serverconfig.github.clientsecret }}"></github-oauth>
   <gravatar-detector></gravatar-detector>
-  <conference-tab id="tab">
-  </conference-tab>
   </chrome-event-source>
   </websocket-event-sink>
-  </screenshare-tab>
   </chrome-tab-event-relay>
   </chrome-event-relay>
   </chrome-event-relay>

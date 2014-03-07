@@ -2,6 +2,8 @@ Background element to create screenshare tabs as needed. This will respond
 to `inboundscreen` and `outboundscreen` messages, setting up a tab that
 will do a peer to peer.
 
+* TODO: code-line this with Chrome 34
+
     Polymer 'screenshare-tab',
       tabToCall: {}
       showCallTab: (call) ->
