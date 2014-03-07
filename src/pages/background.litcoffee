@@ -12,6 +12,8 @@ which in some sense it no big deal as this isn't really a 'page' at all. So -- c
     ConferenceTab = require('../scripts/conference-tab.litcoffee')
     SignallingServer = require('../scripts/signalling-server.litcoffee')
     GitHub = require('../scripts/github-oauth.litcoffee')
+    GravatarDetector = require('../scripts/gravatar-detector.litcoffee')
+    ChromeEventEmitter = require('../scripts/chrome-event-emitter.litcoffee')
 
     console.log 'starting application'
 
@@ -19,6 +21,9 @@ which in some sense it no big deal as this isn't really a 'page' at all. So -- c
     conferenceTab = new ConferenceTab()
     signallingServer = new SignallingServer(config)
     github = new GitHub()
+    gravatars = new GravatarDetector()
+    backgroundChannel = new ChromeEventEmitter('background')
+    gravatarChannel = new ChromeEventEmitter('gravatar')
 
 Keep track of connected calls in this buffer.
 
@@ -34,6 +39,7 @@ get the rest of the configuration.
       signallingServer.send 'register',
         runtime: chrome.runtime.id
         calls: calls
+      icon.drawIcon calls
 
 After we have registered, the server sends along a configuration, this is to
 protect -- or really to be able to switch -- ids for OAuth and STUN/TURN.
@@ -60,3 +66,14 @@ When a profile comes in from github, send it along to the signalling server.
       signallingServer.send 'userprofile', profile
 
     icon.on 'showconferencetab', conferenceTab.show
+
+##Hook content script in to detect gravatars
+
+    backgroundChannel.on 'isonline', (detail) ->
+      signallingServer.send 'isonline', detail
+
+    backgroundChannel.on 'call', (detail) ->
+      signallingServer.send 'call', detail
+
+    signallingServer.on 'online', (detail) ->
+      gravatarChannel.send 'online', detail, true

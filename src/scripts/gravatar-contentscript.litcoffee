@@ -1,13 +1,16 @@
 This is a content script that will detect and augment gravatars
 with video calls.
 
-    MutationSummary = require('../../../vendor/mutation-summary.js')
+    MutationSummary = require('../../vendor/mutation-summary.js')
     urlparse = require('urlparse')
     bonzo = require('bonzo')
     qwery = require('qwery')
     _ = require('lodash')
+    ChromeEventEmitter = require('./chrome-event-emitter.litcoffee')
 
     gravatarRegex = new RegExp('gravatar')
+    backgroundChannel = new ChromeEventEmitter('background')
+    gravatarChannel = new ChromeEventEmitter('gravatar')
 
 Keep a hash of debounced functions to ask the server if users are online.
 Hash this by user.
@@ -17,10 +20,10 @@ Hash this by user.
 If a user is online, do the HTML injection. The idea here is to make the
 minimum amount of injection possible to avoid breaking pages.
 
-    chrome.runtime.onMessage.addListener (message, sender, respond) ->
-      if message.type is 'online'
-        isOnlineSignals[message.detail.userprofiles?.github?.gravatar_id]?.show(message.detail)
-        isOnlineSignals[message.detail.userprofiles?.github?.id]?.show(message.detail)
+    gravatarChannel.on 'online', (detail) ->
+      console.log 'online', detail
+      isOnlineSignals[detail.userprofiles?.github?.gravatar_id]?.show(detail)
+      isOnlineSignals[detail.userprofiles?.github?.id]?.show(detail)
 
 Ask the server if this users is online, with the debounce to not be
 a chatterbox in particular on pages like commits where a user will be
@@ -31,15 +34,9 @@ listed multiple times.
       if not isOnlineSignals[id]
         isOnlineSignals[id] = _.debounce ->
           if userid
-            chrome.runtime.sendMessage
-              type: 'isonline'
-              detail:
-                userid: userid
+            backgroundChannel.send 'isonline', userid: userid
           if gravatarid
-            chrome.runtime.sendMessage
-              type: 'isonline'
-              detail:
-                gravatarid: gravatarid
+            backgroundChannel.send 'isonline', gravatarid: gravatarid
         , 300
         isOnlineSignals[id].images = []
         isOnlineSignals[id].show = (detail) ->
@@ -82,11 +79,9 @@ is the *click to dial*.
 
         parent[0].querySelector('.video-call').addEventListener 'click', (evt) ->
           evt.preventDefault()
-          chrome.runtime.sendMessage
-            type: 'call'
-            detail:
-              to: detail.sessionid
-              showTab: true
+          backgroundChannel.send 'call',
+            to: detail.sessionid
+            showTab: true
 
 Now, look all through the document for all images and process em!
 

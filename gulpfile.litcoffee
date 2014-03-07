@@ -47,6 +47,7 @@ for each.
         'src/elements': 'build/bower_components'
         'src/tabs': 'build/tabs'
         'src/pages': 'build/pages'
+        'src/scripts': 'build/scripts'
 
 Each area has html templates, less styles, and litcoffee source.
 

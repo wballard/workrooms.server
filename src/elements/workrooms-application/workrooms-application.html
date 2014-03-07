@@ -1,9 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../gravatar-detector/gravatar-detector.html">
 <link rel="import" href="../event-bus/chrome-event-relay.html">
 <link rel="import" href="../event-bus/chrome-event-source.html">
 <link rel="import" href="../event-bus/chrome-tab-event-relay.html">
-<link rel="import" href="../event-bus/websocket-event-sink.html">
 <link rel="stylesheet" type="text/css" href="workrooms-application.css">
 
 <polymer-element name="workrooms-application" attributes="config calls userprofiles serverconfig">
@@ -13,12 +11,11 @@
   <chrome-event-relay id="screenshare" to="screenshare" events="configured ice offer answer">
   <!--send along events to all tabs coming from the websocket, used in content scripts-->
   <chrome-tab-event-relay sendevents="online" listenevents="">
-  <websocket-event-sink id="server" events="userprofile register call sharescreen ice offer answer hangup autocomplete isonline" server="{{config.signallingServer}}">
+  <websocket-event-sink id="server" events="call ice offer answer hangup autocomplete isonline" server="{{config.signallingServer}}">
   <chrome-tab-event-relay id="gravatars" sendevents="" listenevents="isonline call">
   </chrome-event-source>
   <!--this will get chrome messages that need a chance at the socket-->
   <chrome-event-source id="background" name="background">
-  <gravatar-detector></gravatar-detector>
   </chrome-event-source>
   </websocket-event-sink>
   </chrome-tab-event-relay>
