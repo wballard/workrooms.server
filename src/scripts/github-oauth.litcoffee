@@ -29,7 +29,7 @@ here on your client and never sent along to the signalling server.
           else
             @inProgress = true
             chrome.storage.local.get 'github', (store) =>
-              if store.github
+              if store?.github?.id
                 @userProfile = store.github
                 @emit 'userprofile', @userProfile
                 @inProgress = false
@@ -48,8 +48,8 @@ here on your client and never sent along to the signalling server.
 Login just straight calls, clearing the tokens out, no debounce, no gui.
 
         logout: ->
-          chrome.storage.local.remove 'github', =>
-            @userProfile = null
+          @userProfile = null
+          chrome.storage.local.set github: @userProfile, =>
             github.logout()
 
 When validated by the server, doing the OAuth background check of the token,

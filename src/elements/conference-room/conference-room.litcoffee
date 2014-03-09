@@ -22,34 +22,37 @@ All the known profiles for the current user.
     _ = require('lodash')
     qwery = require('qwery')
     bonzo = require('bonzo')
+    ChromeEventEmitter = require('../../scripts/chrome-event-emitter.litcoffee')
 
     Polymer 'conference-room',
+      backgroundChannel: new ChromeEventEmitter('background')
+      conferenceChannel: new ChromeEventEmitter('conference')
       audioon: true
       videoon: true
       userprofiles: {}
       calls: []
       attached: ->
-
         @addEventListener 'error', (err) ->
           console.log err
 
 All the calls known to the application, make sure there are visual elements.
 
-        document.addEventListener 'calls', (evt) =>
-          calls = _.groupBy evt.detail, (x) -> x.id
+        @conferenceChannel.on 'calls', (calls) =>
+          calls = _.groupBy calls, (x) -> x.id
           visibleCalls = _.map @calls, (x) -> x.id
-          currentCalls = _.map evt.detail, (x) -> x.id
-          _.difference(currentCalls, visibleCalls).forEach (id) =>
+          _.difference(_.keys(calls), visibleCalls).forEach (id) =>
             @calls.push calls[id][0]
-          _.difference(visibleCalls, currentCalls).forEach (id) =>
+          _.difference(visibleCalls, _.keys(calls)).forEach (id) =>
             @shadowRoot.querySelector("#A#{id}").hideAnimated =>
               _.remove @calls, (x) -> x.id is id
 
 User profiles coming in from the server are captured here.
 
-        document.addEventListener 'userprofiles', (evt) =>
-          @userprofiles = evt.detail
-          @fire 'call', to: evt.detail.sessionid
+        @conferenceChannel.on 'userprofiles', (userprofiles) =>
+          @userprofiles = userprofiles
+          @backgroundChannel.send 'call', to: userprofiles.sessionid
+
+##Toolbar Buttons
 
 Show and hide the selfie -- this really needs to be data bound instead.
 
@@ -58,33 +61,44 @@ Show and hide the selfie -- this really needs to be data bound instead.
         @addEventListener 'selfie.off', =>
           @$.selfie.hideAnimated()
 
-Administrative actions on the tool and sidebar go here.
+Sidebar, are you even allowed to have an application without one any more?
 
         @addEventListener 'sidebar', ->
           @$.sidebar.toggle()
+
+Login and Logout, this is just a message relay to the background
+
+        @addEventListener 'logout', =>
+          @backgroundChannel.send 'logout'
+
+        @addEventListener 'login', =>
+          @backgroundChannel.send 'login'
+
+##Autocomplete Search
 
 Clear out autocomplete results. Pay attention to this one, multiple text input
 elements that can fire clear will totally overdo it.
 
         @addEventListener 'clear', (evt) =>
-          @fire 'autocomplete',
-            search: undefined
-            results: []
-
-Show those results via data binding. This message is coming back in from the
-server.
+          @$.searchresults.model =
+            profiles: []
 
         document.addEventListener 'autocomplete', (evt) =>
-          @$.searchresults.model =
-            profiles: evt.detail.results
+          console.log 'to bg'
+          @backgroundChannel.send 'autocomplete', evt.detail
 
-        setTimeout =>
-          @fire 'sidebar'
+        @conferenceChannel.on 'autocomplete', (detail) =>
+          @$.searchresults.model =
+            profiles: detail.results
+
+        document.addEventListener 'call', (evt) =>
+          @backgroundChannel.send 'call', evt.detail
 
 WebRTC can only kick off interaction when it has something to share, namely a
 local stream of data to transmit. Listen for this stream and set it so that it
 can be bound by all the contained calls.
 
       localstreamChanged: ->
-        @fire 'getcalls', {}
-        @fire 'login', {}
+        @backgroundChannel.send 'getcalls'
+        @backgroundChannel.send 'login'
+

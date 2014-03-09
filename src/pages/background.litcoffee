@@ -15,6 +15,8 @@ which in some sense it no big deal as this isn't really a 'page' at all. So -- c
     GravatarDetector = require('../scripts/gravatar-detector.litcoffee')
     ChromeEventEmitter = require('../scripts/chrome-event-emitter.litcoffee')
 
+    _ = require('lodash')
+
     console.log 'starting application'
 
     icon = new ExtensionIcon()
@@ -58,6 +60,7 @@ The server combines profile data into a unified set of userprofiles.
 
     signallingServer.on 'userprofiles', (data) ->
       userprofiles = data
+      conferenceChannel.send 'userprofiles', userprofiles
 
 ##Github login / logout messages
 
@@ -76,6 +79,14 @@ When a profile comes in from github, send it along to the signalling server.
     signallingServer.on 'online', (detail) ->
       gravatarChannel.send 'online', detail, true
 
+    backgroundChannel.on 'login', ->
+      github.login()
+
+    backgroundChannel.on 'logout', ->
+      userprofiles = {}
+      conferenceChannel.send 'userprofiles', userprofiles
+      github.logout()
+
 ##Call Tracking
 
     conferenceChannel.on 'calls', (calls) ->
@@ -86,6 +97,7 @@ When a profile comes in from github, send it along to the signalling server.
 
     backgroundChannel.on 'getcalls', (detail) ->
       conferenceChannel.send 'calls', calls
+      conferenceChannel.send 'userprofiles', userprofiles
 
     signallingServer.on 'outboundcall', (detail) ->
       detail.config = serverConfig
@@ -102,3 +114,24 @@ When a profile comes in from github, send it along to the signalling server.
         callToast.onclick = =>
           conferenceTab.show()
         callToast.show()
+
+##Search
+
+    backgroundChannel.on 'autocomplete', (detail) ->
+      signallingServer.send 'autocomplete', detail
+
+    signallingServer.on 'autocomplete', (detail) ->
+      conferenceChannel.send 'autocomplete', detail
+
+##Hangup Tracking
+Hangup handling, when this is coming in the background channel, that
+is a signal to hang up all calls. When from the server, it is information to hang
+up one call.
+
+    backgroundChannel.on 'hangup', ->
+      calls.forEach (call) =>
+        signallingServer.send 'hangup', call
+
+    signallingServer.on 'hangup', (hangupCall) ->
+      _.remove calls, (call) -> call.callid is hangupCall.callid
+      conferenceChannel.send 'calls', calls

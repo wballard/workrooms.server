@@ -1,26 +1,19 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../event-bus/chrome-event-relay.html">
 <link rel="import" href="../event-bus/chrome-event-source.html">
-<link rel="import" href="../event-bus/chrome-tab-event-relay.html">
 <link rel="stylesheet" type="text/css" href="workrooms-application.css">
 
 <polymer-element name="workrooms-application" attributes="config calls userprofiles serverconfig">
 <template>
   <!--send along events to the extension from the websocket-->
-  <chrome-event-relay id="conference" to="conference" events="configured calls userprofiles ice offer answer autocomplete">
-  <chrome-event-relay id="screenshare" to="screenshare" events="configured ice offer answer">
+  <chrome-event-relay id="conference" to="conference" events="ice offer answer autocomplete">
   <!--send along events to all tabs coming from the websocket, used in content scripts-->
-  <chrome-tab-event-relay sendevents="online" listenevents="">
-  <websocket-event-sink id="server" events="call ice offer answer hangup autocomplete isonline" server="{{config.signallingServer}}">
-  <chrome-tab-event-relay id="gravatars" sendevents="" listenevents="isonline call">
+  <websocket-event-sink id="server" events="ice offer answer autocomplete " server="{{config.signallingServer}}">
   </chrome-event-source>
   <!--this will get chrome messages that need a chance at the socket-->
   <chrome-event-source id="background" name="background">
   </chrome-event-source>
   </websocket-event-sink>
-  </chrome-tab-event-relay>
-  </chrome-event-relay>
-  </chrome-event-relay>
 </template>
 <script src="./workrooms-application.js"></script>
 </polymer-element>
