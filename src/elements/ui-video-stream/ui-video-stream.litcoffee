@@ -9,10 +9,9 @@ Show a video stream with user interface.
 
     _ = require('lodash')
     bonzo = require('bonzo')
+    morpheus = require('morpheus')
 
     SNAPSHOT_TIMEOUT = 1 * 1000
-    IN_EFFECT = "fadeIn"
-    OUT_EFFECT = "fadeOut"
 
     Polymer 'ui-video-stream',
 
@@ -54,11 +53,11 @@ that trigger by presence, so we can hit them with the ?
 
       videoChanged: ->
         if @video
-          bonzo(@$.video).removeClass(OUT_EFFECT).addClass(IN_EFFECT).show()
-          bonzo(@$.snapshot).removeClass(IN_EFFECT).addClass(OUT_EFFECT).hide()
+          @$.video.showAnimated()
+          @$.snapshot.hideAnimated()
         else
-          bonzo(@$.video).removeClass(IN_EFFECT).addClass(OUT_EFFECT).hide()
-          bonzo(@$.snapshot).removeClass(OUT_EFFECT).addClass(IN_EFFECT).show()
+          @$.video.hideAnimated()
+          @$.snapshot.showAnimated()
 
       streamChanged: ->
         if @hasAttribute('mutedaudio')

@@ -4,6 +4,7 @@
 @tileBackgroundColor: #333;
 @roomBackgroundColor: fade(#333, 98%);
 @transition: 0.2s ease;
+@black: #111;
 
 @fa-font-path: "//netdna.bootstrapcdn.com/font-awesome/4.0.3/fonts"; // for referencing Bootstrap CDN font files directly
 
@@ -15,47 +16,10 @@
   }
 }
 
-.animated {
-  -webkit-animation-duration: 0.8s;
-  -webkit-animation-fill-mode: both;
-}
-
-@-webkit-keyframes fadeIn {
-	0% {
-    opacity: 0;
-  }
-  50% {
-  }
-	100% {
-    opacity: 1;
-  }
-}
-
-.fadeIn {
-  .animated;
-	-webkit-animation-name: fadeIn;
-}
-
-
-@-webkit-keyframes fadeOut {
-	0% {
-    opacity: 1;
-  }
-  50% {
-  }
-	100% {
-    opacity: 0;
-  }
-}
-
-.fadeOut {
-  .animated;
-	-webkit-animation-name: fadeOut;
-}
-
 .ui.inverted.sidebar {
   .ui.left.icon.input > .icon {
     opacity: 1;
     color: rgb(255,255,255);
   }
 }
+

@@ -3,13 +3,15 @@ Hide if hidden.
     require('../elementmixin.litcoffee')
 
     Polymer 'ui-hide',
-      hideChanged: (oldValue, newValue) ->
-        if newValue
+      hideChanged: ->
+        console.log 'hide', @hide
+        if @hide
+          debugger
           @hideAnimated()
         else
           @showAnimated()
-      showChanged: (oldValue, newValue) ->
-        if newValue
+      showChanged: ->
+        if @show
           @showAnimated()
         else
           @hideAnimated()

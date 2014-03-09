@@ -37,12 +37,12 @@
   <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active="{{audioon}}"></ui-toggle-tool>
   <ui-command-tool icon="fa-phone fa-rotate-135" command="hangup"></ui-command-tool>
   <ui-right-toolbar>
-  <ui-hide show="{{userprofiles.github}}">
+  <ui-hide show="{{userprofiles.github.id}}">
     <ui-user-profile-github-gravatar github="{{userprofiles.github}}">
     </ui-user-profile-github-gravatar>
     <ui-command-tool icon="fa-sign-out" command="logout"></ui-command-tool>
   </ui-hide>
-  <ui-hide hide="{{userprofiles.github}}">
+  <ui-hide hide="{{userprofiles.github.id}}">
   <ui-command-tool icon="fa-sign-in" command="login"></ui-command-tool>
   </ui-hide>
   </ui-right-toolbar>
@@ -52,10 +52,8 @@
       <section>
         <ui-video-stream stream="{{localstream}}" mutedaudio mirror></ui-video-stream>
         <ui-toolbar>
-        <template bind if="{{userprofiles.github}}">
-          <ui-user-profile-github-gravatar github="{{userprofiles.github}}">
-          </ui-user-profile-github-gravatar>
-        </template>
+        <ui-user-profile-github-gravatar github="{{userprofiles.github}}">
+        </ui-user-profile-github-gravatar>
         </ui-toolbar>
       </section>
     </div>
@@ -67,10 +65,8 @@
         <section>
           <ui-video-stream stream="{{call.remotestream}}" audio="{{call.remoteaudio}}" video="{{call.remotevideo}}"></ui-video-stream>
           <ui-toolbar>
-          <template bind if="{{call.userprofiles.github}}">
-            <ui-user-profile-github-gravatar github="{{call.userprofiles.github}}">
-            </ui-user-profile-github-gravatar>
-          </template>
+          <ui-user-profile-github-gravatar github="{{call.userprofiles.github}}">
+          </ui-user-profile-github-gravatar>
         </section>
       </div>
       </ui-video-call>
