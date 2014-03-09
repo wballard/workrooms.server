@@ -95,9 +95,16 @@ When a profile comes in from github, send it along to the signalling server.
     backgroundChannel.on 'call', (detail) ->
       signallingServer.send 'call', detail
 
+    backgroundChannel.on 'hangup', (detail) ->
+      signallingServer.send 'hangup'
+
     backgroundChannel.on 'getcalls', (detail) ->
       conferenceChannel.send 'calls', calls
       conferenceChannel.send 'userprofiles', userprofiles
+
+    signallingServer.on 'hangup', (hangupCall) ->
+        _.remove calls, (call) -> call.callid is hangupCall.callid
+        conferenceChannel.send 'calls', calls
 
     signallingServer.on 'outboundcall', (detail) ->
       detail.config = serverConfig

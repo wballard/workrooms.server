@@ -93,7 +93,7 @@ Track inbound and outbound calls when asked into the local calls array.
           evt.detail.config = @serverconfig
           if not @$.tab.visible?
             url = evt?.detail?.userprofiles?.github?.avatar_url
-            callToast = webkitNotifications.createNotification url, 'Call From', evt.detail.userprofiles.github.name
+            callToast = webkitNotifications.createNotification url, 'Call From', evt.detail.userprofiles.github.name, detail
             callToast.onclick = =>
               @$.icon.fire 'showconferencetab'
             callToast.show()

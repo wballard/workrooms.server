@@ -74,6 +74,11 @@ Login and Logout, this is just a message relay to the background
         @addEventListener 'login', =>
           @backgroundChannel.send 'login'
 
+Ending calls. Not a lot to do here but request through to the application.
+
+        @addEventListener 'hangup', =>
+          @backgroundChannel.send 'hangup'
+
 ##Autocomplete Search
 
 Clear out autocomplete results. Pay attention to this one, multiple text input
