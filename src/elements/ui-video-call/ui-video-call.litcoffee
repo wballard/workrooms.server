@@ -49,7 +49,6 @@ is tried.
 This is the default implementation until data is connected.
 
       send: (type, detail) ->
-        console.log 'WARNING, data not connected', detail
 
       created: ->
         @peerid = uuid.v1()
@@ -182,46 +181,6 @@ visual work of updating visual status of the mute.
         @addEventListener 'remotevideo', (evt) =>
           @remotevideo = evt.detail.state
 
-
-ICE messages just add in, there is now offer/answer -- just make sure to not
-add your own peer side messages.  And make sure it is a server signal, not just
-a local ice message. This isn't a *real case*, but it shows up when you call
-yourself for testing.
-
-        document.addEventListener 'ice', (evt) =>
-          if evt?.detail?.peerid isnt @peerid and event?.detail?.signal and event?.detail?.callid is @callid
-            if evt?.detail?.candidate
-              console.log 'adding ice', evt?.detail?.candidate
-              @peerConnection.addIceCandidate(new rtc.IceCandidate(evt.detail.candidate))
-
-Inbound side SDP needs to make sure we get an offer, which it will then answer.
-
-        document.addEventListener 'offer', (evt) =>
-          message = evt?.detail
-          if @inbound? and message?.signal and message?.callid is @callid
-            console.log 'offer inbound', message.sdp
-            @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), =>
-              console.log 'offer accepted', message.sdp
-              @peerConnection.createAnswer (description) =>
-                @peerConnection.setLocalDescription description, =>
-                  console.log 'local set, answering', @getAttribute('callid')
-                  @fire 'answer',
-                    callid: @getAttribute('callid')
-                    peerid: @peerid
-                    sdp: description
-                , (err) -> console.log err
-              , (err) -> console.log err
-            , (err) -> console.log err
-
-Outbound side needs to take the answer and complete the call.
-
-        document.addEventListener 'answer', (evt) =>
-          message = evt.detail
-          if @outbound? and message?.signal and message?.callid is @callid
-            console.log 'completing', @getAttribute('callid')
-            @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), (err) ->
-              console.log(err) if err
-
 When the element is removed from the DOM -- really hung up, there is no need
 to reconnect any more.
 
@@ -257,3 +216,43 @@ RTCPeerConnection to start negotiation.
 
       localvideoChanged: ->
         @send 'remotevideo', state: @localvideo
+
+##WebRTC Signal Processing
+
+ICE messages just add in, there is now offer/answer -- just make sure to not
+add your own peer side messages.  And make sure it is a server signal, not just
+a local ice message. This isn't a *real case*, but it shows up when you call
+yourself for testing.
+
+      processIce: (message) ->
+        if message.peerid isnt @peerid and message.callid is @callid
+          if message.candidate
+            console.log 'adding ice', message.candidate
+            @peerConnection.addIceCandidate(new rtc.IceCandidate(message.candidate))
+
+Inbound side SDP needs to make sure we get an offer, which it will then answer.
+
+      processOffer: (message) ->
+        if @inbound? and message.callid is @callid
+          console.log 'offer inbound', message.sdp
+          @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), =>
+            console.log 'offer accepted', message.sdp
+            @peerConnection.createAnswer (description) =>
+              @peerConnection.setLocalDescription description, =>
+                console.log 'local set, answering', @getAttribute('callid')
+                @fire 'answer',
+                  callid: @getAttribute('callid')
+                  peerid: @peerid
+                  sdp: description
+              , (err) -> console.log err
+            , (err) -> console.log err
+          , (err) -> console.log err
+
+Outbound side needs to take the answer and complete the call.
+
+      processAnswer: (message) ->
+        if @outbound? and message.callid is @callid
+          console.log 'completing', @getAttribute('callid')
+          @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), (err) ->
+            console.log(err) if err
+

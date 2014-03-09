@@ -92,11 +92,8 @@ When a profile comes in from github, send it along to the signalling server.
     conferenceChannel.on 'calls', (calls) ->
       icon.drawIcon calls
 
-    backgroundChannel.on 'call', (detail) ->
-      signallingServer.send 'call', detail
-
-    backgroundChannel.on 'hangup', (detail) ->
-      signallingServer.send 'hangup'
+    backgroundChannel.pipe 'call', signallingServer
+    backgroundChannel.pipe 'hangup', signallingServer
 
     backgroundChannel.on 'getcalls', (detail) ->
       conferenceChannel.send 'calls', calls
@@ -122,13 +119,19 @@ When a profile comes in from github, send it along to the signalling server.
           conferenceTab.show()
         callToast.show()
 
+    backgroundChannel.pipe 'ice', signallingServer
+    signallingServer.pipe 'ice', conferenceChannel
+
+    backgroundChannel.pipe 'offer', signallingServer
+    signallingServer.pipe 'offer', conferenceChannel
+
+    backgroundChannel.pipe 'answer', signallingServer
+    signallingServer.pipe 'answer', conferenceChannel
+
 ##Search
 
-    backgroundChannel.on 'autocomplete', (detail) ->
-      signallingServer.send 'autocomplete', detail
-
-    signallingServer.on 'autocomplete', (detail) ->
-      conferenceChannel.send 'autocomplete', detail
+    backgroundChannel.pipe 'autocomplete', signallingServer
+    signallingServer.pipe 'autocomplete', conferenceChannel
 
 ##Hangup Tracking
 Hangup handling, when this is coming in the background channel, that

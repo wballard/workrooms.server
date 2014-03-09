@@ -36,3 +36,9 @@ as the custom event detail.
               from: @sessionid
             )
 
+Pipe a `name` message from `this` to `target`.
+
+        pipe: (name, target) ->
+          @on name, (detail) ->
+            target.send name, detail
+

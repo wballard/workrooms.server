@@ -74,10 +74,30 @@ Login and Logout, this is just a message relay to the background
         @addEventListener 'login', =>
           @backgroundChannel.send 'login'
 
+##Call Signal Processing
+
 Ending calls. Not a lot to do here but request through to the application.
 
         @addEventListener 'hangup', =>
           @backgroundChannel.send 'hangup'
+
+        @addEventListener 'ice', (evt) =>
+          @backgroundChannel.send 'ice', evt.detail
+        @conferenceChannel.on 'ice', (detail) =>
+          _.each @shadowRoot.querySelectorAll('ui-video-call'), (call) ->
+            call.processIce detail
+
+        @addEventListener 'offer', (evt) =>
+          @backgroundChannel.send 'offer', evt.detail
+        @conferenceChannel.on 'offer', (detail) =>
+          _.each @shadowRoot.querySelectorAll('ui-video-call'), (call) ->
+            call.processOffer detail
+
+        @addEventListener 'answer', (evt) =>
+          @backgroundChannel.send 'answer', evt.detail
+        @conferenceChannel.on 'answer', (detail) =>
+          _.each @shadowRoot.querySelectorAll('ui-video-call'), (call) ->
+            call.processAnswer detail
 
 ##Autocomplete Search
 
@@ -89,7 +109,6 @@ elements that can fire clear will totally overdo it.
             profiles: []
 
         document.addEventListener 'autocomplete', (evt) =>
-          console.log 'to bg'
           @backgroundChannel.send 'autocomplete', evt.detail
 
         @conferenceChannel.on 'autocomplete', (detail) =>

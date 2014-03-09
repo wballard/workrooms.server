@@ -14,7 +14,6 @@ channel.
 
         send: (name, detail, toAllTabs) ->
           @emit name, detail
-          console.log @channel, name, detail
           if toAllTabs
             chrome.tabs.query {}, (tabs) =>
               tabs.forEach (tab) =>
@@ -27,3 +26,9 @@ channel.
               channel: @channel
               type: name
               detail: detail
+
+Pipe a `name` message from `this` to `target`.
+
+        pipe: (name, target) ->
+          @on name, (detail) ->
+            target.send name, detail
