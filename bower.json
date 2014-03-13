@@ -18,6 +18,7 @@
     "jquery": "~2.0.3",
     "semantic": "~0.12.5",
     "font-awesome": "~4.0.3",
-    "jquery-ui": "~1.10.4"
+    "jquery-ui": "~1.10.4",
+    "chat-box": "https://github.com/wballard/chat-box.git"
   }
 }

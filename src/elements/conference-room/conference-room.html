@@ -9,10 +9,12 @@
 <link rel="import" href="../ui-user-profile/ui-user-profile.html">
 <link rel="import" href="../ui-user-profile/ui-user-profile-github-gravatar.html">
 <link rel="import" href="../ui-hide/ui-hide.html">
+<link rel="import" href="../chat-box/build/chat-box.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 
 <polymer-element name="conference-room" attributes="localstream calls userprofiles audioon videoon">
 <template>
+  <chat-box id="chat"></chat-box>
   <video-control stream="{{localstream}}">
   <audio-control stream="{{localstream}}">
   <local-stream id="local" audio video stream="{{localstream}}">
