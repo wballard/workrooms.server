@@ -132,6 +132,7 @@ are posted to the connected WebRTC calls on the page so everyone gets a chat.
           _.each @shadowRoot.querySelectorAll('ui-video-call'), (call) ->
             call.send 'remotemessage', message
         @addEventListener 'remotemessage', (evt) =>
+          evt.detail.when = new Date()
           @$.chat.addMessage evt.detail
 
         @$.chat.addEventListener 'chunk', (evt) =>
