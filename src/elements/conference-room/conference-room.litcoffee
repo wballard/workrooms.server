@@ -117,6 +117,26 @@ elements that can fire clear will totally overdo it.
         document.addEventListener 'call', (evt) =>
           @backgroundChannel.send 'call', evt.detail
 
+##Chat
+
+Hook up chat message processing, most important thing is to attach your local
+user identity to messages as they are posted. This will send messages as they
+are posted to the connected WebRTC calls on the page so everyone gets a chat.
+
+        @$.chat.addEventListener 'message', (evt) =>
+          message =
+            who: @userprofiles.github.name or @userprofiles.github.login
+            what: evt.detail.what
+            when: evt.detail.when
+          evt.detail.callback undefined, message
+          _.each @shadowRoot.querySelectorAll('ui-video-call'), (call) ->
+            call.send 'remotemessage', message
+        @addEventListener 'remotemessage', (evt) =>
+          @$.chat.addMessage evt.detail
+
+        @$.chat.addEventListener 'chunk', (evt) =>
+          evt.detail.callback undefined, 0, 0, []
+
 WebRTC can only kick off interaction when it has something to share, namely a
 local stream of data to transmit. Listen for this stream and set it so that it
 can be bound by all the contained calls.
@@ -124,4 +144,5 @@ can be bound by all the contained calls.
       localstreamChanged: ->
         @backgroundChannel.send 'getcalls'
         @backgroundChannel.send 'login'
+
 

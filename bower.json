@@ -15,8 +15,8 @@
   ],
   "dependencies": {
     "polymer": "~0.2.0",
-    "jquery": "~2.0.3",
-    "semantic": "~0.12.5",
+    "jquery": "~2.1.0",
+    "semantic": "~0.14.0",
     "font-awesome": "~4.0.3",
     "jquery-ui": "~1.10.4",
     "chat-box": "https://github.com/wballard/chat-box.git"
