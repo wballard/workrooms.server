@@ -7,9 +7,10 @@
     <template bind if="{{profile.userprofiles.github}}">
       <img class="ui rounded mini image" src="{{profile.userprofiles.github.avatar_url}}">
       <div class="content">
-        <a class="header">{{profile.userprofiles.github.name}}</a>
+        <a class="header">{{profile.userprofiles.github.name || profile.userprofiles.github.login}}</a>
       </div>
     </template>
-  </template>
-  <script src="./ui-user-profile.js"></script>
-  </polymer-element>
+  </div>
+</template>
+<script src="./ui-user-profile.js"></script>
+</polymer-element>

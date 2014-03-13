@@ -40,5 +40,6 @@ Pipe a `name` message from `this` to `target`.
 
         pipe: (name, target) ->
           @on name, (detail) ->
+            console.log 'piping', name, target
             target.send name, detail
 

@@ -6,7 +6,6 @@ Hide if hidden.
       hideChanged: ->
         console.log 'hide', @hide
         if @hide
-          debugger
           @hideAnimated()
         else
           @showAnimated()

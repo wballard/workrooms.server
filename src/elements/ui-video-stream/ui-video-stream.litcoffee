@@ -31,11 +31,13 @@ the video plays.
           @$.takesnapshot.setAttribute('width', width)
           @$.takesnapshot.setAttribute('height', height)
           takeSnapshot = =>
-            width = parseInt(getComputedStyle(@$.video).getPropertyValue('width').replace('px',''))
-            height = @$.video.videoHeight / (@$.video.videoWidth/width)
-            ctx = @$.takesnapshot.getContext('2d')
-            ctx.drawImage(@$.video, 0, 0, width, height)
-            @$.snapshot.setAttribute('src', @$.takesnapshot.toDataURL('image/png'))
+            return
+            try
+              ctx = @$.takesnapshot.getContext('2d')
+              ctx.drawImage(@$.video, 0, 0, width, height)
+              @$.snapshot.setAttribute('src', @$.takesnapshot.toDataURL('image/png'))
+            catch error
+              console.log error, width, height
           takeSnapshot()
           setInterval =>
             if not @video is 'false'
