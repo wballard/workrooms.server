@@ -35,7 +35,7 @@
     "morpheus": "~0.7.0"
   },
   "scripts": {
-    "install": "bower install",
+    "install": "bower install; gulp --require coffee-script/register --gulpfile gulpfile.litcoffee all",
     "start": "nodemon  --exec 'gulp' --require coffee-script/register --gulpfile gulpfile.litcoffee"
   }
 }
