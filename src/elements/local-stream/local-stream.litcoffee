@@ -20,7 +20,10 @@ Fires when a stream is available, also after then `stream` property is set.
     Polymer 'local-stream',
       attached: ->
         mediaConstraints =
-          video: @hasAttribute('video')
+          video:
+            mandatory:
+              maxWidth: 640
+              maxHeight: 480
           audio: @hasAttribute('audio')
         getUserMedia mediaConstraints, (err, stream) =>
           if err

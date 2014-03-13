@@ -50,7 +50,6 @@ User profiles coming in from the server are captured here.
 
         @conferenceChannel.on 'userprofiles', (userprofiles) =>
           @userprofiles = userprofiles
-          @backgroundChannel.send 'call', to: userprofiles.sessionid
 
 ##Toolbar Buttons
 
