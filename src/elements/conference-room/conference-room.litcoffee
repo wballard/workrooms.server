@@ -64,6 +64,8 @@ Sidebar, are you even allowed to have an application without one any more?
 
         @addEventListener 'sidebar', ->
           @$.sidebar.toggle()
+        @addEventListener 'chatbar', ->
+          @$.chatbar.toggle()
 
 Login and Logout, this is just a message relay to the background
 

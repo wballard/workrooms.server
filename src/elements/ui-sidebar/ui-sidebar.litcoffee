@@ -8,7 +8,13 @@ of a selected element.
       attached: ->
         @sidebar = $(@$.sidebar).sidebar()
 
-Hmm -- this feels a bit like layering and redundancy.
+      toggle: ->
+        @sidebar.sidebar('toggle')
+
+    Polymer 'ui-right-sidebar',
+
+      attached: ->
+        @sidebar = $(@$.sidebar).sidebar()
 
       toggle: ->
         @sidebar.sidebar('toggle')
