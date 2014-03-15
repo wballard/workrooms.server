@@ -14,7 +14,7 @@
 
 <polymer-element name="conference-room" attributes="localstream calls userprofiles audioon videoon">
 <template>
-  <chat-box id="chat"></chat-box>
+  <chat-box chatName="" id="chat"></chat-box>
   <video-control stream="{{localstream}}">
   <audio-control stream="{{localstream}}">
   <local-stream id="local" audio video stream="{{localstream}}">

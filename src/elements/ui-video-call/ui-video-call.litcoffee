@@ -135,7 +135,8 @@ And then handle it remotedly with
             @data.send JSON.stringify(message)
         @data.onmessage = (evt) =>
           message = JSON.parse(evt.data)
-          @fire message.type, message.detail
+          if message.from isnt @peerid
+            @fire message.type, message.detail
         @peerConnection
 
 And let everything go.

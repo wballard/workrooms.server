@@ -124,14 +124,16 @@ user identity to messages as they are posted. This will send messages as they
 are posted to the connected WebRTC calls on the page so everyone gets a chat.
 
         @$.chat.addEventListener 'message', (evt) =>
+          evt.stopPropagation()
           message =
             who: @userprofiles.github.name or @userprofiles.github.login
             what: evt.detail.what
             when: evt.detail.when
           evt.detail.callback undefined, message
           _.each @shadowRoot.querySelectorAll('ui-video-call'), (call) ->
-            call.send 'remotemessage', message
-        @addEventListener 'remotemessage', (evt) =>
+            call.send 'message', message
+
+        @addEventListener 'message', (evt) =>
           evt.detail.when = new Date()
           @$.chat.addMessage evt.detail
 
