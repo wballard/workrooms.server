@@ -4,7 +4,6 @@ Hide if hidden.
 
     Polymer 'ui-hide',
       hideChanged: ->
-        console.log 'hide', @hide
         if @hide
           @hideAnimated()
         else

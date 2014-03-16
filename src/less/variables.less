@@ -14,10 +14,26 @@
   }
 }
 
-.ui.inverted.sidebar {
+.ui.inverted {
   .ui.left.icon.input > .icon {
     opacity: 1;
     color: rgb(255,255,255);
   }
 }
 
+@-webkit-keyframes showing
+{
+  0%   {opacity:0;}
+  100% {opacity:1;}
+}
+
+@-webkit-keyframes acting
+{
+  0%   {color:#fff;}
+  50%  {color:#bbb;}
+  100% {color:#fff;}
+}
+
+.acting {
+  -webkit-animation: acting 3s;
+}

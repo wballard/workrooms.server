@@ -6,7 +6,7 @@ Not clear that this really warrants being its own component.
 
     Polymer 'video-control',
       attached: ->
-        @addEventListener 'video.on', (evt) =>
+        document.addEventListener 'video.on', (evt) =>
           @stream?.getVideoTracks()?.forEach (x) -> x.enabled = true
-        @addEventListener 'video.off', (evt) =>
+        document.addEventListener 'video.off', (evt) =>
           @stream?.getVideoTracks()?.forEach (x) -> x.enabled = false

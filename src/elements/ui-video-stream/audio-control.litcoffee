@@ -6,7 +6,7 @@ Not clear that this really warrants being its own component.
 
     Polymer 'audio-control',
       attached: ->
-        @addEventListener 'audio.on', (evt) =>
+        document.addEventListener 'audio.on', (evt) =>
           @stream?.getAudioTracks()?.forEach (x) -> x.enabled = true
-        @addEventListener 'audio.off', (evt) =>
+        document.addEventListener 'audio.off', (evt) =>
           @stream?.getAudioTracks()?.forEach (x) -> x.enabled = false

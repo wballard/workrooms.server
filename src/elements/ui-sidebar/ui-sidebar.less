@@ -1,15 +1,39 @@
-@import "../../../bower_components/font-awesome/less/font-awesome";
-@import '../../../bower_components/semantic/build/less/modules/sidebar.less';
-@import '../../../bower_components/semantic/build/less/elements/input.less';
-@import '../../../bower_components/semantic/build/less/elements/icon.less';
 @import "../../less/variables";
 
 
 ui-sidebar {
-  display: block;
+  display: flex;
+  width: 25%;
+  height: 100%;
+  z-index: 1000;
+  #display {
+    width: 100%;
+    height: 100%;
+  }
   .ui.sidebar {
     > ul {
       padding: 0;
     }
   }
+  -webkit-animation: showing 1s;
 }
+
+ui-sidebar.ui.floating.left {
+  -webkit-box-shadow: 2px 0px 2px rgba(0, 0, 0, 0.2);
+}
+
+ui-sidebar.ui.floating.right {
+  -webkit-box-shadow: -2px 0px 2px rgba(0, 0, 0, 0.2);
+}
+
+ui-sidebar.narrow {
+  width: 18em;
+}
+
+ui-mainbar {
+  display: block;
+  height: 100%;
+  flex: 1;
+}
+
+
