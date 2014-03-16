@@ -128,7 +128,7 @@ are posted to the connected WebRTC calls on the page so everyone gets a chat.
         @$.chat.addEventListener 'message', (evt) =>
           evt.stopPropagation()
           message =
-            who: @userprofiles.github.name or @userprofiles.github.login
+            who: @userprofiles?.github?.name or @userprofiles?.github?.login or 'Anonymous'
             what: evt.detail.what
             when: evt.detail.when
           evt.detail.callback undefined, message
