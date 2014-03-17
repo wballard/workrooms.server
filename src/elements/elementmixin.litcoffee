@@ -10,6 +10,7 @@ Showing with animation and a callback that fires once it is done.
       HTMLElement::showAnimated = (callback) ->
         bonzo(@).show()
         @visible = true
+        callback() if callback
 
 Hiding with animation and a callback that fires once it is done.
 
@@ -17,3 +18,4 @@ Hiding with animation and a callback that fires once it is done.
       HTMLElement::hideAnimated = (callback) ->
         bonzo(@).hide()
         @visible = false
+        callback() if callback
