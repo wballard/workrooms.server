@@ -12,7 +12,6 @@ which in some sense it no big deal as this isn't really a 'page' at all. So -- c
     ConferenceTab = require('../scripts/conference-tab.litcoffee')
     SignallingServer = require('../scripts/signalling-server.litcoffee')
     GitHub = require('../scripts/github-oauth.litcoffee')
-    GravatarDetector = require('../scripts/gravatar-detector.litcoffee')
     ChromeEventEmitter = require('../scripts/chrome-event-emitter.litcoffee')
 
     _ = require('lodash')
@@ -23,9 +22,7 @@ which in some sense it no big deal as this isn't really a 'page' at all. So -- c
     conferenceTab = new ConferenceTab()
     signallingServer = new SignallingServer(config)
     github = new GitHub()
-    gravatars = new GravatarDetector()
     backgroundChannel = new ChromeEventEmitter('background')
-    gravatarChannel = new ChromeEventEmitter('gravatar')
     conferenceChannel = new ChromeEventEmitter('conference')
 
 Keep track of connected calls in this buffer.
@@ -68,16 +65,6 @@ When a profile comes in from github, send it along to the signalling server.
 
     github.on 'userprofile', (profile) ->
       signallingServer.send 'userprofile', profile
-
-    icon.on 'showconferencetab', conferenceTab.show
-
-##Gravatar Detection
-
-    backgroundChannel.on 'isonline', (detail) ->
-      signallingServer.send 'isonline', detail
-
-    signallingServer.on 'online', (detail) ->
-      gravatarChannel.send 'online', detail, true
 
     backgroundChannel.on 'login', ->
       github.login()

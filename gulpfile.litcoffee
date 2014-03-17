@@ -45,9 +45,7 @@ for each.
 
       targets =
         'src/elements': 'build/bower_components'
-        'src/tabs': 'build/tabs'
-        'src/pages': 'build/pages'
-        'src/scripts': 'build/scripts'
+        'src/pages': 'build/'
 
 Each area has html templates, less styles, and litcoffee source.
 
@@ -75,3 +73,5 @@ Drive the hot reload.
 
     gulp.task 'default', ['source']
     gulp.task 'all', ['source', 'assets']
+    gulp.task 'watch', ->
+      gulp.watch 'src/**/*.*', ['source']

@@ -24,18 +24,22 @@
     "gulp-browserify": "~0.4.5",
     "gulp-less": "~1.2.1",
     "coffee-script": "~1.7.1",
-    "nodemon": "~1.0.14",
-    "caching-coffeeify": "~0.3.0",
     "gulp-rename": "~1.1.0",
     "gulp-flatten": "0.0.2",
     "gulp-concat": "~2.1.7",
     "gulp-plumber": "~0.5.6",
-    "gulp-continuous-concat": "~0.1.1",
     "domready": "~1.0.4",
-    "morpheus": "~0.7.0"
+    "morpheus": "~0.7.0",
+    "colors": "~0.6.2",
+    "hummingbird": "git+https://github.com/wballard/hummingbird.js.git",
+    "request": "~2.34.0",
+    "js-yaml": "~3.0.2",
+    "nodemon": "~1.0.15",
+    "express": "~3.4.8"
   },
   "scripts": {
-    "install": "bower install; gulp --require coffee-script/register --gulpfile gulpfile.litcoffee all",
-    "start": "nodemon  --exec 'gulp' --require coffee-script/register --gulpfile gulpfile.litcoffee"
+    "install": "bower install",
+    "start": "bin/serve",
+    "test": "bin/dev"
   }
 }
