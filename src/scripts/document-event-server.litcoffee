@@ -1,11 +1,11 @@
-This is a simple `EventEmitter` bridge in to chrome, with a notion
-of channels. You make this with a named channel.
+This is a simple `EventEmitter` bridge with a notion of named channels.
 
     EventEmitter = require('events').EventEmitter
-    module.exports = 
-      class ChromeEventEmitter extends EventEmitter
+    module.exports =
+      class DocumentEventServer extends EventEmitter
         constructor: (@channel) ->
-          chrome.runtime.onMessage.addListener (message, sender, respond) =>
+          document.addEventListener 'document-event-server', (evt) =>
+            message = evt.detail
             if message.channel is @channel
               @emit message.type, message.detail
 
@@ -14,18 +14,12 @@ channel.
 
         send: (name, detail, toAllTabs) ->
           @emit name, detail
-          if toAllTabs
-            chrome.tabs.query {}, (tabs) =>
-              tabs.forEach (tab) =>
-                chrome.tabs.sendMessage tab.id,
-                  channel: @channel
-                  type: name
-                  detail: detail
-          else
-            chrome.runtime.sendMessage
+          evt = new CustomEvent 'document-event-server', 
+            detail:
               channel: @channel
               type: name
               detail: detail
+          document.dispatchEvent evt
 
 Pipe a `name` message from `this` to `target`.
 

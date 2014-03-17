@@ -1,12 +1,22 @@
-#Config is set up 'by extension', it's a minor nuisance of Chrome
-#extension security model that the runtime id changes based on the source
-#but, a small convenience for debug local with a local server vs
-#production with a live server
+#Config is set up 'by server', this is becuase GitHub needs to be able
+#to redirect to a known url
 
 #root key is the chrome extension runtime id
-default:
-  reload: true
-  signallingServer: ws://localhost:9000
-cmkckpjleijfldmfnabklbcldhcemgnh:
-  reload: false
-  signallingServer: ws://workrooms.glgresearch.com/workrooms/
+localhost:9001:
+  github:
+    clientid: df1c093b04a9ba9660cd
+    clientsecret: 6ce2be9ee60bdcaf35ea192e27df9bf81d75e6e8
+  iceServers:
+    -
+      url: turn:workrooms.glgresearch.com:3478?transport=udp
+      credential: go
+      username: workrooms
+workrooms.glgresearch.com:
+  github:
+    clientid: 3467f78cc66dac9e5192
+    clientsecret: fab71e56a04e30e37e582da16cca10928f523952
+  iceServers:
+    -
+      url: turn:workrooms.glgresearch.com:3478?transport=udp
+      credential: go
+      username: workrooms

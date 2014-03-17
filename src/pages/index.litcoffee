@@ -3,27 +3,15 @@ This is the application -- the background page that ties it all together.
 Originally, this was in Polymer, but 0.2.0 broke custom element support in background pages
 which in some sense it no big deal as this isn't really a 'page' at all. So -- code it is!
 
-    config = require('../config.yaml')
-    config = config[chrome.runtime.id] or config['default']
     serverConfig = null
 
-    require('../scripts/chrome-devreloader.litcoffee')(config)
-    ExtensionIcon = require('../scripts/extension-icon.litcoffee')
-    ConferenceTab = require('../scripts/conference-tab.litcoffee')
     SignallingServer = require('../scripts/signalling-server.litcoffee')
-    GitHub = require('../scripts/github-oauth.litcoffee')
-    ChromeEventEmitter = require('../scripts/chrome-event-emitter.litcoffee')
-
+    DocumentEventServer = require('../scripts/document-event-server.litcoffee')
     _ = require('lodash')
 
-    console.log 'starting application'
-
-    icon = new ExtensionIcon()
-    conferenceTab = new ConferenceTab()
-    signallingServer = new SignallingServer(config)
-    github = new GitHub()
-    backgroundChannel = new ChromeEventEmitter('background')
-    conferenceChannel = new ChromeEventEmitter('conference')
+    signallingServer = new SignallingServer("ws#{document.location.origin.slice(4)}")
+    backgroundChannel = new DocumentEventServer('background')
+    conferenceChannel = new DocumentEventServer('conference')
 
 Keep track of connected calls in this buffer.
 
@@ -37,21 +25,14 @@ get the rest of the configuration.
 
     signallingServer.on 'hello', ->
       signallingServer.send 'register',
-        runtime: chrome.runtime.id
+        runtime: document.location.host
         calls: calls
-      icon.drawIcon calls
 
 After we have registered, the server sends along a configuration, this is to
 protect -- or really to be able to switch -- ids for OAuth and STUN/TURN.
 
     signallingServer.on 'configured', (config) ->
       serverConfig = config
-      github.login(serverConfig.github)
-
-When valid, let our GitHub auth know.
-
-    signallingServer.on 'valid', ->
-      github?.validated()
 
 The server combines profile data into a unified set of userprofiles.
 
@@ -63,8 +44,8 @@ The server combines profile data into a unified set of userprofiles.
 
 When a profile comes in from github, send it along to the signalling server.
 
-    github.on 'userprofile', (profile) ->
-      signallingServer.send 'userprofile', profile
+    #github.on 'userprofile', (profile) ->
+    #  signallingServer.send 'userprofile', profile
 
     backgroundChannel.on 'login', ->
       github.login()
@@ -75,9 +56,6 @@ When a profile comes in from github, send it along to the signalling server.
       github.logout()
 
 ##Call Tracking
-
-    conferenceChannel.on 'calls', (calls) ->
-      icon.drawIcon calls
 
     backgroundChannel.pipe 'call', signallingServer
     backgroundChannel.pipe 'hangup', signallingServer

@@ -22,11 +22,11 @@ All the known profiles for the current user.
     _ = require('lodash')
     qwery = require('qwery')
     bonzo = require('bonzo')
-    ChromeEventEmitter = require('../../scripts/chrome-event-emitter.litcoffee')
+    DocumentEventServer = require('../../scripts/document-event-server.litcoffee')
 
     Polymer 'conference-room',
-      backgroundChannel: new ChromeEventEmitter('background')
-      conferenceChannel: new ChromeEventEmitter('conference')
+      backgroundChannel: new DocumentEventServer('background')
+      conferenceChannel: new DocumentEventServer('conference')
       audioon: true
       videoon: true
       userprofiles: {}

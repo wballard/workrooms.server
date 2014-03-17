@@ -18,8 +18,8 @@ as the custom event detail.
     module.exports =
       class SignallingServer extends EventEmitter
         sessionid: uuid.v1()
-        constructor: (@config) ->
-          @socket = new HuntingWebsocket([@config.signallingServer])
+        constructor: (@url) ->
+          @socket = new HuntingWebsocket([@url])
           @socket.onerror = (err) =>
             @emit 'error', err
           @socket.onmessage = (evt) =>
