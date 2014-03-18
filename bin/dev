@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-nodemon  --exec 'gulp' --require coffee-script/register --gulpfile gulpfile.litcoffee
+nodemon  --exec 'gulp' --require coffee-script/register --gulpfile gulpfile.litcoffee watch
