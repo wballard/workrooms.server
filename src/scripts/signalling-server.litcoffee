@@ -17,7 +17,7 @@ as the custom event detail.
 
     module.exports =
       class SignallingServer extends EventEmitter
-        sessionid: uuid.v1()
+        clientid: uuid.v1()
         constructor: (@url) ->
           @socket = new HuntingWebsocket([@url])
           @socket.onerror = (err) =>
@@ -33,7 +33,7 @@ as the custom event detail.
             @socket?.send JSON.stringify(
               type: name
               detail: detail
-              from: @sessionid
+              clientid: @clientid
             )
 
 Pipe a `name` message from `this` to `target`.

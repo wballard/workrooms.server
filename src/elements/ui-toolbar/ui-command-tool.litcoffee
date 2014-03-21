@@ -12,7 +12,10 @@ you can put any style names in here to use other than FontAwesome.
 This fires a dynamic event based on `command`.
 
     Polymer 'ui-command-tool',
-      attached: ->
-        @addEventListener 'click', =>
+      href: ''
+      clickLink: (evt) ->
+        if @command
           @fire @command, @detail
+        if not @href?.length
+          evt.preventDefault()
 

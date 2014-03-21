@@ -73,5 +73,5 @@ Drive the hot reload.
 
     gulp.task 'default', ['source']
     gulp.task 'all', ['source', 'assets']
-    gulp.task 'watch', ->
+    gulp.task 'watch', ['source'], ->
       gulp.watch 'src/**/*.*', ['source']

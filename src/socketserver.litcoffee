@@ -3,8 +3,40 @@ socket server.
 
     _ = require('lodash')
     yaml = require('js-yaml')
+    hummingbird = require('hummingbird')
 
-    module.exports = (wss, config, sockets, profileIndex, reindex) ->
+Track running sockets to get a sense of all sessions.
+
+    sockets = {}
+
+Index all the profiles for autocomplete.
+
+    profileIndex = null
+
+    reindex = (sockets) ->
+      fields = (doc) ->
+        ret = []
+        ret.push doc.userprofiles.github.name
+        ret.push doc.userprofiles.github.login
+        ret.join ' '
+      profileIndex = new hummingbird.Index()
+      profileIndex.by_gravatar_id = {}
+      profileIndex.by_github_id = {}
+
+      for id, socket of sockets
+        if socket.userprofiles.github
+          console.log 'indexing'.yellow, id, socket.userprofiles.github.id
+          socket.userprofiles.github.id = "#{socket.userprofiles.github.id}"
+          socket.userprofiles.clientid = id
+          doc =
+            id: id
+            clientid: id
+            userprofiles: socket.userprofiles
+          profileIndex.add doc, false, fields
+          profileIndex.by_github_id["#{socket.userprofiles.github.id}"] = doc
+          profileIndex.by_gravatar_id["#{socket.userprofiles.github.gravatar_id}"] = doc
+
+    module.exports = (wss, config, store) ->
 
 Bad news straight to the console
 
@@ -15,9 +47,19 @@ Sockety goodness.
 
       wss.on 'connection', (socket) ->
 
+
 User profiles for this connected client socket.
 
         socket.userprofiles = {}
+
+Get at the session.
+
+        store.parser socket.upgradeReq, null, (err) ->
+          socket.sessionid = socket.upgradeReq.signedCookies['sid']
+          store.get socket.sessionid, (err, session) ->
+            socket.userprofiles.github = JSON.parse(session?.passport?.user?._raw or '{}')
+            console.log "hi there #{socket.userprofiles.github.name}".blue
+            reindex(sockets)
 
 Track calls, this is used to route messages between peers.
 
@@ -45,7 +87,7 @@ Translate messages into events allowing declarative event handling.
           try
             message = JSON.parse(req)
             console.log '->'.blue, yaml.safeDump(message), '\n---'.blue
-            socket.sessionid = message.from
+            socket.clientid = message.clientid
             socket.emit message.type, message.detail
           catch error
             console.error "#{error}".red
@@ -56,7 +98,6 @@ the client simply does not. Allows the client side view to be reloaded by users
 as a manual error recovery.
 
         socket.on 'register', (detail) ->
-          sockets[socket.sessionid] = socket
           calls = detail.calls or []
           if calls.length
             socket.calls = detail.calls
@@ -75,36 +116,6 @@ at the moment these configs are just checked in.
             socket.signal 'configured', _.extend(config[socket.runtime], sessionid: socket.sessionid, userprofiles: socket.userprofiles)
           else
             console.log "There was no config prepared for #{detail.runtime}".yellow
-
-Client profiles, this is directory data so the client can be found by query.
-
-        socket.on 'userprofile', (userprofile) ->
-          sockets[socket.sessionid] = socket
-          socket.userprofiles[userprofile.profile_source] = userprofile
-          console.log "hi there #{userprofile.name}".blue
-          socket.userprofiles.sessionid = socket.sessionid
-          socket.signal 'userprofiles', socket.userprofiles
-          reindex(sockets)
-
-Validate github authorization tokens.
-
-          if userprofile.profile_source is 'github' and config[userprofile.runtime]
-            user = config[userprofile.runtime].github.clientid
-            pass = config[userprofile.runtime].github.clientsecret
-            options =
-              url: "https://api.github.com/applications/#{user}/tokens/#{userprofile.access_token}"
-              headers:
-                'User-Agent': 'request'
-              auth:
-                user: user
-                pass: pass
-            request.get options, (err, response, body) ->
-              if response?.statusCode is 200
-                console.log "validated #{userprofile.name or userprofile.login}".blue
-                userprofile.valid = true
-                socket.signal 'valid',
-                  userprofiles: socket.userprofiles
-                  validation: JSON.parse(body)
 
 Send WebRTC negotiation along to all peers and let them process it, this will
 reflect ice back to the sender, this allows self-calling for testing.
@@ -143,34 +154,34 @@ bit of a ban on self calls to work. **TODO**
             outboundcall =
               outbound: true
               callid: callid
-              sessionid: 'fail'
+              clientid: 'fail'
               userprofiles: socket.userprofiles
             socket.calls.push outboundcall
             socket.signal 'outboundcall', outboundcall
 
           tosocket = sockets[detail.to]
           if tosocket
-            if _.any(socket.calls, (call) -> call.tosessionid is detail.to)
-              console.log "already connected #{socket.sessionid} to #{tosocket.sessionid}".yellow
+            if _.any(socket.calls, (call) -> call.toclientid is detail.to)
+              console.log "already connected #{socket.clientid} to #{tosocket.clientid}".yellow
             else
               autoconference_peers = []
               tosocket.calls.forEach (call) ->
-                autoconference_peers.push call.fromsessionid
-                autoconference_peers.push call.tosessionid
-              console.log "connecting #{socket.sessionid} to #{tosocket.sessionid}".blue
+                autoconference_peers.push call.fromclientid
+                autoconference_peers.push call.toclientid
+              console.log "connecting #{socket.clientid} to #{tosocket.clientid}".blue
               outboundcall =
                 id: uuid.v1()
                 outbound: true
                 callid: callid
-                fromsessionid: socket.sessionid
-                tosessionid: tosocket.sessionid
+                fromclientid: socket.clientid
+                toclientid: tosocket.clientid
                 userprofiles: tosocket.userprofiles
               inboundcall =
                 id: uuid.v1()
                 inbound: true
                 callid: callid
-                fromsessionid: socket.sessionid
-                tosessionid: tosocket.sessionid
+                fromclientid: socket.clientid
+                toclientid: tosocket.clientid
                 userprofiles: socket.userprofiles
               socket.calls.push outboundcall
               socket.signal 'outboundcall', outboundcall
@@ -192,10 +203,10 @@ the client.
           hangupCalls =  _.remove(socket.calls, (x) -> x?.callid is hangupCall.callid)
           _.forEach hangupCalls, (call) ->
             socket.signal 'hangup', call
-            if sockets?[call?.fromsessionid]?.readyState is 1
-              sockets?[call?.fromsessionid]?.emit 'hangup', call
-            if sockets?[call?.tosessionid]?.readyState is 1
-              sockets?[call?.tosessionid]?.emit 'hangup', call
+            if sockets?[call?.fromclientid]?.readyState is 1
+              sockets?[call?.fromclientid]?.emit 'hangup', call
+            if sockets?[call?.toclientid]?.readyState is 1
+              sockets?[call?.toclientid]?.emit 'hangup', call
 
 Directory search.
 
@@ -219,7 +230,7 @@ Close removes the socket from tracking and the index.
 
         socket.on 'close', ->
           try
-            delete sockets[socket.sessionid]
+            delete sockets[socket.clientid]
             reindex(sockets)
           catch error
             console.error error.red

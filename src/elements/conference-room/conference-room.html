@@ -12,7 +12,7 @@
 <link rel="import" href="../chat-box/build/chat-box.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 
-<polymer-element name="conference-room" attributes="localstream calls userprofiles audioon videoon">
+<polymer-element name="conference-room" attributes="localstream calls userprofiles audioon videoon serverconfig">
 <template>
   <video-control stream="{{localstream}}"></video-control>
   <audio-control stream="{{localstream}}"></audio-control>
@@ -43,10 +43,10 @@
   <ui-hide show="{{userprofiles.github.id}}">
   <ui-user-profile-github-gravatar github="{{userprofiles.github}}">
   </ui-user-profile-github-gravatar>
-  <ui-command-tool icon="fa-sign-out" command="logout"></ui-command-tool>
+  <ui-command-tool icon="fa-sign-out" href="/auth/logout"></ui-command-tool>
   </ui-hide>
   <ui-hide hide="{{userprofiles.github.id}}">
-  <ui-command-tool icon="fa-sign-in" command="login"></ui-command-tool>
+  <ui-command-tool icon="fa-sign-in" href="/auth/github"></ui-command-tool>
   </ui-hide>
   </ui-right-toolbar>
   </ui-toolbar>

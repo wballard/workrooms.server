@@ -16,40 +16,44 @@ Array of all active calls metadata. These aren't calls themselves, just
 identifiers used to data bind and generate `ui-video-call` elements.
 ##userprofiles
 All the known profiles for the current user.
+##serverconfig
+The server literally sends the config back to the client on a connect.
 
     require('../elementmixin.litcoffee')
     uuid = require('node-uuid')
     _ = require('lodash')
     qwery = require('qwery')
     bonzo = require('bonzo')
-    DocumentEventServer = require('../../scripts/document-event-server.litcoffee')
+    SignallingServer = require('../../scripts/signalling-server.litcoffee')
 
     Polymer 'conference-room',
-      backgroundChannel: new DocumentEventServer('background')
-      conferenceChannel: new DocumentEventServer('conference')
       audioon: true
       videoon: true
       userprofiles: {}
       calls: []
+      serverconfig: null
+
       attached: ->
+        @signallingServer = new SignallingServer("ws#{document.location.origin.slice(4)}")
         @addEventListener 'error', (err) ->
           console.log err
 
-All the calls known to the application, make sure there are visual elements.
+##Signalling Server Messages
+Hello from the server! Now it is time to register this client in order to
+get the rest of the configuration. Sending along the calls is an 'autoreconnect'.
 
-        @conferenceChannel.on 'calls', (calls) =>
-          calls = _.groupBy calls, (x) -> x.id
-          visibleCalls = _.map @calls, (x) -> x.id
-          _.difference(_.keys(calls), visibleCalls).forEach (id) =>
-            @calls.push calls[id][0]
-          _.difference(visibleCalls, _.keys(calls)).forEach (id) =>
-            @shadowRoot.querySelector("#A#{id}").hideAnimated =>
-              _.remove @calls, (x) -> x.id is id
+        @signallingServer.on 'hello', =>
+          @signallingServer.send 'register',
+            runtime: document.location.host
+            calls: @calls
 
-User profiles coming in from the server are captured here.
+After we have registered, the server sends along a configuration, this is to
+protect -- or really to be able to switch -- ids for OAuth and STUN/TURN.
 
-        @conferenceChannel.on 'userprofiles', (userprofiles) =>
-          @userprofiles = userprofiles
+        @signallingServer.on 'configured', (config) =>
+          console.log 'configured', config
+          @serverConfig = config
+          @userprofiles = config.userprofiles
 
 ##Toolbar Buttons
 
@@ -69,38 +73,59 @@ Sidebars, are you even allowed to have an application without one any more?
         @addEventListener 'chatbar', ->
           @$.chatbar.toggle()
 
-Login and Logout, this is just a message relay to the background
+##Call Tracking
 
-        @addEventListener 'logout', =>
-          @backgroundChannel.send 'logout'
+        @signallingServer.on 'outboundcall', (detail) ->
+          detail.config = @serverConfig
+          @calls.push detail
 
-        @addEventListener 'login', =>
-          @backgroundChannel.send 'login'
+        @signallingServer.on 'inboundcall', (detail) ->
+          detail.config = @serverConfig
+          @calls.push detail
+
+**TODO** figure out how to track if this tab is active
+
+          tabActive = true
+          if not tabActive
+            url = detail?.userprofiles?.github?.avatar_url
+            callToast = webkitNotifications.createNotification url, 'Call From', detail.userprofiles.github.name
+            callToast.onclick = =>
+              conferenceTab.show()
+            callToast.show()
+
+##Hangup Tracking
+Hangup handling, when this is coming up the page, it is a signal to hang up all
+calls. When from the server, it is information to hang up one call.
+
+        @addEventListener 'hangup', =>
+          @calls.forEach (call) =>
+            @signallingServer.send 'hangup', call
+
+        @signallingServer.on 'hangup', (hangupCall) ->
+          _.remove @calls, (call) -> call.callid is hangupCall.callid
 
 ##Call Signal Processing
 
-Ending calls. Not a lot to do here but request through to the application.
-
-        @addEventListener 'hangup', =>
-          @backgroundChannel.send 'hangup'
-
         @addEventListener 'ice', (evt) =>
-          @backgroundChannel.send 'ice', evt.detail
-        @conferenceChannel.on 'ice', (detail) =>
+          @signallingServer.send 'ice', evt.detail
+        @signallingServer.on 'ice', (detail) =>
           _.each @shadowRoot.querySelectorAll('ui-video-call'), (call) ->
             call.processIce detail
 
         @addEventListener 'offer', (evt) =>
-          @backgroundChannel.send 'offer', evt.detail
-        @conferenceChannel.on 'offer', (detail) =>
+          @signallingServer.send 'offer', evt.detail
+        @signallingServer.on 'offer', (detail) =>
           _.each @shadowRoot.querySelectorAll('ui-video-call'), (call) ->
             call.processOffer detail
 
         @addEventListener 'answer', (evt) =>
-          @backgroundChannel.send 'answer', evt.detail
-        @conferenceChannel.on 'answer', (detail) =>
+          @signallingServer.send 'answer', evt.detail
+        @signallingServer.on 'answer', (detail) =>
           _.each @shadowRoot.querySelectorAll('ui-video-call'), (call) ->
             call.processAnswer detail
+
+        @addEventListener 'call', (evt) =>
+          @signallingServer.send 'call', evt.detail
 
 ##Autocomplete Search
 
@@ -112,14 +137,12 @@ elements that can fire clear will totally overdo it.
             profiles: []
 
         document.addEventListener 'autocomplete', (evt) =>
-          @backgroundChannel.send 'autocomplete', evt.detail
+          @signallingServer.send 'autocomplete', evt.detail
 
-        @conferenceChannel.on 'autocomplete', (detail) =>
+        @signallingServer.on 'autocomplete', (detail) =>
           @$.searchresults.model =
             profiles: detail.results
 
-        document.addEventListener 'call', (evt) =>
-          @backgroundChannel.send 'call', evt.detail
 
 ##Chat
 
@@ -143,13 +166,3 @@ are posted to the connected WebRTC calls on the page so everyone gets a chat.
 
         @$.chat.addEventListener 'chunk', (evt) =>
           evt.detail.callback undefined, 0, 0, []
-
-WebRTC can only kick off interaction when it has something to share, namely a
-local stream of data to transmit. Listen for this stream and set it so that it
-can be bound by all the contained calls.
-
-      localstreamChanged: ->
-        @backgroundChannel.send 'getcalls'
-        @backgroundChannel.send 'login'
-
-
