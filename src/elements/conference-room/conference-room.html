@@ -40,12 +40,12 @@
   <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active="{{audioon}}"></ui-toggle-tool>
   <ui-command-tool icon="fa-phone fa-rotate-135" command="hangup"></ui-command-tool>
   <ui-right-toolbar>
-  <ui-hide show="{{userprofiles.github.id}}">
+  <ui-hide show="{{userprofiles.github}}">
   <ui-user-profile-github-gravatar github="{{userprofiles.github}}">
   </ui-user-profile-github-gravatar>
   <ui-command-tool icon="fa-sign-out" href="/auth/logout"></ui-command-tool>
   </ui-hide>
-  <ui-hide hide="{{userprofiles.github.id}}">
+  <ui-hide hide="{{userprofiles.github}}">
   <ui-command-tool icon="fa-sign-in" href="/auth/github"></ui-command-tool>
   </ui-hide>
   </ui-right-toolbar>

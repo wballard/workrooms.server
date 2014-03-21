@@ -2,6 +2,7 @@ All the socket handling, packed into a function that hooks on to a ws
 socket server.
 
     _ = require('lodash')
+    uuid = require('node-uuid')
     yaml = require('js-yaml')
     hummingbird = require('hummingbird')
 
@@ -16,18 +17,17 @@ Index all the profiles for autocomplete.
     reindex = (sockets) ->
       fields = (doc) ->
         ret = []
-        ret.push doc.userprofiles.github.name
-        ret.push doc.userprofiles.github.login
+        ret.push doc.userprofiles.github?.name
+        ret.push doc.userprofiles.github?.login
         ret.join ' '
       profileIndex = new hummingbird.Index()
       profileIndex.by_gravatar_id = {}
       profileIndex.by_github_id = {}
 
       for id, socket of sockets
-        if socket.userprofiles.github
-          console.log 'indexing'.yellow, id, socket.userprofiles.github.id
+        if socket.userprofiles?.github?.id
+          console.log 'indexing'.yellow, id, socket.userprofiles.github.id, socket.clientid
           socket.userprofiles.github.id = "#{socket.userprofiles.github.id}"
-          socket.userprofiles.clientid = id
           doc =
             id: id
             clientid: id
@@ -57,9 +57,13 @@ Get at the session.
         store.parser socket.upgradeReq, null, (err) ->
           socket.sessionid = socket.upgradeReq.signedCookies['sid']
           store.get socket.sessionid, (err, session) ->
-            socket.userprofiles.github = JSON.parse(session?.passport?.user?._raw or '{}')
-            console.log "hi there #{socket.userprofiles.github.name}".blue
-            reindex(sockets)
+            console.log "#{err}".red if err
+            github = JSON.parse(session?.passport?.user?._raw or '{}')
+            if github.id
+              console.log "hi there #{github.name}".blue
+              socket.userprofiles.github = github
+            else
+              delete socket.userprofiles.github
 
 Track calls, this is used to route messages between peers.
 
@@ -98,6 +102,9 @@ the client simply does not. Allows the client side view to be reloaded by users
 as a manual error recovery.
 
         socket.on 'register', (detail) ->
+          sockets[socket.clientid] = socket
+          if detail.userprofiles.github
+            socket.userprofiles = detail.userprofiles
           calls = detail.calls or []
           if calls.length
             socket.calls = detail.calls
@@ -107,6 +114,7 @@ as a manual error recovery.
                 socket.signal 'outboundcall', call
               if call.inbound
                 socket.signal 'inboundcall', call
+          reindex(sockets)
 
 Provide configuration to the client. This is used to keep OAuth a bit more secret, though
 at the moment these configs are just checked in.

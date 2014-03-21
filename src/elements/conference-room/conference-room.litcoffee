@@ -46,6 +46,7 @@ get the rest of the configuration. Sending along the calls is an 'autoreconnect'
           @signallingServer.send 'register',
             runtime: document.location.host
             calls: @calls
+            userprofiles: @userprofiles
 
 After we have registered, the server sends along a configuration, this is to
 protect -- or really to be able to switch -- ids for OAuth and STUN/TURN.
@@ -68,18 +69,18 @@ Sidebars, are you even allowed to have an application without one any more?
 
         @$.sidebar.hideAnimated()
         @$.chatbar.hideAnimated()
-        @addEventListener 'sidebar', ->
+        @addEventListener 'sidebar', =>
           @$.sidebar.toggle()
-        @addEventListener 'chatbar', ->
+        @addEventListener 'chatbar', =>
           @$.chatbar.toggle()
 
 ##Call Tracking
 
-        @signallingServer.on 'outboundcall', (detail) ->
+        @signallingServer.on 'outboundcall', (detail) =>
           detail.config = @serverConfig
           @calls.push detail
 
-        @signallingServer.on 'inboundcall', (detail) ->
+        @signallingServer.on 'inboundcall', (detail) =>
           detail.config = @serverConfig
           @calls.push detail
 
@@ -101,7 +102,7 @@ calls. When from the server, it is information to hang up one call.
           @calls.forEach (call) =>
             @signallingServer.send 'hangup', call
 
-        @signallingServer.on 'hangup', (hangupCall) ->
+        @signallingServer.on 'hangup', (hangupCall) =>
           _.remove @calls, (call) -> call.callid is hangupCall.callid
 
 ##Call Signal Processing
