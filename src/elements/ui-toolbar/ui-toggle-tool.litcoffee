@@ -31,4 +31,9 @@ This fires a dynamic event based on `togglechanged`. Will fire a
           @fire "#{@togglechanged}.off"
           @$.tool.classList.remove('active')
           bonzo(@$.overlay).show()
+      tooltipChanged: ->
+        $(@$.tool).popup
+          inline: true
+          content: @tooltip
+          position: @tooltipPosition()
 

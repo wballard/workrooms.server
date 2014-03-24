@@ -1,7 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="stylesheet" type="text/css" href="./ui-toolbar.css">
 
-<polymer-element name="ui-toggle-tool" attributes="icon togglechanged active">
+<polymer-element name="ui-toggle-tool" attributes="icon togglechanged active tooltip">
 <template>
   <a id="tool" class="item">
     <span class="fa-stack">
@@ -11,5 +11,6 @@
     <content></content>
   </a>
 </template>
+<script src="/bower_components/semantic/build/uncompressed/modules/popup.js"></script>
 <script src="./ui-toggle-tool.js"></script>
 </polymer-element>

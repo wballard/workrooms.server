@@ -19,3 +19,21 @@ Hiding with animation and a callback that fires once it is done.
         bonzo(@).hide()
         @visible = false
         callback() if callback
+
+jQuery doesn't seem to understand offset and position with polymer.
+
+    $.fn.position = ->
+      if not @[0]
+        return
+      else
+        bonzo(@[0]).offset()
+
+Tooltip positioning.
+
+    if not HTMLElement::tooltipPosition
+      HTMLElement::tooltipPosition = ->
+        if bonzo(@).offset().left > (bonzo(@).parent().offset().width/2)
+          'bottom left'
+        else
+          'bottom right'
+

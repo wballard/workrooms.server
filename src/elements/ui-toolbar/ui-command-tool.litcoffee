@@ -18,4 +18,9 @@ This fires a dynamic event based on `command`.
           @fire @command, @detail
         if not @href?.length
           evt.preventDefault()
+      tooltipChanged: ->
+        $(@$.tool).popup
+          inline: true
+          content: @tooltip
+          position: @tooltipPosition()
 

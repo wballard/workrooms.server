@@ -33,22 +33,20 @@
   </ui-sidebar>
   <ui-mainbar>
   <ui-toolbar>
-  <ui-command-tool icon="fa-bars" command="sidebar"></ui-command-tool>
-  <ui-command-tool icon="fa-comments" command="chatbar"></ui-command-tool>
-  <ui-toggle-tool icon="fa-eye" togglechanged="selfie"></ui-toggle-tool>
-  <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active="{{videoon}}"></ui-toggle-tool>
-  <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active="{{audioon}}"></ui-toggle-tool>
-  <ui-command-tool icon="fa-phone fa-rotate-135" command="hangup"></ui-command-tool>
-  <ui-right-toolbar>
-  <ui-hide show="{{userprofiles.github}}">
+  <ui-command-tool icon="fa-bars" command="sidebar" tooltip="Search in the sidebar"></ui-command-tool>
+  <ui-command-tool icon="fa-comments" command="chatbar" tooltip="Text chat"></ui-command-tool>
+  <ui-toggle-tool icon="fa-eye" togglechanged="selfie" tooltip="Video selfie"></ui-toggle-tool>
+  <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active="{{videoon}}" tooltip="Video mute"></ui-toggle-tool>
+  <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active="{{audioon}}" tooltip="Audio mute"></ui-toggle-tool>
+  <ui-command-tool icon="fa-phone fa-rotate-135" command="hangup" tooltip="Hang up all calls"></ui-command-tool>
+  <ui-hide class="ui right" show="{{userprofiles.github}}">
   <ui-user-profile-github-gravatar github="{{userprofiles.github}}">
   </ui-user-profile-github-gravatar>
-  <ui-command-tool icon="fa-sign-out" href="/auth/logout"></ui-command-tool>
+  <ui-command-tool icon="fa-sign-out" href="/auth/logout" tooltip="Sign out"></ui-command-tool>
   </ui-hide>
-  <ui-hide hide="{{userprofiles.github}}">
-  <ui-command-tool icon="fa-sign-in" href="/auth/github"></ui-command-tool>
+  <ui-hide class="ui right" hide="{{userprofiles.github}}">
+  <ui-command-tool icon="fa-github" href="/auth/github" tooltip="Sign in via Github"></ui-command-tool>
   </ui-hide>
-  </ui-right-toolbar>
   </ui-toolbar>
   <span class="calls">
     <div id="selfie" class="ui tile video">

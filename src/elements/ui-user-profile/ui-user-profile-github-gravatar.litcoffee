@@ -5,6 +5,7 @@ A user display image with a popup.
 This is an amalgamated profile object via OAuth sources.
 
     bonzo = require('bonzo')
+    require('../elementmixin.litcoffee')
 
     Polymer 'ui-user-profile-github-gravatar',
       attached: ->
@@ -15,5 +16,6 @@ This is an amalgamated profile object via OAuth sources.
             inline: true
             title: @github?.name
             content: "@#{@github?.login}"
+            position: @tooltipPosition()
         else
           bonzo(@).hide()
