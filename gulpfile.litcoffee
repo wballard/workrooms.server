@@ -10,6 +10,7 @@ build script and watch for changes.
     concat = require 'gulp-concat'
     plumber = require 'gulp-plumber'
     shell = require 'gulp-shell'
+    es = require 'event-stream'
 
 All of the semi status stuff, don't bother to rebuild as often
 
@@ -32,26 +33,51 @@ Sweep up static assest from all over.
       gulp.src '**', {cwd: 'bower_components'}
         .pipe gulp.dest 'build/bower_components/'
 
-And our scripts
+And our custom elements.
 
-    gulp.task 'elements', ->
-      compile 'src/elements', 'build/bower_components'
-    gulp.task 'pages', ->
-      compile 'src/pages', 'build/'
-
-Each area has html templates, less styles, and litcoffee source.
-
-    compile = (src, dest) ->
-      console.log 'compiling', src
+    gulp.task 'elements', ['elements-code', 'elements-style', 'elements-static']
+    gulp.task  'elements-code', ->
+      src ='src/elements'
+      dest = 'build/bower_components'
       gulp.src '**/*.litcoffee', {cwd: src, read: false}
         .pipe browserify
           transform: ['coffeeify', 'browserify-data']
           debug: true
         .pipe rename extname: '.js'
         .pipe gulp.dest dest
+    gulp.task  'elements-style', ->
+      src ='src/elements'
+      dest = 'build/bower_components'
       gulp.src '**/*.less', {cwd: src}
         .pipe less()
         .pipe gulp.dest dest
+    gulp.task  'elements-static', ->
+      src ='src/elements'
+      dest = 'build/bower_components'
+      gulp.src '**/*.html', {cwd: src}
+        .pipe gulp.dest dest
+      gulp.src '**/*.svg', {cwd: src}
+        .pipe gulp.dest dest
+
+    gulp.task 'pages', ['pages-code', 'pages-style', 'pages-static']
+    gulp.task  'pages-code', ->
+      src ='src/pages'
+      dest = 'build'
+      gulp.src '**/*.litcoffee', {cwd: src, read: false}
+        .pipe browserify
+          transform: ['coffeeify', 'browserify-data']
+          debug: true
+        .pipe rename extname: '.js'
+        .pipe gulp.dest dest
+    gulp.task  'pages-style', ->
+      src ='src/pages'
+      dest = 'build/'
+      gulp.src '**/*.less', {cwd: src}
+        .pipe less()
+        .pipe gulp.dest dest
+    gulp.task  'pages-static', ->
+      src ='src/pages'
+      dest = 'build/'
       gulp.src '**/*.html', {cwd: src}
         .pipe gulp.dest dest
       gulp.src '**/*.svg', {cwd: src}
@@ -66,6 +92,6 @@ Vulcanize for the speed.
         ])
 
     gulp.task 'default', ['all']
-    gulp.task 'all', ['vulcanize', 'assets']
+    gulp.task 'all', ['vulcanize']
     gulp.task 'watch', ['elements', 'pages'], ->
       gulp.watch 'src/**/*.*', ['elements', 'pages']
