@@ -14,9 +14,9 @@ localhost:9001:
       username: workrooms
 workrooms.glgresearch.com:
   github:
-    clientid: 3467f78cc66dac9e5192
-    clientsecret: fab71e56a04e30e37e582da16cca10928f523952
-    callback: https://workrooms.glgresearch.com/auth/github/callback
+    clientid: eda98e0fee66b8573312
+    clientsecret: 8dc00cee1647aab2a2e926bf45914759e26f7632
+    callback: https://workrooms.glgresearch.com/workrooms/auth/github/callback
   iceServers:
     -
       url: turn:workrooms.glgresearch.com:3478?transport=udp
