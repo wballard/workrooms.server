@@ -34,7 +34,7 @@ The server literally sends the config back to the client on a connect.
       serverconfig: null
 
       attached: ->
-        @signallingServer = new SignallingServer("ws#{document.location.origin.slice(4)}")
+        @signallingServer = new SignallingServer("ws#{document.location.origin.slice(4)}#{document.location.pathname}")
         @addEventListener 'error', (err) ->
           console.log err
 
