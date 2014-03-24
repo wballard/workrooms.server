@@ -14,11 +14,16 @@ as the custom event detail.
     HuntingWebsocket = require('./hunting-websocket.litcoffee')
     EventEmitter = require('events').EventEmitter
     uuid = require('node-uuid')
+    kizzy = require('kizzy')
 
     module.exports =
       class SignallingServer extends EventEmitter
         clientid: uuid.v1()
         constructor: (@url) ->
+          store = kizzy('signallingserver')
+          @clientid = store.get('clientid') or uuid.v1()
+          store.set('clientid', @clientid)
+          console.log 'client', @clientid
           @socket = new HuntingWebsocket([@url])
           @socket.onerror = (err) =>
             @emit 'error', err

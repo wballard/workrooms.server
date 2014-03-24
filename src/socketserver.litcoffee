@@ -47,12 +47,15 @@ Sockety goodness.
 
       wss.on 'connection', (socket) ->
 
-
 User profiles for this connected client socket.
 
         socket.userprofiles = {}
 
-Get at the session.
+Track calls, this is used to route messages between peers.
+
+        socket.calls = []
+
+Get at the session, this bridges OAuth into the socket.
 
         store.parser socket.upgradeReq, null, (err) ->
           socket.sessionid = socket.upgradeReq.signedCookies['sid']
@@ -64,10 +67,6 @@ Get at the session.
               socket.userprofiles.github = github
             else
               delete socket.userprofiles.github
-
-Track calls, this is used to route messages between peers.
-
-        socket.calls = []
 
 Signal -- send a message back to the connected client.
 
@@ -102,41 +101,44 @@ the client simply does not. Allows the client side view to be reloaded by users
 as a manual error recovery.
 
         socket.on 'register', (detail) ->
-          sockets[socket.clientid] = socket
-          if detail.userprofiles.github
-            socket.userprofiles = detail.userprofiles
-          calls = detail.calls or []
-          if calls.length
-            socket.calls = detail.calls
+          if sockets[socket.clientid] and sockets[socket.clientid] isnt socket
+            socket.signal 'disconnect'
           else
-            for call in socket.calls
-              if call.outbound
-                socket.signal 'outboundcall', call
-              if call.inbound
-                socket.signal 'inboundcall', call
-          reindex(sockets)
+            sockets[socket.clientid] = socket
+            if detail.userprofiles.github
+              socket.userprofiles = detail.userprofiles
+            calls = detail.calls or []
+            if calls.length
+              socket.calls = detail.calls
+            else
+              for call in socket.calls
+                if call.outbound
+                  socket.signal 'outboundcall', call
+                if call.inbound
+                  socket.signal 'inboundcall', call
+            reindex(sockets)
 
 Provide configuration to the client. This is used to keep OAuth a bit more secret, though
 at the moment these configs are just checked in.
 
-          if config[detail.runtime]
-            socket.runtime = detail.runtime
-            socket.signal 'configured', _.extend(config[socket.runtime], sessionid: socket.sessionid, userprofiles: socket.userprofiles)
-          else
-            console.log "There was no config prepared for #{detail.runtime}".yellow
+            if config[detail.runtime]
+              socket.runtime = detail.runtime
+              socket.signal 'configured', _.extend(config[socket.runtime], sessionid: socket.sessionid, userprofiles: socket.userprofiles)
+            else
+              console.log "There was no config prepared for #{detail.runtime}".yellow
 
 Send WebRTC negotiation along to all peers and let them process it, this will
 reflect ice back to the sender, this allows self-calling for testing.
 
-        signal = (type, detail) ->
+        signalRTC = (type, detail) ->
           _(sockets)
             .values()
             .select((socket) -> _.any(socket.calls, (call) -> call.callid is detail.callid))
             .forEach (socket) ->
               socket.signal type, detail
-        socket.on 'ice', (detail) -> signal('ice', detail)
-        socket.on 'offer', (detail) -> signal('offer', detail)
-        socket.on 'answer', (detail) -> signal('answer', detail)
+        socket.on 'ice', (detail) -> signalRTC('ice', detail)
+        socket.on 'offer', (detail) -> signalRTC('offer', detail)
+        socket.on 'answer', (detail) -> signalRTC('answer', detail)
 
 Start off a call, the job here is to figure if the called person exists, then
 send along messages to start peer to peer call setup on the inbound (caller)
@@ -238,8 +240,9 @@ Close removes the socket from tracking and the index.
 
         socket.on 'close', ->
           try
-            delete sockets[socket.clientid]
-            reindex(sockets)
+            if sockets[socket.clientid] is socket
+              delete sockets[socket.clientid]
+              reindex(sockets)
           catch error
             console.error error.red
 
