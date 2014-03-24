@@ -39,10 +39,10 @@ Static service of the single page app, with passport authentication.
     app.use(passport.session())
     app.get '/auth/github', passport.authenticate('github'), (req, res) ->
     app.get '/auth/github/callback', passport.authenticate('github', failuserRedirect: '/#fail'), (req, res) ->
-      res.redirect '/'
+      res.redirect serverConfig.github.redirect
     app.get '/auth/logout', (req, res) ->
       req.logout()
-      res.redirect '/'
+      res.redirect serverConfig.github.redirect
 
 Route service.
 
