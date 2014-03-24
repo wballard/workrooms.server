@@ -59,7 +59,7 @@ Each area has html templates, less styles, and litcoffee source.
 
 Vulcanize for the speed.
 
-    gulp.task 'vulcanize', ['elements', 'pages'], ->
+    gulp.task 'vulcanize', ['elements', 'pages', 'assets'], ->
       gulp.src ''
         .pipe shell([
           'vulcanize --inline --strip -o build/index.html build/index.html'
