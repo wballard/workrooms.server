@@ -9,6 +9,7 @@ build script and watch for changes.
     flatten = require 'gulp-flatten'
     concat = require 'gulp-concat'
     plumber = require 'gulp-plumber'
+    shell = require 'gulp-shell'
 
 All of the semi status stuff, don't bother to rebuild as often
 
@@ -33,45 +34,38 @@ Sweep up static assest from all over.
 
 And our scripts
 
-    gulp.task 'source', ->
-
-The chrome app manifest has no transforms.
-
-      gulp.src 'manifest.json', {cwd: 'src'}
-        .pipe gulp.dest 'build'
-
-Map source directories to target build directories, then run the pipelines
-for each.
-
-      targets =
-        'src/elements': 'build/bower_components'
-        'src/pages': 'build/'
+    gulp.task 'elements', ->
+      compile 'src/elements', 'build/bower_components'
+    gulp.task 'pages', ->
+      compile 'src/pages', 'build/'
 
 Each area has html templates, less styles, and litcoffee source.
 
-      for src, dest of targets
-        console.log 'compiling', src
-        gulp.src '**/*.litcoffee', {cwd: src, read: false}
-          .pipe browserify
-            transform: ['coffeeify', 'browserify-data']
-            debug: true
-          .pipe rename extname: '.js'
-          .pipe gulp.dest dest
-        gulp.src '**/*.less', {cwd: src}
-          .pipe less()
-          .pipe gulp.dest dest
-        gulp.src '**/*.html', {cwd: src}
-          .pipe gulp.dest dest
-        gulp.src '**/*.svg', {cwd: src}
-          .pipe gulp.dest dest
+    compile = (src, dest) ->
+      console.log 'compiling', src
+      gulp.src '**/*.litcoffee', {cwd: src, read: false}
+        .pipe browserify
+          transform: ['coffeeify', 'browserify-data']
+          debug: true
+        .pipe rename extname: '.js'
+        .pipe gulp.dest dest
+      gulp.src '**/*.less', {cwd: src}
+        .pipe less()
+        .pipe gulp.dest dest
+      gulp.src '**/*.html', {cwd: src}
+        .pipe gulp.dest dest
+      gulp.src '**/*.svg', {cwd: src}
+        .pipe gulp.dest dest
 
-Drive the hot reload.
+Vulcanize for the speed.
 
-      gulp.src 'src/**/*.*'
-        .pipe concat('all')
-        .pipe gulp.dest 'build'
+    gulp.task 'vulcanize', ['elements', 'pages'], ->
+      gulp.src ''
+        .pipe shell([
+          'vulcanize --inline --strip -o build/index.html build/index.html'
+        ])
 
-    gulp.task 'default', ['source']
-    gulp.task 'all', ['source', 'assets']
-    gulp.task 'watch', ['source'], ->
-      gulp.watch 'src/**/*.*', ['source']
+    gulp.task 'default', ['all']
+    gulp.task 'all', ['vulcanize', 'assets']
+    gulp.task 'watch', ['elements', 'pages'], ->
+      gulp.watch 'src/**/*.*', ['elements', 'pages']
