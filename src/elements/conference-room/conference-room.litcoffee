@@ -34,7 +34,10 @@ The server literally sends the config back to the client on a connect.
       serverconfig: null
 
       attached: ->
-        @signallingServer = new SignallingServer("ws#{document.location.origin.slice(4)}#{document.location.pathname}")
+        @root = "#{document.location.origin}#{document.location.pathname}"
+        if @root.slice(-1) isnt '/'
+          @root += '/'
+        @signallingServer = new SignallingServer("ws#{@root.slice(4)}")
         @addEventListener 'error', (err) ->
           console.log err
 
