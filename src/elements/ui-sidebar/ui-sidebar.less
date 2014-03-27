@@ -17,18 +17,23 @@ ui-sidebar {
     }
   }
   -webkit-animation: showing 1s;
+  .ui.floating.left {
+    -webkit-box-shadow: 2px 0px 2px rgba(0, 0, 0, 0.2);
+  }
+  .ui.floating.right {
+    -webkit-box-shadow: -2px 0px 2px rgba(0, 0, 0, 0.2);
+  }
 }
-
-ui-sidebar.ui.floating.left {
-  -webkit-box-shadow: 2px 0px 2px rgba(0, 0, 0, 0.2);
-}
-
-ui-sidebar.ui.floating.right {
-  -webkit-box-shadow: -2px 0px 2px rgba(0, 0, 0, 0.2);
-}
-
-ui-sidebar.narrow {
+.narrow {
   width: 18em;
+}
+.dropdown {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  -webkit-box-shadow: 2px 0px 2px rgba(0, 0, 0, 0.2);
+  background-color: @dropdownBackgroundColor;
 }
 
 ui-mainbar {
