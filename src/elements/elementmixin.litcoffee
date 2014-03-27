@@ -22,11 +22,12 @@ Hiding with animation and a callback that fires once it is done.
 
 jQuery doesn't seem to understand offset and position with polymer.
 
-    $.fn.position = ->
-      if not @[0]
-        return
-      else
-        bonzo(@[0]).offset()
+    if jQuery?
+      jQuery.fn.position = ->
+        if not @[0]
+          return
+        else
+          bonzo(@[0]).offset()
 
 Tooltip positioning.
 

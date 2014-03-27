@@ -33,6 +33,9 @@ The server literally sends the config back to the client on a connect.
       calls: []
       serverconfig: null
 
+      ready: ->
+        @fire 'ready'
+
       attached: ->
         @root = "#{document.location.origin}#{document.location.pathname}"
         if @root.slice(-1) isnt '/'
@@ -130,6 +133,8 @@ calls. When from the server, it is information to hang up one call.
 
         @addEventListener 'call', (evt) =>
           @signallingServer.send 'call', evt.detail
+        window.debugFailCall = =>
+          @signallingServer.send 'call', to: 'fail'
 
 ##Autocomplete Search
 
