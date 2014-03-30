@@ -43,7 +43,8 @@
     "gulp-shell": "~0.2.4",
     "vulcanize": "~0.1.15",
     "event-stream": "~3.1.0",
-    "reqwest": "^1.1.0"
+    "reqwest": "^1.1.0",
+    "async": "^0.6.0"
   },
   "scripts": {
     "install": "bower install",
