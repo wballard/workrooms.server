@@ -2,4 +2,4 @@
 
 #serve the website, with a nice fresh build of all components
 gulp --require coffee-script/register --gulpfile gulpfile.litcoffee all
-nodemon ./src/server.litcoffee
+coffee ./src/server.litcoffee

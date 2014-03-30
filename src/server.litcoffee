@@ -33,7 +33,15 @@ Static service of the single page app, with passport authentication.
       clientID: serverConfig.github.clientid
       clientSecret: serverConfig.github.clientsecret
       callbackURL: serverConfig.github.callback
-    }, (access, refresh, profile, done) -> done(undefined, profile))
+      scope: ['user', 'read:org']
+      userAgent: 'glgresearch.com'
+    }, (access_token, refresh, profile, done) ->
+      console.log access_token, profile
+      touchup = JSON.parse(profile._raw)
+      profile._json.access_token = access_token
+      touchup.access_token = access_token
+      profile._raw = JSON.stringify(touchup)
+      done(undefined, profile))
     )
     app.use(passport.initialize())
     app.use(passport.session())
