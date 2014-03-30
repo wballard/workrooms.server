@@ -73,7 +73,6 @@ Show and hide the selfie -- this really needs to be data bound instead.
 
 Sidebars, are you even allowed to have an application without one any more?
 
-        @$.sidebar.hideAnimated()
         @$.chatbar.hideAnimated()
         @addEventListener 'sidebar', =>
           @$.sidebar.toggle()

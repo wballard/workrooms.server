@@ -5,5 +5,7 @@ Sidebar, this is a nice place to hide controls out of the way.
       toggle: ->
         if @visible
           @hideAnimated()
+          @visible = false
         else
           @showAnimated()
+          @visible = true
