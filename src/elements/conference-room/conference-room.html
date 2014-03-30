@@ -17,7 +17,10 @@
   <video-control stream="{{localstream}}"></video-control>
   <audio-control stream="{{localstream}}"></audio-control>
   <local-stream id="local" audio video stream="{{localstream}}"></local-stream>
-  <ui-sidebar id="search" class="ui narrow dropdown left">
+  <ui-sidebar id="sidebar" class="ui narrow floating left">
+  <span class="grid grid--gutters">
+    <ui-input class="grid-cell" icon="fa-search" placeholder="Search..."></ui-input>
+  </span>
   <span class="grid grid--gutters">
     <ul class="ui list grid-cell">
       <template id="searchresults" repeat="{{profile in profiles}}">
@@ -30,9 +33,7 @@
   </ui-sidebar>
   <ui-mainbar>
   <ui-toolbar>
-  <span class="item grid">
-    <ui-input class="grid-cell" icon="fa-search" placeholder="Search..."></ui-input>
-  </span>
+  <ui-command-tool icon="fa-bars" command="sidebar" tooltip="Search in the sidebar"></ui-command-tool>
   <ui-command-tool icon="fa-comments" command="chatbar" tooltip="Text chat"></ui-command-tool>
   <ui-toggle-tool icon="fa-eye" togglechanged="selfie" tooltip="Video selfie"></ui-toggle-tool>
   <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active="{{videoon}}" tooltip="Video mute"></ui-toggle-tool>

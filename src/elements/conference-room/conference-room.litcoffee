@@ -73,7 +73,10 @@ Show and hide the selfie -- this really needs to be data bound instead.
 
 Sidebars, are you even allowed to have an application without one any more?
 
+        @$.sidebar.hideAnimated()
         @$.chatbar.hideAnimated()
+        @addEventListener 'sidebar', =>
+          @$.sidebar.toggle()
         @addEventListener 'chatbar', =>
           @$.chatbar.toggle()
 
@@ -138,11 +141,9 @@ calls. When from the server, it is information to hang up one call.
 Clear out autocomplete results. Pay attention to this one, multiple text input
 elements that can fire clear will totally overdo it.
 
-        @$.search.hideAnimated()
         @addEventListener 'clear', (evt) =>
           @$.searchresults.model =
             profiles: []
-          @$.search.hideAnimated()
 
         document.addEventListener 'autocomplete', (evt) =>
           @signallingServer.send 'autocomplete', evt.detail
@@ -150,11 +151,6 @@ elements that can fire clear will totally overdo it.
         @signallingServer.on 'autocomplete', (detail) =>
           @$.searchresults.model =
             profiles: detail.results
-          if detail.results.length
-            @$.search.showAnimated()
-
-        @$.search.addEventListener 'click', =>
-          @$.search.hideAnimated()
 
 
 ##Chat
