@@ -142,7 +142,7 @@ elements that can fire clear will totally overdo it.
 
         @addEventListener 'clear', (evt) =>
           @$.searchresults.model =
-            profiles: []
+            profiles: @userprofiles.github.friends
 
         document.addEventListener 'autocomplete', (evt) =>
           @signallingServer.send 'autocomplete', evt.detail
@@ -151,6 +151,9 @@ elements that can fire clear will totally overdo it.
           @$.searchresults.model =
             profiles: detail.results
 
+        document.addEventListener 'friends', (evt) =>
+          @$.searchresults.model =
+            profiles: @userprofiles.github.friends
 
 ##Chat
 

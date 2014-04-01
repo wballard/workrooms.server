@@ -3,14 +3,12 @@
 
 <polymer-element name="ui-user-profile" attributes="profile">
 <template>
-  <div class="ui item">
-    <template bind if="{{profile.userprofiles.github}}">
-      <img class="ui rounded mini image" src="{{profile.userprofiles.github.avatar_url}}">
-      <div class="content">
-        <a class="header">{{profile.userprofiles.github.name || profile.userprofiles.github.login}}</a>
-      </div>
-    </template>
-  </div>
+  <template bind if="{{profile.userprofiles.github}}">
+    <img class="ui rounded mini image" src="{{profile.userprofiles.github.avatar_url}}">
+    <div class="content">
+      <a class="header">{{profile.userprofiles.github.name || profile.userprofiles.github.login}}</a>
+    </div>
+  </template>
 </template>
 <script src="./ui-user-profile.js"></script>
 </polymer-element>
