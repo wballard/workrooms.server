@@ -4,15 +4,23 @@
 @import "../../less/variables";
 
 ui-user-profile {
-  display: block;
+  display: flex;
+  align-items: center;
   opacity: 0.9;
+  .red {
+    color: @red;
+  }
+  .green {
+    color: @green;
+  }
   .ui.image {
-    display: inline-block !important;
-    float: none !important;
+    margin: 0 0 0 0.6em;
+    display: inline-block;
+    float: none;
   }
   .content {
     display: inline-block;
-    padding: 0 0 0 0.3em;
+    margin: 0 0 0 0.6em;
   }
   &:hover {
     opacity: 1.0;

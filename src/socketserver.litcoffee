@@ -231,8 +231,8 @@ Presence queries.
 
         socket.on 'isonline', (detail) ->
           userprofiles =
-            profileIndex.by_gravatar_id[detail.gravatar_id] or
-            profileIndex.by_github_id[detail.userid]
+            profileIndex.by_gravatar_id[detail?.userprofiles?.github?.gravatar_id] or
+            profileIndex.by_github_id[detail?.userprofiles?.github?.id]
           if userprofiles
             socket.signal 'online', userprofiles
 

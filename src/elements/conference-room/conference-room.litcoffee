@@ -150,10 +150,19 @@ elements that can fire clear will totally overdo it.
         @signallingServer.on 'autocomplete', (detail) =>
           @$.searchresults.model =
             profiles: detail.results
+          detail.results.forEach (friend) =>
+            @signallingServer.send 'isonline', friend
 
         document.addEventListener 'friends', (evt) =>
           @$.searchresults.model =
             profiles: @userprofiles.github.friends
+          @userprofiles.github.friends.forEach (friend) =>
+            @signallingServer.send 'isonline', friend
+
+        @signallingServer.on 'online', (user) =>
+          @$.searchresults?.model?.profiles?.forEach (result) ->
+            if "#{user?.userprofiles?.github?.id}" is "#{result?.userprofiles?.github?.id}"
+              result.online = true
 
 ##Chat
 
