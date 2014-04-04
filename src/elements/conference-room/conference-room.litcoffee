@@ -153,10 +153,14 @@ elements that can fire clear will totally overdo it.
           detail.results.forEach (friend) =>
             @signallingServer.send 'isonline', friend
 
-        document.addEventListener 'friends', (evt) =>
+        document.addEventListener 'newfriends', (evt) =>
           @$.searchresults.model =
-            profiles: @userprofiles.github.friends
-          @userprofiles.github.friends.forEach (friend) =>
+            profiles:
+              _(@userprofiles.github.friends)
+                .values()
+                .sortBy (x) -> (x.userprofiles.github.name or x.userprofiles.github.login).toLowerCase()
+                .value()
+          @$.searchresults.model.profiles.forEach (friend) =>
             @signallingServer.send 'isonline', friend
 
         @signallingServer.on 'online', (user) =>
