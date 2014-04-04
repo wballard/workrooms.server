@@ -164,10 +164,10 @@ elements that can fire clear will totally overdo it.
             @signallingServer.send 'isonline', friend
 
         @signallingServer.on 'online', (user) =>
-          @$.searchresults?.model?.profiles?.forEach (result) ->
-            if "#{user?.userprofiles?.github?.id}" is "#{result?.userprofiles?.github?.id}"
-              _.extend result, user
-              result.online = true
+          friend = @userprofiles.github.friends[user.userprofiles.github.id]
+          if friend
+            _.extend friend, user
+            friend.online = true
 
 ##Chat
 

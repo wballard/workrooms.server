@@ -105,6 +105,8 @@ as a manual error recovery.
             socket.signal 'disconnect'
           else
             sockets[socket.clientid] = socket
+            for id, socket of sockets
+              socket.send 'isonline', detail.userprofiles
             if detail.userprofiles.github
               socket.userprofiles = detail.userprofiles
             calls = detail.calls or []
