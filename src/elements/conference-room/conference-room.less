@@ -1,4 +1,5 @@
 @import "../../../bower_components/font-awesome/less/font-awesome";
+@import '../../../bower_components/semantic/build/less/collections/message.less';
 @import "../../less/variables";
 @import "../../less/grid";
 
@@ -23,6 +24,10 @@ conference-room {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    padding: 1em;
+  }
+  .notices {
+    padding: 1em;
   }
   ui-sidebar {
     ul {
@@ -42,10 +47,17 @@ conference-room {
       }
     }
   }
+  .ui.icon.signin.message {
+    text-decoration: none;
+    .icon.fa {
+      opacity: 1;
+    }
+  }
 }
 
 inbound-video-call, outbound-video-call {
   display: block;
+  margin: 2em;
   .gravatar {
     margin: @margin;
     position: absolute;
