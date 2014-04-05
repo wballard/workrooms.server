@@ -191,3 +191,4 @@ are posted to the connected WebRTC calls on the page so everyone gets a chat.
 
         @$.chat.addEventListener 'chunk', (evt) =>
           evt.detail.callback undefined, 0, 0, []
+
