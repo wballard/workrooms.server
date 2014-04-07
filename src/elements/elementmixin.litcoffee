@@ -3,6 +3,7 @@ Mixin methods to HTMLElement.
     bonzo = require('bonzo')
     bean = require('bean')
     morpheus = require('morpheus')
+    _ = require('lodash')
 
 Showing with animation and a callback that fires once it is done.
 
@@ -38,3 +39,8 @@ Tooltip positioning.
         else
           'bottom right'
 
+Turn all the keys into a string.
+
+    if PolymerExpressions?
+      PolymerExpressions::keyString = (obj) ->
+        _.keys(obj).join(' ')

@@ -7,7 +7,8 @@
     <i class="fa fa-circle {{ {green: profile.online, red: !profile.online} | tokenList }}"></i>
     <img class="ui rounded mini image" src="{{profile.userprofiles.github.avatar_url}}">
     <div class="content">
-      <a class="header">{{profile.userprofiles.github.name || profile.userprofiles.github.login}}</a>
+      <a class="">{{profile.userprofiles.github.name || profile.userprofiles.github.login}}</a>
+      <div class="detail">{{profile.userprofiles.github.groups | keyString}}</div>
     </div>
   </template>
 </template>

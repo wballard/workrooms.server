@@ -4,6 +4,7 @@ This is a mixin method that adds utilities directly to a custom elements.
 
 bonzo = require('bonzo')
 qwery = require('qwery')
+_ = require('underscore')
 
 Element.prototype.$ = (selector, target) ->
   bonzo(qwery(selector, target))
@@ -36,3 +37,4 @@ Element.prototype.fire = (name, data) ->
     bubbles: true
     detail: data
   )
+
