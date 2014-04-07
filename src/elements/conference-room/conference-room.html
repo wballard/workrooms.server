@@ -48,19 +48,19 @@
   <ui-command-tool icon="fa-github" href="{{root}}auth/github" tooltip="Sign in via Github"></ui-command-tool>
   </ui-hide>
   </ui-toolbar>
-  <div class="notices">
-    <ui-hide hide="{{userprofiles.github}}">
-    <a class="ui icon signin message" href="{{root}}auth/github">
-      <i class="ui icon fa fa-github fa-4x"></i>
-      <div class="content">
-        <div class="header">Sign in via Github</div>
-        <p>No need to register, signing in gets you started with all your groups
-          and friends on Github.</p>
-      </div>
-    </a>
-    </ui-hide>
-  </div>
   <div class="calls">
+    <div class="notices">
+      <ui-hide hide="{{userprofiles.github}}">
+      <a class="ui icon signin message" href="{{root}}auth/github">
+        <i class="ui icon fa fa-github fa-4x"></i>
+        <div class="content">
+          <div class="header">Sign in via Github</div>
+          <p>No need to register, signing in gets you started with all your groups
+            and friends on Github.</p>
+        </div>
+      </a>
+      </ui-hide>
+    </div>
     <div id="selfie" class="ui tile video">
       <section>
         <ui-video-stream stream="{{localstream}}" mutedaudio mirror></ui-video-stream>
