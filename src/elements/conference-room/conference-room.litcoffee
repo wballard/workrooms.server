@@ -29,14 +29,14 @@ The server literally sends the config back to the client on a connect.
     Polymer 'conference-room',
       audioon: true
       videoon: true
-      userprofiles: {}
-      calls: []
       serverconfig: null
 
       ready: ->
         @fire 'ready'
 
       attached: ->
+        @userprofiles = {}
+        @calls = []
         @root = "#{document.location.origin}#{document.location.pathname}"
         if @root.slice(-1) isnt '/'
           @root += '/'
@@ -113,8 +113,8 @@ calls. When from the server, it is information to hang up one call.
           if evt.detail?.callid?
             @signallingServer.send 'hangup', evt.detail
           else
-            @calls.forEach (call) =>
-              @signallingServer.send 'hangup', call
+            _.each @shadowRoot.querySelectorAll('ui-video-call'), (call) =>
+              @signallingServer.send 'hangup', callid: call.callid
 
         @signallingServer.on 'hangup', (hangupCall) =>
           _.remove @calls, (call) -> call.callid is hangupCall.callid
