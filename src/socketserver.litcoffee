@@ -212,13 +212,11 @@ message. This works symmetrically, letting the other peer get a message back to
 the client.
 
         socket.on 'hangup', (hangupCall) ->
+          socket.signal 'hangup', hangupCall
           hangupCalls =  _.remove(socket.calls, (x) -> x?.callid is hangupCall.callid)
           _.forEach hangupCalls, (call) ->
-            socket.signal 'hangup', call
-            if sockets?[call?.fromclientid]?.readyState is 1
-              sockets?[call?.fromclientid]?.emit 'hangup', call
-            if sockets?[call?.toclientid]?.readyState is 1
-              sockets?[call?.toclientid]?.emit 'hangup', call
+            sockets?[call?.fromclientid]?.emit 'hangup', call
+            sockets?[call?.toclientid]?.emit 'hangup', call
 
 Directory search.
 
