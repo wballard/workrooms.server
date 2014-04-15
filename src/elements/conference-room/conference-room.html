@@ -73,7 +73,8 @@
     <template id="calls" repeat="{{call in calls}}">
       <ui-video-call id="A{{call.id}}" outbound?="{{call.outbound}}" inbound?="{{call.inbound}}" callid="{{call.callid}}" 
       localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}" 
-      remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}" config="{{call.config}}">
+      remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}" config="{{call.config}}"
+      fromclientid="{{call.fromclientid}}" toclientid="{{call.toclientid}}">
       <div class="ui tile video">
         <section>
           <ui-video-stream stream="{{call.remotestream}}" audio="{{call.remoteaudio}}" video="{{call.remotevideo}}"></ui-video-stream>

@@ -100,6 +100,8 @@ Set up a peer-to-peer keep alive timer.
           @send 'callkeepalive',
             callid: @callid
             peerid: @peerid
+            fromclientid: @fromclientid
+            toclientid: @toclientid
         , KEEPALIVE_TIMEOUT
 
 On a request to negotiate, send along the offer from the outbound side to

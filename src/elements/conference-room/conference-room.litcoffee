@@ -81,6 +81,9 @@ Sidebars, are you even allowed to have an application without one any more?
 
 ##Call Tracking
 
+Keeps track of all your calls, and forwards them to all connected call
+peers in order to support auto-conference.
+
         @signallingServer.on 'outboundcall', (detail) =>
           detail.config = @serverConfig
           @calls.push detail
@@ -88,6 +91,9 @@ Sidebars, are you even allowed to have an application without one any more?
         @signallingServer.on 'inboundcall', (detail) =>
           detail.config = @serverConfig
           @calls.push detail
+
+        @addEventListener 'callkeepalive', (evt) =>
+          console.log evt.detail
 
 **TODO** figure out how to track if this tab is active
 
