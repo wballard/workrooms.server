@@ -51,5 +51,3 @@ list. But only bother to load it if we haven't previously.
             content: "@#{@github.login}"
             position: @tooltipPosition()
           @getFriends()
-        else
-          bonzo(@).hide()
