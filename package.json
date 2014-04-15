@@ -44,7 +44,8 @@
     "vulcanize": "~0.1.15",
     "event-stream": "~3.1.0",
     "reqwest": "^1.1.0",
-    "async": "^0.6.0"
+    "async": "^0.6.0",
+    "connect-sqlite3": "~0.9.2"
   },
   "scripts": {
     "install": "bower install",

@@ -105,7 +105,6 @@ calls. When from the server, it is information to hang up one call.
 
         @addEventListener 'hangup', (evt) =>
           if evt.detail?.callid?
-            console.log 'only one', evt.detail
             @signallingServer.send 'hangup', evt.detail
           else
             @calls.forEach (call) =>

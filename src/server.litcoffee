@@ -15,6 +15,7 @@ even remotely designed to scale out to multiple processes or machines.
     socketserver = require('./socketserver.litcoffee')
     passport = require('passport')
     GitHubStrategy = require('passport-github').Strategy
+    SQLiteStore = require('connect-sqlite3')(express)
 
 Config me!
 
@@ -26,7 +27,7 @@ Static service of the single page app, with passport authentication.
 
     app = express()
     app.use(parser = express.cookieParser('--++--'))
-    store = new express.session.MemoryStore()
+    store = new SQLiteStore(dir: '/var/data/', db: 'workrooms-sessions')
     store.parser = parser
     app.use(express.session(store: store, key: 'sid'))
     passport.use(new GitHubStrategy({
