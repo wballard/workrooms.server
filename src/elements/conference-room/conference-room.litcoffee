@@ -103,9 +103,13 @@ Sidebars, are you even allowed to have an application without one any more?
 Hangup handling, when this is coming up the page, it is a signal to hang up all
 calls. When from the server, it is information to hang up one call.
 
-        @addEventListener 'hangup', =>
-          @calls.forEach (call) =>
-            @signallingServer.send 'hangup', call
+        @addEventListener 'hangup', (evt) =>
+          if evt.detail?.callid?
+            console.log 'only one', evt.detail
+            @signallingServer.send 'hangup', evt.detail
+          else
+            @calls.forEach (call) =>
+              @signallingServer.send 'hangup', call
 
         @signallingServer.on 'hangup', (hangupCall) =>
           _.remove @calls, (call) -> call.callid is hangupCall.callid
