@@ -175,6 +175,8 @@ bit of a ban on self calls to work. **TODO**
           if tosocket
             if _.any(socket.calls, (call) -> call.toclientid is detail.to)
               console.log "already connected #{socket.clientid} to #{tosocket.clientid}".yellow
+            else if _.any(socket.calls, (call) -> call.fromclientid is detail.to)
+              console.log "already connected #{socket.clientid} to #{tosocket.clientid}".yellow
             else
               autoconference_peers = []
               tosocket.calls.forEach (call) ->
