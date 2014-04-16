@@ -111,7 +111,7 @@ calls. When from the server, it is information to hang up one call.
 
         @addEventListener 'hangup', (evt) =>
           if evt.detail?.callid?
-            @signallingServer.send 'hangup', evt.detail
+            @signallingServer.send 'hangup', callid: evt.detail.callid
           else
             _.each @shadowRoot.querySelectorAll('ui-video-call'), (call) =>
               @signallingServer.send 'hangup', callid: call.callid
