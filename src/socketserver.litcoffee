@@ -51,10 +51,6 @@ User profiles for this connected client socket.
 
         socket.userprofiles = {}
 
-Track calls, this is used to route messages between peers.
-
-        socket.calls = []
-
 Get at the session, this bridges OAuth into the socket.
 
         store.parser socket.upgradeReq, null, (err) ->
@@ -95,10 +91,14 @@ Translate messages into events allowing declarative event handling.
           catch error
             console.error "#{error}".red
 
-Client setup, captures the identifier so this client can be called if found. This
-will allow for a 'refresh' of existing calls if the server knows of calls that
-the client simply does not. Allows the client side view to be reloaded by users
-as a manual error recovery.
+Client setup, captures the identifier so this client can be called if found. 
+This identifier is separate from any oauth identifier, and is randomly generated
+by each client. This allows you to log on from multiple locations, and thus call
+yourself at different locations. And it means you can clear out your local
+storage on any client and get a different identifier, providing for privacy.
+
+This is a problem if two clients allocate the same identifier, so clients need
+to protect users by creating a nice big random string that is hard to guess.
 
         socket.on 'register', (detail) ->
           if sockets[socket.clientid] and sockets[socket.clientid] isnt socket
@@ -109,15 +109,6 @@ as a manual error recovery.
               socket.send 'isonline', detail.userprofiles
             if detail.userprofiles.github
               socket.userprofiles = detail.userprofiles
-            calls = detail.calls or []
-            if calls.length
-              socket.calls = detail.calls
-            else
-              for call in socket.calls
-                if call.outbound
-                  socket.signal 'outboundcall', call
-                if call.inbound
-                  socket.signal 'inboundcall', call
             reindex(sockets)
 
 Provide configuration to the client. This is used to keep OAuth a bit more secret, though
@@ -133,11 +124,12 @@ Send WebRTC negotiation along to all peers and let them process it, this will
 reflect ice back to the sender, this allows self-calling for testing.
 
         signalRTC = (type, detail) ->
-          _(sockets)
-            .values()
-            .select((socket) -> _.any(socket.calls, (call) -> call.callid is detail.callid))
-            .forEach (socket) ->
-              socket.signal type, detail
+          fromSocket = sockets[detail.fromclientid]
+          toSocket = sockets[detail.toclientid]
+          if fromSocket
+            fromSocket.signal type, detail
+          if toSocket
+            toSocket.signal type, detail
         socket.on 'ice', (detail) -> signalRTC('ice', detail)
         socket.on 'offer', (detail) -> signalRTC('offer', detail)
         socket.on 'answer', (detail) -> signalRTC('answer', detail)
@@ -155,12 +147,12 @@ The one 'rule' here is that you only get one call from-to.
 This has a special case for debugging if you call 'fail' which sets up an
 outbound call to nobody to test failing RTC negotiation.
 
-And -- the autoconference, when you call someone, you are really calling everyone
-they are talking to -- virtually walking up to their desk. This may require a 
-bit of a ban on self calls to work. **TODO**
+Calls are made 'from' a caller 'to' a callee. The caller is will set up
+an 'outboundcall', the callee will set up an 'inboundcall'. Part of this setup
+is double checking if a call already exists.
 
         socket.on 'call', (detail) ->
-          callid = uuid.v1()
+          callid = detail.callid or uuid.v1()
 
           if detail.to is 'fail'
             outboundcall =
@@ -168,57 +160,27 @@ bit of a ban on self calls to work. **TODO**
               callid: callid
               clientid: 'fail'
               userprofiles: socket.userprofiles
-            socket.calls.push outboundcall
             socket.signal 'outboundcall', outboundcall
 
           tosocket = sockets[detail.to]
           if tosocket
-            if _.any(socket.calls, (call) -> call.toclientid is detail.to)
-              console.log "already connected #{socket.clientid} to #{tosocket.clientid}".yellow
-            else if _.any(socket.calls, (call) -> call.fromclientid is detail.to)
-              console.log "already connected #{socket.clientid} to #{tosocket.clientid}".yellow
-            else
-              autoconference_peers = []
-              tosocket.calls.forEach (call) ->
-                autoconference_peers.push call.fromclientid
-                autoconference_peers.push call.toclientid
-              console.log "connecting #{socket.clientid} to #{tosocket.clientid}".blue
-              outboundcall =
-                id: uuid.v1()
-                outbound: true
-                callid: callid
-                fromclientid: socket.clientid
-                toclientid: tosocket.clientid
-                userprofiles: tosocket.userprofiles
-              inboundcall =
-                id: uuid.v1()
-                inbound: true
-                callid: callid
-                fromclientid: socket.clientid
-                toclientid: tosocket.clientid
-                userprofiles: socket.userprofiles
-              socket.calls.push outboundcall
-              socket.signal 'outboundcall', outboundcall
-              tosocket.calls.push inboundcall
-              tosocket.signal 'inboundcall', inboundcall
-
-Hang up all calls known to this socket. This means the counterparty needs
-to be informed, which is done by transplanting the event over to the other 
-sockets.
-
-Search for the call to actuall hang up is by callid, so that makes it OK
-for either the inbound or the outbound side to be sent to either peer.
-
-If a call is found to actually remove, it is echoed back with another hangup
-message. This works symmetrically, letting the other peer get a message back to
-the client.
-
-        socket.on 'hangup', (hangupCall) ->
-          socket.signal 'hangup', hangupCall
-          hangupCalls =  _.remove(socket.calls, (x) -> x?.callid is hangupCall.callid)
-          _.forEach hangupCalls, (call) ->
-            sockets?[call?.fromclientid]?.emit 'hangup', call
-            sockets?[call?.toclientid]?.emit 'hangup', call
+            console.log "connecting #{socket.clientid} to #{tosocket.clientid}".blue
+            outboundcall =
+              id: uuid.v1()
+              outbound: true
+              callid: callid
+              fromclientid: socket.clientid
+              toclientid: tosocket.clientid
+              userprofiles: tosocket.userprofiles
+            inboundcall =
+              id: uuid.v1()
+              inbound: true
+              callid: callid
+              fromclientid: socket.clientid
+              toclientid: tosocket.clientid
+              userprofiles: socket.userprofiles
+            socket.signal 'outboundcall', outboundcall
+            tosocket.signal 'inboundcall', inboundcall
 
 Directory search.
 

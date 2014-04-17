@@ -78,6 +78,8 @@ and sending along ice candidates as `signal`.
           @fire 'ice',
             callid: @getAttribute('callid')
             peerid: @peerid
+            fromclientid: @fromclientid
+            toclientid: @toclientid
             candidate: evt.candidate
 
 Video streams coming over RTC need to be displayed.
@@ -202,6 +204,8 @@ This is the offer startup if we are on the outbound side.
               @fire 'offer',
                 callid: @getAttribute('callid')
                 peerid: @peerid
+                fromclientid: @fromclientid
+                toclientid: @toclientid
                 sdp: description
             , (err) -> console.log err
           , (err) -> console.log err
@@ -246,6 +250,8 @@ Inbound side SDP needs to make sure we get an offer, which it will then answer.
                 @fire 'answer',
                   callid: @getAttribute('callid')
                   peerid: @peerid
+                  fromclientid: @fromclientid
+                  toclientid: @toclientid
                   sdp: description
               , (err) -> console.log err
             , (err) -> console.log err

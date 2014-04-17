@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 gulp --require coffee-script/register --gulpfile gulpfile.litcoffee all
+nodemon  ./src/server.litcoffee &
 nodemon  --exec 'gulp' --require coffee-script/register --gulpfile gulpfile.litcoffee watch
