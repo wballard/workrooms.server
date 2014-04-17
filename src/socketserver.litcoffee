@@ -106,7 +106,7 @@ to protect users by creating a nice big random string that is hard to guess.
           else
             sockets[socket.clientid] = socket
             for id, socket of sockets
-              socket.send 'isonline', detail.userprofiles
+              socket.signal 'isonline', detail.userprofiles
             if detail.userprofiles.github
               socket.userprofiles = detail.userprofiles
             reindex(sockets)
@@ -181,6 +181,16 @@ is double checking if a call already exists.
               userprofiles: socket.userprofiles
             socket.signal 'outboundcall', outboundcall
             tosocket.signal 'inboundcall', inboundcall
+
+Hanging up is pretty simple, just ask both potential socket sides to do so.
+
+        socket.on 'hangup', (call) ->
+          fromsocket = sockets[call.fromclientid]
+          tosocket = sockets[call.toclientid]
+          if fromsocket
+            fromsocket.signal 'hangup', call
+          if tosocket
+            tosocket.signal 'hangup', call
 
 Directory search.
 

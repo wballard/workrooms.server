@@ -86,8 +86,8 @@ peers in order to support auto-conference.
 
 This has a bit of a hack to allow self calls for testing
 
-        callOverlap = (a, b) ->
-          if b.fromclientid is b.toclientid
+        callOverlap = (a, b, hackSelf) ->
+          if b.fromclientid is b.toclientid and hackSelf
             console.log 'self call check'
             selfInbound = a.fromclientid is b.fromclientid and
               a.toclientid is b.toclientid and
@@ -95,7 +95,6 @@ This has a bit of a hack to allow self calls for testing
             selfOutbound = a.fromclientid is b.fromclientid and
               a.toclientid is b.toclientid and
               a.outbound is b.outbound
-            return selfInbound or selfOutbound
           else
             a.fromclientid is b.fromclientid or
               a.toclientid is b.toclientid or
@@ -103,18 +102,11 @@ This has a bit of a hack to allow self calls for testing
               a.toclientid is b.fromclientid
 
         takeCall = (newCall) =>
-          if _.any(@calls, (call) -> callOverlap(call, newCall))
+          if _.any(@calls, (call) -> callOverlap(call, newCall, true))
             console.log 'already connected'
           else
             newCall.config = @serverConfig
             @calls.push newCall
-
-        @signallingServer.on 'outboundcall', takeCall
-
-        @signallingServer.on 'inboundcall', takeCall
-
-        @addEventListener 'callkeepalive', (evt) =>
-          console.log evt.detail
 
 **TODO** figure out how to track if this tab is active
 
@@ -126,19 +118,29 @@ This has a bit of a hack to allow self calls for testing
               conferenceTab.show()
             callToast.show()
 
+        @signallingServer.on 'outboundcall', takeCall
+
+        @signallingServer.on 'inboundcall', takeCall
+
+        @addEventListener 'callkeepalive', (evt) =>
+
 ##Hangup Tracking
 Hangup handling, when this is coming up the page, it is a signal to hang up all
 calls. When from the server, it is information to hang up one call.
 
         @addEventListener 'hangup', (evt) =>
-          if evt.detail?.callid?
-            @signallingServer.send 'hangup', callid: evt.detail.callid
+          if evt.detail.fromclientid and evt.detail.toclientid
+            @signallingServer.send 'hangup',
+              fromclientid: evt.detail.fromclientid
+              toclientid: evt.detail.toclientid
           else
             _.each @shadowRoot.querySelectorAll('ui-video-call'), (call) =>
-              @signallingServer.send 'hangup', callid: call.callid
+              @signallingServer.send 'hangup',
+                fromclientid: call.fromclientid
+                toclientid: call.toclientid
 
         @signallingServer.on 'hangup', (hangupCall) =>
-          _.remove @calls, (call) -> call.callid is hangupCall.callid
+          _.remove @calls, (call) -> callOverlap(hangupCall, call)
 
 ##Call Signal Processing
 
