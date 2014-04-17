@@ -84,13 +84,34 @@ Sidebars, are you even allowed to have an application without one any more?
 Keeps track of all your calls, and forwards them to all connected call
 peers in order to support auto-conference.
 
-        @signallingServer.on 'outboundcall', (detail) =>
-          detail.config = @serverConfig
-          @calls.push detail
+This has a bit of a hack to allow self calls for testing
 
-        @signallingServer.on 'inboundcall', (detail) =>
-          detail.config = @serverConfig
-          @calls.push detail
+        callOverlap = (a, b) ->
+          if b.fromclientid is b.toclientid
+            console.log 'self call check'
+            selfInbound = a.fromclientid is b.fromclientid and
+              a.toclientid is b.toclientid and
+              a.inbound is b.inbound
+            selfOutbound = a.fromclientid is b.fromclientid and
+              a.toclientid is b.toclientid and
+              a.outbound is b.outbound
+            return selfInbound or selfOutbound
+          else
+            a.fromclientid is b.fromclientid or
+              a.toclientid is b.toclientid or
+              a.fromclientid is b.toclientid or
+              a.toclientid is b.fromclientid
+
+        takeCall = (newCall) =>
+          if _.any(@calls, (call) -> callOverlap(call, newCall))
+            console.log 'already connected'
+          else
+            newCall.config = @serverConfig
+            @calls.push newCall
+
+        @signallingServer.on 'outboundcall', takeCall
+
+        @signallingServer.on 'inboundcall', takeCall
 
         @addEventListener 'callkeepalive', (evt) =>
           console.log evt.detail
