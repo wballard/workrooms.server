@@ -170,7 +170,7 @@ hash of userprofiles.
           _(sockets)
             .values()
             .select (othersocket) -> othersocket.userprofiles?.github?.id is user?.github?.id
-            .forEach (othersocket) -> othersocket.signal 'online',
+            .forEach (othersocket) -> socket.signal 'online',
               clientid: othersocket.clientid
               userprofiles: othersocket.userprofiles
 
