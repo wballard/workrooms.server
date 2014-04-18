@@ -31,9 +31,11 @@ list. But only bother to load it if we haven't previously.
                 userprofiles:
                   github: profile
               members.forEach (member) =>
+                member.userprofiles.github.groups = member.userprofiles.github.groups or {}
                 if not @github.friends[member.userprofiles.github.id]
                   @github.friends[member.userprofiles.github.id] = member
-                member.userprofiles.github.groups = member.userprofiles.github.groups or {}
+                else
+                  member = @github.friends[member.userprofiles.github.id]
                 member.userprofiles.github.groups[org.login] = true
               @fire 'newfriends'
         reqwest "https://api.github.com/user/orgs?access_token=#{access_token}", (orgs) =>
