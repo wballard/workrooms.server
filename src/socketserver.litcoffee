@@ -81,7 +81,9 @@ to protect users by creating a nice big random string that is hard to guess.
             if user.userprofiles.github
               socket.userprofiles = user.userprofiles
             for id, socket of sockets
-              socket.signal 'isonline', user.userprofiles
+              socket.signal 'online',
+                clientid: socket.clientid
+                userprofiles: user.userprofiles
 
 Provide configuration to the client. This is used to keep OAuth a bit more secret, though
 at the moment these configs are just checked in.
@@ -167,10 +169,10 @@ hash of userprofiles.
         socket.on 'isonline', (user) ->
           _(sockets)
             .values()
-            .select (socket) -> socket.userprofiles?.github?.id is user?.github?.id
-            .forEach (socket) -> socket.signal 'online',
-              clientid: socket.clientid
-              userprofiles: socket.userprofiles
+            .select (othersocket) -> othersocket.userprofiles?.github?.id is user?.github?.id
+            .forEach (othersocket) -> othersocket.signal 'online',
+              clientid: othersocket.clientid
+              userprofiles: othersocket.userprofiles
 
 Close removes the socket from tracking and the index.
 
