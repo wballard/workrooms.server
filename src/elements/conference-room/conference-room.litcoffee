@@ -16,6 +16,8 @@ Array of all active calls metadata. These aren't calls themselves, just
 identifiers used to data bind and generate `ui-video-call` elements.
 ##userprofiles
 All the known profiles for the current user.
+##friendprofiles
+All the known profiles for your friends.
 ##serverconfig
 The server literally sends the config back to the client on a connect.
 
@@ -25,19 +27,21 @@ The server literally sends the config back to the client on a connect.
     qwery = require('qwery')
     bonzo = require('bonzo')
     kizzy = require('kizzy')
+    hummingbird = require('hummingbird')
     SignallingServer = require('../../scripts/signalling-server.litcoffee')
 
     Polymer 'conference-room',
-      audioon: true
-      videoon: true
-      serverconfig: null
 
       ready: ->
         @fire 'ready'
 
       attached: ->
+        @audioon = true
+        @videoon = true
+        @serverconfig = null
         @store = kizzy('conferenceroom')
         @userprofiles = {}
+        @friendprofiles = []
         @calls = @store.get('calls') or []
         @root = "#{document.location.origin}#{document.location.pathname}"
         if @root.slice(-1) isnt '/'
@@ -178,37 +182,44 @@ elements that can fire clear will totally overdo it.
         @addEventListener 'clear', (evt) =>
           @fire 'newfriends'
 
+        @addEventListener 'autocomplete', (evt) =>
+          @profileIndex?.search evt.detail.search, (results) =>
+            console.log results
+            @$.searchresults.model =
+              friendprofiles: results
+          , scoreThreshold: 0.1
 
-        autocompleteDetails = {}
-
-        document.addEventListener 'autocomplete', (evt) =>
-          @signallingServer.send 'autocomplete', evt.detail
-
-        @signallingServer.on 'autocomplete', (detail) =>
-          autocompleteDetails = {}
-          for user in detail.results
-            autocompleteDetails[user.userprofiles.github.id] = user
-          @$.searchresults.model =
-            profiles: detail.results
-          detail.results.forEach (friend) =>
-            @signallingServer.send 'isonline', friend
+When new friends are discovered, update the index locally so we can find them.
+And then re-bind the user interface to the friend list.
 
         document.addEventListener 'newfriends', (evt) =>
+          @profileIndex = profileIndex = new hummingbird.Index()
+          profileIndex.by_github_id = {}
+          profileIndex.prep = (user) ->
+            user.id = user.userprofiles.github.id
+            user.name = "#{user.userprofiles.github.name} #{user.userprofiles.github.login}"
+            user
+          _.values(@userprofiles.github.friends).forEach (friend) =>
+            @signallingServer.send 'isonline',
+              github:
+                id: friend.userprofiles.github.id
+            profileIndex.add profileIndex.prep(friend), false
+            profileIndex.by_github_id["#{friend.userprofiles.github.id}"] = friend
           @$.searchresults.model =
-            profiles:
+            friendprofiles:
               _(@userprofiles.github.friends)
                 .values()
-                .sortBy (x) -> (x.userprofiles.github.name or x.userprofiles.github.login).toLowerCase()
+                .sortBy (friend) -> friend.name.toLowerCase()
                 .value()
-          @$.searchresults.model.profiles.forEach (friend) =>
-            @signallingServer.send 'isonline', friend
 
         @signallingServer.on 'online', (user) =>
-          for buffer in [@userprofiles.github.friends, autocompleteDetails]
-            friend = buffer[user.userprofiles.github.id]
-            if friend
-              _.extend friend, user
-              friend.online = true
+          console.log 'online', user
+          friend =  @profileIndex?.by_github_id["#{user.userprofiles.github.id}"]
+          if friend
+            _.extend friend, user
+            friend.online = true
+          @profileIndex.update @profileIndex.prep(friend)
+          console.log friend
 
 ##Chat
 

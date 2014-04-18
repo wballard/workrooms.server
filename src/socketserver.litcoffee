@@ -4,37 +4,10 @@ socket server.
     _ = require('lodash')
     uuid = require('node-uuid')
     yaml = require('js-yaml')
-    hummingbird = require('hummingbird')
 
 Track running sockets to get a sense of all sessions.
 
     sockets = {}
-
-Index all the profiles for autocomplete.
-
-    profileIndex = null
-
-    reindex = (sockets) ->
-      fields = (doc) ->
-        ret = []
-        ret.push doc.userprofiles.github?.name
-        ret.push doc.userprofiles.github?.login
-        ret.join ' '
-      profileIndex = new hummingbird.Index()
-      profileIndex.by_gravatar_id = {}
-      profileIndex.by_github_id = {}
-
-      for id, socket of sockets
-        if socket.userprofiles?.github?.id
-          console.log 'indexing'.yellow, id, socket.userprofiles.github.id, socket.clientid
-          socket.userprofiles.github.id = "#{socket.userprofiles.github.id}"
-          doc =
-            id: id
-            clientid: id
-            userprofiles: socket.userprofiles
-          profileIndex.add doc, false, fields
-          profileIndex.by_github_id["#{socket.userprofiles.github.id}"] = doc
-          profileIndex.by_gravatar_id["#{socket.userprofiles.github.gravatar_id}"] = doc
 
     module.exports = (wss, config, store) ->
 
@@ -91,7 +64,7 @@ Translate messages into events allowing declarative event handling.
           catch error
             console.error "#{error}".red
 
-Client setup, captures the identifier so this client can be called if found. 
+Client setup, captures the identifier so this client can be called if found.
 This identifier is separate from any oauth identifier, and is randomly generated
 by each client. This allows you to log on from multiple locations, and thus call
 yourself at different locations. And it means you can clear out your local
@@ -100,25 +73,24 @@ storage on any client and get a different identifier, providing for privacy.
 This is a problem if two clients allocate the same identifier, so clients need
 to protect users by creating a nice big random string that is hard to guess.
 
-        socket.on 'register', (detail) ->
+        socket.on 'register', (user) ->
           if sockets[socket.clientid] and sockets[socket.clientid] isnt socket
             socket.signal 'disconnect'
           else
             sockets[socket.clientid] = socket
+            if user.userprofiles.github
+              socket.userprofiles = user.userprofiles
             for id, socket of sockets
-              socket.signal 'isonline', detail.userprofiles
-            if detail.userprofiles.github
-              socket.userprofiles = detail.userprofiles
-            reindex(sockets)
+              socket.signal 'isonline', user.userprofiles
 
 Provide configuration to the client. This is used to keep OAuth a bit more secret, though
 at the moment these configs are just checked in.
 
-            if config[detail.runtime]
-              socket.runtime = detail.runtime
+            if config[user.runtime]
+              socket.runtime = user.runtime
               socket.signal 'configured', _.extend(config[socket.runtime], sessionid: socket.sessionid, userprofiles: socket.userprofiles)
             else
-              console.log "There was no config prepared for #{detail.runtime}".yellow
+              console.log "There was no config prepared for #{user.runtime}".yellow
 
 Send WebRTC negotiation along to all peers and let them process it, this will
 reflect ice back to the sender, this allows self-calling for testing.
@@ -189,23 +161,16 @@ Hanging up is pretty simple, just ask both potential socket sides to do so.
           if tosocket
             tosocket.signal 'hangup', call
 
-Directory search.
+Presence queries, this comes back with a 'user object', which is an entire
+hash of userprofiles.
 
-        socket.on 'autocomplete', (detail) ->
-          profileIndex?.search detail.search, (results) ->
-            console.log results
-            socket.signal 'autocomplete',
-              search: detail.search
-              results: results
-
-Presence queries.
-
-        socket.on 'isonline', (detail) ->
-          userprofiles =
-            profileIndex.by_gravatar_id[detail?.userprofiles?.github?.gravatar_id] or
-            profileIndex.by_github_id[detail?.userprofiles?.github?.id]
-          if userprofiles
-            socket.signal 'online', userprofiles
+        socket.on 'isonline', (user) ->
+          _(sockets)
+            .values()
+            .select (socket) -> socket.userprofiles?.github?.id is user?.github?.id
+            .forEach (socket) -> socket.signal 'online',
+              clientid: socket.clientid
+              userprofiles: socket.userprofiles
 
 Close removes the socket from tracking and the index.
 
