@@ -80,8 +80,8 @@ to protect users by creating a nice big random string that is hard to guess.
             sockets[socket.clientid] = socket
             if user.userprofiles.github
               socket.userprofiles = user.userprofiles
-              for id, socket of sockets
-                socket.signal 'online',
+              for id, othersocket of sockets
+                othersocket.signal 'online',
                   clientid: socket.clientid
                   userprofiles: user.userprofiles
 
