@@ -152,13 +152,12 @@ an 'outboundcall', the callee will set up an 'inboundcall'. Part of this setup
 is double checking if a call already exists.
 
         socket.on 'call', (detail) ->
-          callid = detail.callid or uuid.v1()
 
           if detail.to is 'fail'
             outboundcall =
               outbound: true
-              callid: callid
-              clientid: 'fail'
+              toclientid: 'fail'
+              fromclientid: 'fail'
               userprofiles: socket.userprofiles
             socket.signal 'outboundcall', outboundcall
 
@@ -168,14 +167,12 @@ is double checking if a call already exists.
             outboundcall =
               id: uuid.v1()
               outbound: true
-              callid: callid
               fromclientid: socket.clientid
               toclientid: tosocket.clientid
               userprofiles: tosocket.userprofiles
             inboundcall =
               id: uuid.v1()
               inbound: true
-              callid: callid
               fromclientid: socket.clientid
               toclientid: tosocket.clientid
               userprofiles: socket.userprofiles

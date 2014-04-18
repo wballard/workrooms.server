@@ -71,7 +71,7 @@
       </section>
     </div>
     <template id="calls" repeat="{{call in calls}}">
-      <ui-video-call id="A{{call.id}}" outbound?="{{call.outbound}}" inbound?="{{call.inbound}}" callid="{{call.callid}}" 
+      <ui-video-call id="A{{call.id}}" outbound?="{{call.outbound}}" inbound?="{{call.inbound}}"
       localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}" 
       remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}" config="{{call.config}}"
       fromclientid="{{call.fromclientid}}" toclientid="{{call.toclientid}}">

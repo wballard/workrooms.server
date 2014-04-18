@@ -12,8 +12,6 @@ WebRTC message after an `offer` is accepted, sent back to the originator
 of the `offer`.
 
 #Attributes
-##callid
-This will be the same on both peers of the call.
 ##config
 Settings, most important property is the `iceServers` array, used to communicate
 ICE protocol setup.
@@ -76,7 +74,6 @@ and sending along ice candidates as `signal`.
         #ice candidates just need to be shared with peers
         @peerConnection.onicecandidate = (evt) =>
           @fire 'ice',
-            callid: @getAttribute('callid')
             peerid: @peerid
             fromclientid: @fromclientid
             toclientid: @toclientid
@@ -100,7 +97,6 @@ Set up a peer-to-peer keep alive timer.
 
         @keepaliveInterval = setInterval =>
           @send 'callkeepalive',
-            callid: @callid
             peerid: @peerid
             fromclientid: @fromclientid
             toclientid: @toclientid
@@ -202,7 +198,6 @@ This is the offer startup if we are on the outbound side.
             @peerConnection.setLocalDescription description, =>
               console.log 'offering', description
               @fire 'offer',
-                callid: @getAttribute('callid')
                 peerid: @peerid
                 fromclientid: @fromclientid
                 toclientid: @toclientid
@@ -232,7 +227,7 @@ a local ice message. This isn't a *real case*, but it shows up when you call
 yourself for testing.
 
       processIce: (message) ->
-        if message.peerid isnt @peerid and message.callid is @callid
+        if message.peerid isnt @peerid and message.fromclientid is @fromclientid and message.toclientid is @toclientid
           if message.candidate
             console.log 'adding ice', message.candidate
             @peerConnection.addIceCandidate(new rtc.IceCandidate(message.candidate))
@@ -240,15 +235,11 @@ yourself for testing.
 Inbound side SDP needs to make sure we get an offer, which it will then answer.
 
       processOffer: (message) ->
-        if @inbound? and message.callid is @callid
-          console.log 'offer inbound', message.sdp
+        if @inbound? and message.fromclientid is @fromclientid and message.toclientid is @toclientid
           @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), =>
-            console.log 'offer accepted', message.sdp
             @peerConnection.createAnswer (description) =>
               @peerConnection.setLocalDescription description, =>
-                console.log 'local set, answering', @getAttribute('callid')
                 @fire 'answer',
-                  callid: @getAttribute('callid')
                   peerid: @peerid
                   fromclientid: @fromclientid
                   toclientid: @toclientid
@@ -260,8 +251,7 @@ Inbound side SDP needs to make sure we get an offer, which it will then answer.
 Outbound side needs to take the answer and complete the call.
 
       processAnswer: (message) ->
-        if @outbound? and message.callid is @callid
-          console.log 'completing', @getAttribute('callid')
+        if @outbound? and message.fromclientid is @fromclientid and message.toclientid is @toclientid
           @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), (err) ->
             console.log(err) if err
 
