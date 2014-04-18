@@ -24,6 +24,7 @@ The server literally sends the config back to the client on a connect.
     _ = require('lodash')
     qwery = require('qwery')
     bonzo = require('bonzo')
+    kizzy = require('kizzy')
     SignallingServer = require('../../scripts/signalling-server.litcoffee')
 
     Polymer 'conference-room',
@@ -35,8 +36,9 @@ The server literally sends the config back to the client on a connect.
         @fire 'ready'
 
       attached: ->
+        @store = kizzy('conferenceroom')
         @userprofiles = {}
-        @calls = []
+        @calls = @store.get('calls') or []
         @root = "#{document.location.origin}#{document.location.pathname}"
         if @root.slice(-1) isnt '/'
           @root += '/'
@@ -51,7 +53,6 @@ get the rest of the configuration. Sending along the calls is an 'autoreconnect'
         @signallingServer.on 'hello', =>
           @signallingServer.send 'register',
             runtime: document.location.host
-            calls: @calls
             userprofiles: @userprofiles
 
 After we have registered, the server sends along a configuration, this is to
@@ -107,6 +108,7 @@ This has a bit of a hack to allow self calls for testing
           else
             newCall.config = @serverConfig
             @calls.push newCall
+            @store.set('calls', @calls)
 
 **TODO** figure out how to track if this tab is active
 
@@ -141,6 +143,7 @@ calls. When from the server, it is information to hang up one call.
 
         @signallingServer.on 'hangup', (hangupCall) =>
           _.remove @calls, (call) -> callOverlap(hangupCall, call)
+          @store.set('calls', @calls)
 
 ##Call Signal Processing
 
