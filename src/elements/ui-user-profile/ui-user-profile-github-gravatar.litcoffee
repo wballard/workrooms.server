@@ -51,8 +51,8 @@ list. But only bother to load it if we haven't previously.
             else
               @fire 'error', err
 
-      githubChanged: ->
-        if @github
+      githubChanged: (oldValue, newValue) ->
+        if @github and oldValue?.name isnt newValue?.name
           @friends = @friends or {}
           bonzo(@).show()
           $(@$.gravatar).popup
