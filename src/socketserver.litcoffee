@@ -16,15 +16,12 @@ Bad news straight to the console
       wss.on 'error', (error) ->
         console.error "#{error}".red
 
-Sockety goodness.
+Sockety goodness, here are all the event handlers on a per socket basis.
 
       wss.on 'connection', (socket) ->
 
-User profiles for this connected client socket.
-
-        socket.userprofiles = {}
-
-Get at the session, this bridges OAuth into the socket.
+Get at the session, this bridges OAuth into the socket and provides the client
+with the user profile from Github.
 
         store.parser socket.upgradeReq, null, (err) ->
           socket.sessionid = socket.upgradeReq.signedCookies['sid']
@@ -33,9 +30,10 @@ Get at the session, this bridges OAuth into the socket.
             github = JSON.parse(session?.passport?.user?._raw or '{}')
             if github.id
               console.log "hi there #{github.name}".blue
-              socket.userprofiles.github = github
-            else
-              delete socket.userprofiles.github
+              socket.signal 'userprofiles',
+                github: github
+              socket.github =
+                id: github.id
 
 Signal -- send a message back to the connected client.
 
@@ -53,7 +51,9 @@ Send a hello on a connection.
 
         socket.signal 'hello'
 
-Translate messages into events allowing declarative event handling.
+Translate messages into events allowing declarative event handling. This is
+in charge of setting up the `clientid` on to socket, but not registering in
+`sockets`.
 
         socket.on 'message', (req) ->
           try
@@ -71,28 +71,29 @@ yourself at different locations. And it means you can clear out your local
 storage on any client and get a different identifier, providing for privacy.
 
 This is a problem if two clients allocate the same identifier, so clients need
-to protect users by creating a nice big random string that is hard to guess.
+to protect users by creating a nice big random string that is hard to guess. If
+this happens, which is easy enough to do by opening two tabs, a disconnect
+message is sent, which should be honored by the previous client tab to close
+off. This way the most recent tab ends up being the live one.
 
         socket.on 'register', (user) ->
-          if sockets[socket.clientid] and sockets[socket.clientid] isnt socket
-            socket.signal 'disconnect'
-          else
-            sockets[socket.clientid] = socket
-            if user.userprofiles.github
-              socket.userprofiles = user.userprofiles
-              for id, othersocket of sockets
-                othersocket.signal 'online',
-                  clientid: socket.clientid
-                  userprofiles: user.userprofiles
+          if sockets[socket.clientid]
+            sockets[socket.clientid].signal 'disconnect'
+          sockets[socket.clientid] = socket
+          if socket?.github?.id
+            sockets.github = sockets.github or {}
+            sockets.github["#{socket.github.id}"] = socket
 
 Provide configuration to the client. This is used to keep OAuth a bit more secret, though
-at the moment these configs are just checked in.
+at the moment these configs are just checked in to Github and aren't all that
+secret anyhow. **TODO** hide these configu strings in deployment variables.
 
             if config[user.runtime]
               socket.runtime = user.runtime
-              socket.signal 'configured', _.extend(config[socket.runtime], sessionid: socket.sessionid, userprofiles: socket.userprofiles)
+              socket.signal 'configured', config[socket.runtime]
             else
-              console.log "There was no config prepared for #{user.runtime}".yellow
+              console.error "There was no config prepared for #{user.runtime}".yellow
+              socket.signal 'error', "There was no config prepared for #{user.runtime}"
 
 Send WebRTC negotiation along to all peers and let them process it, this will
 reflect ice back to the sender, this allows self-calling for testing.
@@ -132,7 +133,6 @@ is double checking if a call already exists.
               outbound: true
               toclientid: 'fail'
               fromclientid: 'fail'
-              userprofiles: socket.userprofiles
             socket.signal 'outboundcall', outboundcall
 
           tosocket = sockets[detail.to]
@@ -143,13 +143,11 @@ is double checking if a call already exists.
               outbound: true
               fromclientid: socket.clientid
               toclientid: tosocket.clientid
-              userprofiles: tosocket.userprofiles
             inboundcall =
               id: uuid.v1()
               inbound: true
               fromclientid: socket.clientid
               toclientid: tosocket.clientid
-              userprofiles: socket.userprofiles
             socket.signal 'outboundcall', outboundcall
             tosocket.signal 'inboundcall', inboundcall
 
@@ -163,24 +161,37 @@ Hanging up is pretty simple, just ask both potential socket sides to do so.
           if tosocket
             tosocket.signal 'hangup', call
 
-Presence queries, this comes back with a 'user object', which is an entire
-hash of userprofiles.
+Presence is all about turning a known `id`, such as a friend identifier from
+Github OAuth into a `clientid` of a connected client socket so that you can
+call them, as well as providing more detailed user profile data.  Presence
+queries relay messages to other clients, which then decide if they want to
+participate.  This allows clients to cloak or mask their presence and be
+unavailable.
 
-        socket.on 'isonline', (user) ->
-          _(sockets)
-            .values()
-            .select (othersocket) -> othersocket.userprofiles?.github?.id is user?.github?.id
-            .forEach (othersocket) -> socket.signal 'online',
-              clientid: othersocket.clientid
-              userprofiles: othersocket.userprofiles
+In order to make this marginally efficient, a client sends along a message
+that is a hash of identifiers from OAuth, which are then looked up into sockets.
+These sockets are asked if they are online, responding, then routing back to the
+asking socket. This isn't peer-to-peer, figuring out who is online happens
+before you call anyone.
 
-Close removes the socket from tracking and the index.
+        socket.on 'isonline', (users) ->
+          _(users.github)
+            .forEach (id) -> sockets?.github?["#{id}"]?.signal 'isonline',
+              fromclientid: socket.clientid
+
+        socket.on 'online', (user) ->
+          sockets?[user.fromclientid]?.signal 'online',
+            clientid: socket.clientid
+            userprofiles: user.userprofiles
+
+Close removes the socket from tracking, but make sure to only remove yourself.
 
         socket.on 'close', ->
           try
             if sockets[socket.clientid] is socket
               delete sockets[socket.clientid]
-              reindex(sockets)
+            if sockets?.github["#{socket?.github?.id}"] is socket
+              delete sockets.github["#{socket.github.id}"]
           catch error
             console.error error.red
 

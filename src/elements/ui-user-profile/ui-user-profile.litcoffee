@@ -15,6 +15,3 @@ Click to dial anywhere on the row for now.
         @addEventListener 'click', =>
           @fire 'call',
             to: @profile.clientid
-
-      profileChanged: (oldValue, newValue) ->
-        console.log 'profile', newValue

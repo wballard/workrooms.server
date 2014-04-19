@@ -4,7 +4,7 @@
 <polymer-element name="ui-user-profile" attributes="profile">
 <template>
   <template bind if="{{profile.userprofiles.github}}">
-    <i class="fa fa-circle {{ {green: profile.online, red: !profile.online} | tokenList }}"></i>
+    <i class="fa fa-circle {{ {green: profile.clientid, red: !profile.clientid} | tokenList }}"></i>
     <img class="ui rounded mini image" src="{{profile.userprofiles.github.avatar_url}}">
     <div class="content">
       {{profile.userprofiles.github.name || profile.userprofiles.github.login}}

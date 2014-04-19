@@ -16,8 +16,6 @@ Array of all active calls metadata. These aren't calls themselves, just
 identifiers used to data bind and generate `ui-video-call` elements.
 ##userprofiles
 All the known profiles for the current user.
-##friendprofiles
-All the known profiles for your friends.
 ##serverconfig
 The server literally sends the config back to the client on a connect.
 
@@ -40,8 +38,7 @@ The server literally sends the config back to the client on a connect.
         @videoon = true
         @serverconfig = null
         @store = kizzy('conferenceroom')
-        @userprofiles = {}
-        @friendprofiles = []
+        @userprofiles = null
         @calls = @store.get('calls') or []
         @root = "#{document.location.origin}#{document.location.pathname}"
         if @root.slice(-1) isnt '/'
@@ -50,14 +47,13 @@ The server literally sends the config back to the client on a connect.
         @addEventListener 'error', (err) ->
           console.log err
 
-##Signalling Server Messages
+##Setting Up Signalling
 Hello from the server! Now it is time to register this client in order to
-get the rest of the configuration. Sending along the calls is an 'autoreconnect'.
+get the rest of the configuration.
 
         @signallingServer.on 'hello', =>
           @signallingServer.send 'register',
             runtime: document.location.host
-            userprofiles: @userprofiles
 
 After we have registered, the server sends along a configuration, this is to
 protect -- or really to be able to switch -- ids for OAuth and STUN/TURN.
@@ -65,7 +61,18 @@ protect -- or really to be able to switch -- ids for OAuth and STUN/TURN.
         @signallingServer.on 'configured', (config) =>
           console.log 'configured', config
           @serverConfig = config
-          @userprofiles = config.userprofiles
+
+When OAuth is complete, or restored from a saved session, the server will
+provide you with profiles.
+
+        @signallingServer.on 'userprofiles', (userprofiles) =>
+          @userprofiles = userprofiles
+
+And sometimes you just have to let go.
+
+        @signallingServer.on 'disconnect', =>
+          @signallingServer.close()
+          @signallingServer = null
 
 ##Toolbar Buttons
 
@@ -199,25 +206,31 @@ And then re-bind the user interface to the friend list.
             user.id = user.userprofiles.github.id
             user.name = "#{user.userprofiles.github.name} #{user.userprofiles.github.login}"
             user
-          _.values(@userprofiles.github.friends).forEach (friend) =>
-            @signallingServer.send 'isonline',
-              github:
-                id: friend.userprofiles.github.id
-            profileIndex.add profileIndex.prep(friend), false
-            profileIndex.by_github_id["#{friend.userprofiles.github.id}"] = friend
+          _.values(evt.detail)
+            .forEach (friend) ->
+              profileIndex.add profileIndex.prep(friend), false
+              profileIndex.by_github_id["#{friend.userprofiles.github.id}"] = friend
+
+          @signallingServer.send 'isonline',
+            github: _.values(evt.detail).map (friend) -> friend.userprofiles.github.id
+
           @$.searchresults.model =
             friendprofiles:
-              _(@userprofiles.github.friends)
+              _(evt.detail)
                 .values()
                 .sortBy (friend) -> friend.name.toLowerCase()
                 .value()
+
+        @signallingServer.on 'isonline', (user) =>
+          _.extend user, userprofiles: @userprofiles
+          @signallingServer.send 'online', user
 
         @signallingServer.on 'online', (user) =>
           console.log 'online', user
           friend =  @profileIndex?.by_github_id["#{user.userprofiles.github.id}"]
           if friend
-            _.extend friend, user
-            friend.online = true
+            _.extend friend.userprofiles.github, user.userprofiles.github
+            friend.clientid = user.clientid
           @profileIndex.update @profileIndex.prep(friend)
           console.log friend
 

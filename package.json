@@ -45,7 +45,8 @@
     "reqwest": "^1.1.0",
     "async": "^0.6.0",
     "connect-sqlite3": "~0.9.2",
-    "hummingbird": "git+https://github.com/wballard/hummingbird.js.git"
+    "hummingbird": "git+https://github.com/wballard/hummingbird.js.git",
+    "rtc-bufferedchannel": "~0.5.0"
   },
   "scripts": {
     "install": "bower install",

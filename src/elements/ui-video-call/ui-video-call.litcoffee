@@ -12,28 +12,22 @@ WebRTC message after an `offer` is accepted, sent back to the originator
 of the `offer`.
 
 #Attributes
-##config
-Settings, most important property is the `iceServers` array, used to communicate
-ICE protocol setup.
 ##localstream
 Media stream originating locally, this is communicated to peers.
 ##remotestream
 Media stream beamed over WebRTC from the other peer.
 ##peerid
 This is the identifier of this side of the running call.
-##outbound
-Flag attribute indicating this is the outbound side of the call.
-##inbound
-Flag attribute indicating this is the inbound side of the call.
 
     require('../elementmixin.litcoffee')
     rtc = require('webrtcsupport')
+    buffered = require('rtc-bufferedchannel')
     uuid = require('node-uuid')
     _ = require('lodash')
 
     RECONNECT_TIMEOUT_THRESHOLD = 3
-    RECONNECT_TIMEOUT = 2 * 1000
-    KEEPALIVE_TIMEOUT = 1 * 1000
+    RECONNECT_TIMEOUT = 4 * 1000
+    KEEPALIVE_TIMEOUT = 2 * 1000
 
     Polymer 'ui-video-call',
 
@@ -57,7 +51,7 @@ signaling server.
       connect: ->
         config =
           peerConnectionConfig:
-            iceServers: @config.iceServers
+            iceServers: @call.config.iceServers
           peerConnectionContraints:
             optional: [
               {DtlsSrtpKeyAgreement: true},
@@ -100,13 +94,14 @@ Set up a peer-to-peer keep alive timer.
             peerid: @peerid
             fromclientid: @fromclientid
             toclientid: @toclientid
+            userprofiles: @userprofiles
         , KEEPALIVE_TIMEOUT
 
 On a request to negotiate, send along the offer from the outbound side to
 start up the sequence.
 
         @peerConnection.onnegotiationneeded = (evt) =>
-          if @outbound?
+          if @call.outbound?
             @offer()
           else
             window.debugFakeDrop = =>
@@ -125,18 +120,19 @@ And then handle it remotedly with
 @addEventListener 'nameofevent', (evt) -> evt.detail ...
 ```
 
-        @data = @peerConnection.createDataChannel 'sendy', reliable: false
+        @data = @peerConnection.createDataChannel 'sendy', reliable: true
         @data.onopen = =>
+          bc = buffered @data, maxsize: 1024
           @send = (type, detail) =>
             message =
               type: type
               from: @peerid
               detail: detail
-            @data.send JSON.stringify(message)
-        @data.onmessage = (evt) =>
-          message = JSON.parse(evt.data)
-          if message.from isnt @peerid
-            @fire message.type, message.detail
+            bc.send JSON.stringify(message)
+          bc.on 'data', (data) =>
+            message = JSON.parse(data)
+            if message.from isnt @peerid
+              @fire message.type, message.detail
         @peerConnection
 
 And let everything go.
@@ -171,6 +167,7 @@ semaphore down a few more counts to keep it well below the threshold.
         , RECONNECT_TIMEOUT
 
         @addEventListener 'callkeepalive', (evt) =>
+          @call.userprofiles = evt.detail.userprofiles
           @reconnectSemaphore = 0
 
 Mute control, bridge this across to peers. This side will do the actual work
@@ -192,7 +189,7 @@ to reconnect any more.
 This is the offer startup if we are on the outbound side.
 
       offer: _.debounce ->
-        if @outbound?
+        if @call.outbound?
           @peerConnection.createOffer (description) =>
             console.log 'offer created', description, @peerConnection
             @peerConnection.setLocalDescription description, =>
@@ -235,7 +232,7 @@ yourself for testing.
 Inbound side SDP needs to make sure we get an offer, which it will then answer.
 
       processOffer: (message) ->
-        if @inbound? and message.fromclientid is @fromclientid and message.toclientid is @toclientid
+        if @call.inbound? and message.fromclientid is @fromclientid and message.toclientid is @toclientid
           @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), =>
             @peerConnection.createAnswer (description) =>
               @peerConnection.setLocalDescription description, =>
@@ -251,7 +248,7 @@ Inbound side SDP needs to make sure we get an offer, which it will then answer.
 Outbound side needs to take the answer and complete the call.
 
       processAnswer: (message) ->
-        if @outbound? and message.fromclientid is @fromclientid and message.toclientid is @toclientid
+        if @call.outbound? and message.fromclientid is @fromclientid and message.toclientid is @toclientid
           @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), (err) ->
             console.log(err) if err
 

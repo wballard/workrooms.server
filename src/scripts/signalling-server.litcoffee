@@ -34,9 +34,18 @@ as the custom event detail.
                 @emit message.type, message.detail
             catch err
               @emit 'error', err
-        send: (name, detail)->
+
+All done now.
+
+        close: ->
+          @socket.close()
+
+Send and event structured `type` and `detail` message along to the
+server.
+
+        send: (type, detail)->
             @socket?.send JSON.stringify(
-              type: name
+              type: type
               detail: detail
               clientid: @clientid
             )
