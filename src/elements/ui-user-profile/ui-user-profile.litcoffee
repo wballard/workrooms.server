@@ -1,8 +1,12 @@
 A general purpose user profile display tile.
 
 #Attributes
-##profile
+##showstatus
+If set, show the status indicator lights.
+##userprofiles
 This is an amalgamated profile object via OAuth sources.
+##clientid
+Identifier, if set you can call this person.
 
     require('../elementmixin.litcoffee')
 
@@ -14,4 +18,4 @@ Click to dial anywhere on the row for now.
 
         @addEventListener 'click', =>
           @fire 'call',
-            to: @profile.clientid
+            to: @clientid

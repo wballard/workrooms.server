@@ -8,6 +8,7 @@
 <link rel="import" href="../ui-input/ui-input.html">
 <link rel="import" href="../ui-user-profile/ui-user-profile.html">
 <link rel="import" href="../ui-user-profile/ui-user-profile-github-gravatar.html">
+<link rel="import" href="../ui-user-profile/ui-user-profile-github-friends.html">
 <link rel="import" href="../ui-hide/ui-hide.html">
 <link rel="import" href="../chat-box/build/chat-box.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
@@ -25,7 +26,7 @@
     <ul class="ui list grid-cell">
       <template id="searchresults" repeat="{{profile in friendprofiles}}">
         <li>
-          <ui-user-profile class="grid-cell" profile="{{profile}}"></ui-user-profile>
+          <ui-user-profile class="grid-cell" userprofiles="{{profile.userprofiles}}" clientid="{{profile.clientid}}"></ui-user-profile>
         </li>
       </template>
     </ul>
@@ -40,8 +41,10 @@
   <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active="{{audioon}}" tooltip="Audio mute"></ui-toggle-tool>
   <ui-command-tool icon="fa-phone fa-rotate-135" command="hangup" tooltip="Hang up all calls"></ui-command-tool>
   <ui-hide class="ui right" show="{{userprofiles.github}}">
-  <ui-user-profile-github-gravatar github="{{userprofiles.github}}">
+  <ui-user-profile-github-gravatar userprofiles="{{userprofiles}}">
   </ui-user-profile-github-gravatar>
+  <ui-user-profile-github-friends userprofiles="{{userprofiles}}">
+  </ui-user-profile-github-friends>
   <ui-command-tool icon="fa-sign-out" href="{{root}}auth/logout" tooltip="Sign out"></ui-command-tool>
   </ui-hide>
   <ui-hide class="ui right" hide="{{userprofiles.github}}">
@@ -74,8 +77,8 @@
       <section>
         <ui-video-stream stream="{{localstream}}" mutedaudio mirror></ui-video-stream>
         <ui-toolbar>
-        <ui-user-profile-github-gravatar github="{{userprofiles.github}}">
-        </ui-user-profile-github-gravatar>
+        <ui-user-profile userprofiles="{{userprofiles}}">
+        </ui-user-profile>
         </ui-toolbar>
       </section>
     </div>
@@ -88,7 +91,7 @@
         <section>
           <ui-video-stream stream="{{call.remotestream}}" audio="{{call.remoteaudio}}" video="{{call.remotevideo}}"></ui-video-stream>
           <ui-toolbar>
-          <ui-user-profile-github-gravatar github="{{call.userprofiles.github}}">
+          <ui-user-profile-github-gravatar userprofiles="{{call.userprofiles}}">
           </ui-user-profile-github-gravatar>
           <ui-command-tool icon="fa-phone fa-rotate-135" command="hangup" detail="{{call}}" tooltip="Hang up this call"></ui-command-tool>
           </ui-toolbar>

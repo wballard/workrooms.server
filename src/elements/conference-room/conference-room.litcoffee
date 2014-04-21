@@ -186,44 +186,55 @@ calls. When from the server, it is information to hang up one call.
 Clear out autocomplete results. Pay attention to this one, multiple text input
 elements that can fire clear will totally overdo it.
 
+        showFriends = (friends) =>
+          @$.searchresults.model =
+            friendprofiles:
+              _(friends or @profileIndex?.friends or [])
+                .values()
+                .sortBy (friend) -> friend.name.toLowerCase()
+                .value()
+
         @addEventListener 'clear', (evt) =>
-          @fire 'newfriends'
+          showFriends()
 
         @addEventListener 'autocomplete', (evt) =>
           @profileIndex?.search evt.detail.search, (results) =>
-            console.log results
-            @$.searchresults.model =
-              friendprofiles: results
+            showFriends(results)
           , scoreThreshold: 0.1
 
 When new friends are discovered, update the index locally so we can find them.
 And then re-bind the user interface to the friend list.
 
-        document.addEventListener 'newfriends', (evt) =>
-          @profileIndex = profileIndex = new hummingbird.Index()
-          profileIndex.by_github_id = {}
-          profileIndex.prep = (user) ->
-            user.id = user.userprofiles.github.id
-            user.name = "#{user.userprofiles.github.name} #{user.userprofiles.github.login}"
-            user
-          _.values(evt.detail)
-            .forEach (friend) ->
-              profileIndex.add profileIndex.prep(friend), false
-              profileIndex.by_github_id["#{friend.userprofiles.github.id}"] = friend
+        @addEventListener 'newfriends', (evt) =>
+          if evt?.detail
+            @profileIndex = profileIndex = new hummingbird.Index()
+            @profileIndex.friends = evt.detail
+            profileIndex.by_github_id = {}
+            profileIndex.prep = (user) ->
+              user.id = user.userprofiles.github.id
+              if user.userprofiles?.github?.name
+                user.name = user.userprofiles.github.name
+              else
+                user.name = user.userprofiles.github.login
+              user
+            _.values(evt.detail)
+              .forEach (friend) ->
+                profileIndex.add profileIndex.prep(friend), false
+                profileIndex.by_github_id["#{friend.userprofiles.github.id}"] = friend
 
-          @signallingServer.send 'isonline',
-            github: _.values(evt.detail).map (friend) -> friend.userprofiles.github.id
+            @signallingServer.send 'isonline',
+              github: _.values(evt.detail).map (friend) -> friend.userprofiles.github.id
 
-          @$.searchresults.model =
-            friendprofiles:
-              _(evt.detail)
-                .values()
-                .sortBy (friend) -> friend.name.toLowerCase()
-                .value()
+            showFriends()
+
+When asked if you are online, come back with your profile.
 
         @signallingServer.on 'isonline', (user) =>
           _.extend user, userprofiles: @userprofiles
           @signallingServer.send 'online', user
+
+When someone tells you they are online, update your local index copy of their
+profile.
 
         @signallingServer.on 'online', (user) =>
           console.log 'online', user

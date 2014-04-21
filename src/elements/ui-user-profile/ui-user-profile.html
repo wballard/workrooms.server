@@ -1,14 +1,16 @@
 <link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="./ui-user-profile-github-gravatar.html">
 <link rel="stylesheet" type="text/css" href="./ui-user-profile.css">
 
-<polymer-element name="ui-user-profile" attributes="profile">
+<polymer-element name="ui-user-profile" attributes="userprofiles clientid">
 <template>
-  <template bind if="{{profile.userprofiles.github}}">
-    <i class="status fa fa-circle {{ {green: profile.clientid, red: !profile.clientid} | tokenList }}"></i>
-    <img class="ui rounded mini image" src="{{profile.userprofiles.github.avatar_url}}">
+  <template bind if="{{userprofiles.github}}">
+    <i class="status fa fa-circle {{ {green: clientid, red: !clientid} | tokenList }}"></i>
+    <ui-user-profile-github-gravatar userprofiles="{{userprofiles}}">
+    </ui-user-profile-github-gravatar>
     <div class="content">
-      {{profile.userprofiles.github.name || profile.userprofiles.github.login}}
-      <div class="detail">{{profile.userprofiles.github.groups | keyString}}</div>
+      {{userprofiles.github.name || userprofiles.github.login}}
+      <div class="detail">{{userprofiles.github.groups | keyString}}</div>
     </div>
   </template>
 </template>
