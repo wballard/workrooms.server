@@ -59,7 +59,6 @@ After we have registered, the server sends along a configuration, this is to
 protect -- or really to be able to switch -- ids for OAuth and STUN/TURN.
 
         @signallingServer.on 'configured', (config) =>
-          console.log 'configured', config
           @serverConfig = config
 
 When OAuth is complete, or restored from a saved session, the server will
@@ -138,6 +137,8 @@ This has a bit of a hack to allow self calls for testing
         @addEventListener 'callkeepalive', (evt) =>
 
 ##Hangup Tracking
+Hanging up is either about one or all calls depending on whic button
+was pushed
 Hangup handling, when this is coming up the page, it is a signal to hang up all
 calls. When from the server, it is information to hang up one call.
 
