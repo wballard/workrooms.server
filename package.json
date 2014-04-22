@@ -7,7 +7,7 @@
   "license": "MIT",
   "dependencies": {
     "coffeeify": "~0.6.0",
-    "getusermedia": "~0.2.1",
+    "getusermedia": "~0.2.2",
     "component-ajax": "0.0.2",
     "bean": "~1.0.6",
     "webrtcsupport": "~0.7.1",
