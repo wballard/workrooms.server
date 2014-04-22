@@ -1,5 +1,2 @@
 #!/usr/bin/env bash
-
-#serve the website, with a nice fresh build of all components
-gulp --require coffee-script/register --gulpfile gulpfile.litcoffee all
 coffee ./src/server.litcoffee
