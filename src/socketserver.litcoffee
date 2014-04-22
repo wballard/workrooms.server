@@ -58,6 +58,7 @@ in charge of setting up the `clientid` on to socket, but not registering in
         socket.on 'message', (req) ->
           try
             message = JSON.parse(req)
+            return if message.ping
             console.log '->'.blue, yaml.safeDump(message), '\n---'.blue
             socket.clientid = message.clientid
             socket.emit message.type, message.detail

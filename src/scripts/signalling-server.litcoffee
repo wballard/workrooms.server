@@ -15,6 +15,7 @@ as the custom event detail.
     EventEmitter = require('events').EventEmitter
     uuid = require('node-uuid')
     kizzy = require('kizzy')
+    KEEPALIVE_TIMEOUT = 5 * 1000
 
     module.exports =
       class SignallingServer extends EventEmitter
@@ -35,6 +36,9 @@ as the custom event detail.
                 @emit message.type, message.detail
             catch err
               @emit 'error', err
+          setInterval =>
+            @socket.send JSON.stringify(ping: true)
+          , KEEPALIVE_TIMEOUT
 
 All done now.
 
