@@ -21,7 +21,7 @@ Sockety goodness, here are all the event handlers on a per socket basis.
       wss.on 'connection', (socket) ->
 
 Get at the session, this bridges OAuth into the socket and provides the client
-with the user profile from Github.
+with the user profile from Github by sending it along the socket.
 
         store.parser socket.upgradeReq, null, (err) ->
           socket.sessionid = socket.upgradeReq.signedCookies['sid']
@@ -168,16 +168,27 @@ queries relay messages to other clients, which then decide if they want to
 participate.  This allows clients to cloak or mask their presence and be
 unavailable.
 
-In order to make this marginally efficient, a client sends along a message
-that is a hash of identifiers from OAuth, which are then looked up into sockets.
-These sockets are asked if they are online, responding, then routing back to the
-asking socket. This isn't peer-to-peer, figuring out who is online happens
-before you call anyone.
+In order to make this marginally efficient, a client sends along a message that
+is an array of identifiers from OAuth when it builds up a list of friends,
+which are then looked up into sockets.
+These sockets are asked if they are online, responding, then routing back to
+the asking socket. This isn't peer-to-peer, figuring out who is online happens
+before you call anyone, so it relays through the signalling server here.
+And -- since you are asking, you also tell that you are online. This exchanges
+like information, you have to be willing to share your profile to get a profile.
 
-        socket.on 'isonline', (users) ->
-          _(users.github)
-            .forEach (id) -> sockets?.github?["#{id}"]?.signal 'isonline',
-              fromclientid: socket.clientid
+        socket.on 'isonline', (user) ->
+          offline = []
+          _(user.githubFriends)
+            .forEach (id) ->
+              sockets?.github?["#{id}"]?.signal 'isonline',
+                fromclientid: socket.clientid
+              sockets?.github?["#{id}"]?.signal 'online',
+                clientid: socket.clientid
+                userprofiles: user.userprofiles
+
+When a peer answers that it is online, forward this message through to the
+original asking peer.
 
         socket.on 'online', (user) ->
           sockets?[user.fromclientid]?.signal 'online',
@@ -185,6 +196,8 @@ before you call anyone.
             userprofiles: user.userprofiles
 
 Close removes the socket from tracking, but make sure to only remove yourself.
+Close also sends along an offline message to everyone, this is from the server
+as the client isn't guaranteed to be around past a close.
 
         socket.on 'close', ->
           try
@@ -192,6 +205,10 @@ Close removes the socket from tracking, but make sure to only remove yourself.
               delete sockets[socket.clientid]
             if sockets?.github["#{socket?.github?.id}"] is socket
               delete sockets.github["#{socket.github.id}"]
+            _.values(sockets).forEach (friendSocket) ->
+              if friendSocket.signal
+                console.log 'going offline'.blue, socket.clientid, friendSocket.clientid, friendSocket.signal
+                friendSocket.signal 'offline', clientid: socket.clientid
           catch error
-            console.error error.red
+            console.error "#{error}".red
 

@@ -211,7 +211,7 @@ And then re-bind the user interface to the friend list.
         @addEventListener 'newfriends', (evt) =>
           if evt?.detail
             @profileIndex = profileIndex = new hummingbird.Index()
-            @profileIndex.friends = evt.detail
+            profileIndex.friends = evt.detail
             profileIndex.by_github_id = {}
             profileIndex.prep = (user) ->
               user.id = user.userprofiles.github.id
@@ -224,29 +224,41 @@ And then re-bind the user interface to the friend list.
               .forEach (friend) ->
                 profileIndex.add profileIndex.prep(friend), false
                 profileIndex.by_github_id["#{friend.userprofiles.github.id}"] = friend
-
-            @signallingServer.send 'isonline',
-              github: _.values(evt.detail).map (friend) -> friend.userprofiles.github.id
-
             showFriends()
+            @signallingServer.send 'isonline',
+              githubFriends: _.values(@profileIndex.friends or []).map (friend) -> friend.userprofiles.github.id
+              userprofiles: @userprofiles
 
-When asked if you are online, come back with your profile.
+When asked if you are online, come back with your profile. This is a message
+froma single friend peer, much like signalling.
 
         @signallingServer.on 'isonline', (user) =>
           _.extend user, userprofiles: @userprofiles
           @signallingServer.send 'online', user
 
 When someone tells you they are online, update your local index copy of their
-profile.
+profile. This is a message that will originate from a friend peer, much like
+signalling.
+This message also reciprocates, which lets you learn that a requestor is online
+if they came online after you did your initial batch request.
 
         @signallingServer.on 'online', (user) =>
-          console.log 'online', user
           friend =  @profileIndex?.by_github_id["#{user.userprofiles.github.id}"]
           if friend
+            if not friend.clientid
+              @signallingServer.send 'isonline',
+                github: [user.userprofiles.github.id]
             _.extend friend.userprofiles.github, user.userprofiles.github
             friend.clientid = user.clientid
           @profileIndex.update @profileIndex.prep(friend)
-          console.log friend
+
+When someone is offline, delete the clientid, this makes them un-callable. That
+and their client id plenty well can change.
+
+        @signallingServer.on 'offline', (user) =>
+          _(@profileIndex.friends)
+            .select (x) -> x.clientid is user.clientid
+            .forEach (x) -> delete x.clientid
 
 ##Chat
 

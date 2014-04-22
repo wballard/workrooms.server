@@ -31,6 +31,7 @@ as the custom event detail.
             try
               message = JSON.parse(evt.data)
               if message.type
+                console.log '<--', message.type, message.detail
                 @emit message.type, message.detail
             catch err
               @emit 'error', err
@@ -44,11 +45,12 @@ Send and event structured `type` and `detail` message along to the
 server.
 
         send: (type, detail)->
-            @socket?.send JSON.stringify(
-              type: type
-              detail: detail
-              clientid: @clientid
-            )
+          console.log '-->', type, detail
+          @socket?.send JSON.stringify(
+            type: type
+            detail: detail
+            clientid: @clientid
+          )
 
 Pipe a `name` message from `this` to `target`.
 
