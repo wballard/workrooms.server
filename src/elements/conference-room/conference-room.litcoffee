@@ -177,6 +177,9 @@ calls. When from the server, it is information to hang up one call.
             call.processAnswer detail
 
         @addEventListener 'call', (evt) =>
+          message = _.extend evt.detail,
+            from:
+              userprofiles: @userprofiles
           @signallingServer.send 'call', evt.detail
         window.debugFailCall = =>
           @signallingServer.send 'call', to: 'fail'
@@ -188,7 +191,7 @@ elements that can fire clear will totally overdo it.
 
         showFriends = (friends) =>
           @$.searchresults.model =
-            friendprofiles:
+            friends:
               _(friends or @profileIndex?.friends or [])
                 .values()
                 .sortBy (friend) -> friend.name.toLowerCase()

@@ -10,7 +10,7 @@ This is a list of friends built up by inspecting your Github profile.
     async = require('async')
     _ = require('lodash')
 
-    Polymer 'ui-user-profile-github-friends',
+    Polymer 'ui-user-profile-friends',
 
 Use the GitHub API to get all of your organizations, this forms your friend
 list. But only bother to load it if we haven't previously.

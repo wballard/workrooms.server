@@ -7,7 +7,7 @@ This is an amalgamated profile object via OAuth sources.
     bonzo = require('bonzo')
     require('../elementmixin.litcoffee')
 
-    Polymer 'ui-user-profile-github-gravatar',
+    Polymer 'ui-user-profile-gravatar',
       userprofilesChanged: (oldValue, newValue) ->
         if oldValue?.github?.name isnt newValue?.github?.name
           bonzo(@).show()
