@@ -95,6 +95,7 @@ Set up a peer-to-peer keep alive timer.
             fromclientid: @fromclientid
             toclientid: @toclientid
             userprofiles: @userprofiles
+            nolog: true
         , KEEPALIVE_TIMEOUT
 
 On a request to negotiate, send along the offer from the outbound side to
@@ -124,6 +125,7 @@ And then handle it remotedly with
         @data.onopen = =>
           bc = buffered @data, maxsize: 1024
           @send = (type, detail) =>
+            console.log('-->', type, detail) unless detail.nolog
             message =
               type: type
               from: @peerid
@@ -133,6 +135,7 @@ And then handle it remotedly with
             message = JSON.parse(data)
             if message.from isnt @peerid
               @fire message.type, message.detail
+              console.log('<--', message.type, message.detail) unless message.detail.nolog
         @peerConnection
 
 And let everything go.

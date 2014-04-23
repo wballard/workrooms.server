@@ -84,7 +84,6 @@ Show and hide the selfie -- this really needs to be data bound instead.
 
 Sidebars, are you even allowed to have an application without one any more?
 
-        @$.chatbar.hideAnimated()
         @addEventListener 'sidebar', =>
           @$.sidebar.toggle()
         @addEventListener 'chatbar', =>
@@ -283,4 +282,23 @@ are posted to the connected WebRTC calls on the page so everyone gets a chat.
 
         @$.chat.addEventListener 'chunk', (evt) =>
           evt.detail.callback undefined, 0, 0, []
+
+        @$.chat.addEventListener 'typing', _.debounce =>
+          message =
+            who: @userprofiles?.github?.name or @userprofiles?.github?.login or 'Anonymous'
+          _.each @shadowRoot.querySelectorAll('ui-video-call'), (call) ->
+            call.send 'typing', message
+        , 1000, leading: true
+
+        @addEventListener 'typing', (evt) =>
+          @$.chat.typerName = evt?.detail?.who
+
+        @$.chat.addEventListener 'not-typing', =>
+          message =
+            who: @userprofiles?.github?.name or @userprofiles?.github?.login or 'Anonymous'
+          _.each @shadowRoot.querySelectorAll('ui-video-call'), (call) ->
+            call.send 'not-typing', message
+
+        @addEventListener 'not-typing', (evt) =>
+          @$.chat.typerName = ""
 

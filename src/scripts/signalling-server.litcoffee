@@ -32,7 +32,8 @@ as the custom event detail.
             try
               message = JSON.parse(evt.data)
               if message.type
-                console.log '<--', message.type, message.detail
+                unless message.detail.nolog
+                  console.log('<--', message.type, message.detail)
                 @emit message.type, message.detail
             catch err
               @emit 'error', err
@@ -48,8 +49,9 @@ All done now.
 Send and event structured `type` and `detail` message along to the
 server.
 
-        send: (type, detail)->
-          console.log '-->', type, detail
+        send: (type, detail) ->
+          unless detail.nolog
+            console.log('-->', type, detail)
           @socket?.send JSON.stringify(
             type: type
             detail: detail
