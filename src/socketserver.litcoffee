@@ -89,12 +89,12 @@ Provide configuration to the client. This is used to keep OAuth a bit more secre
 at the moment these configs are just checked in to Github and aren't all that
 secret anyhow. **TODO** hide these configu strings in deployment variables.
 
-            if config[user.runtime]
-              socket.runtime = user.runtime
-              socket.signal 'configured', config[socket.runtime]
-            else
-              console.error "There was no config prepared for #{user.runtime}".yellow
-              socket.signal 'error', "There was no config prepared for #{user.runtime}"
+          if config[user.runtime]
+            socket.runtime = user.runtime
+            socket.signal 'configured', _.extend(config[socket.runtime], clientid: socket.clientid)
+          else
+            console.error "There was no config prepared for #{user.runtime}".yellow
+            socket.signal 'error', "There was no config prepared for #{user.runtime}"
 
 Send WebRTC negotiation along to all peers and let them process it, this will
 reflect ice back to the sender, this allows self-calling for testing.

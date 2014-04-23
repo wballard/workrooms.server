@@ -30,8 +30,13 @@ The server literally sends the config back to the client on a connect.
 
     Polymer 'conference-room',
 
-      ready: ->
-        @fire 'ready'
+      call: (clientid) ->
+        if clientid?.length and clientid isnt @signallingServer.clientid
+          message =
+            to: clientid
+            from:
+              userprofiles: @userprofiles
+          @signallingServer.send 'call', message
 
       attached: ->
         @audioon = true
@@ -60,6 +65,7 @@ protect -- or really to be able to switch -- ids for OAuth and STUN/TURN.
 
         @signallingServer.on 'configured', (config) =>
           @serverConfig = config
+          @fire 'configured', config
 
 When OAuth is complete, or restored from a saved session, the server will
 provide you with profiles.
@@ -177,12 +183,9 @@ calls. When from the server, it is information to hang up one call.
             call.processAnswer detail
 
         @addEventListener 'call', (evt) =>
-          message = _.extend evt.detail,
-            from:
-              userprofiles: @userprofiles
-          @signallingServer.send 'call', evt.detail
+          @call evt.detail.to
         window.debugFailCall = =>
-          @signallingServer.send 'call', to: 'fail'
+          @call 'fail'
 
 ##Autocomplete Search
 
