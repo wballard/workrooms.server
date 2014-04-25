@@ -95,6 +95,7 @@ peers in order to support auto-conference.
             console.log 'already connected'
           else
             newCall.config = @serverConfig
+            console.log 'new call', newCall
             @calls.push newCall
 
         @signallingServer.on 'outboundcall', takeCall
@@ -111,7 +112,7 @@ where the larger client id is in charge of actually making the call.
               console.log 'call!', clientid
               @call clientid
           _.remove @calls, (call) ->
-            call.fromclientid not in clientids or call.clientid not in clientids
+            call.fromclientid not in clientids or call.toclientid not in clientids
 
 ##Call Signal Processing
 
