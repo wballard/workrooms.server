@@ -28,6 +28,10 @@ A string that is all about who you are.
 
     Polymer 'conference-room',
 
+      roomChanged: ->
+        @signallingServer.send 'register',
+          room: @room
+
       call: (clientid) ->
         if clientid
           message =
@@ -44,23 +48,26 @@ A string that is all about who you are.
         if @root.slice(-1) isnt '/'
           @root += '/'
         @signallingServer = new SignallingServer("ws#{@root.slice(4)}")
+        @signallingServer.on 'error', (err) ->
+          console.log err
         @addEventListener 'error', (err) ->
           console.log err
+
 
 ##Setting Up Signalling
 Hello from the server! Now it is time to register this client in order to
 get the rest of the configuration.
 
         @signallingServer.on 'hello', =>
+          @fire 'hello'
           @signallingServer.send 'register',
-            room: document.location.hash
+            room: @room
 
 After we have registered, the server sends along a configuration, this is to
 protect -- or really to be able to switch -- ids for OAuth and STUN/TURN.
 
         @signallingServer.on 'configured', (config) =>
           @serverConfig = config
-          @fire 'configured', config
 
 And sometimes you just have to let go.
 

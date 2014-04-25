@@ -87,8 +87,10 @@ with both a client and a room. So -- this means any given socket can only
 be in one room. For sure!
 
         socket.on 'register', (user) ->
-          socket.room = user.room
           sockets[socket.clientid] = socket
+          delete rooms?[socket.room]?[socket.clientid]
+          roomChanged()
+          socket.room = user.room
           rooms[socket.room] ?= {}
           rooms[socket.room][socket.clientid] = socket
 
