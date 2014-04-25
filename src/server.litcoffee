@@ -20,8 +20,9 @@ even remotely designed to scale out to multiple processes or machines.
 Config me!
 
     config = yaml.safeLoad(fs.readFileSync(path.join(__dirname, 'config.yaml'), 'utf8'))
-    serverConfig = config[process.env['HOST'] or 'localhost:9001']
+    serverConfig = config[process.env['HOST'] or 'workrooms:9001']
     port = process.env['PORT'] or 9000
+    sslport = process.env['SSLPORT'] or 9001
 
 Static service of the single page app, with passport authentication.
 
@@ -81,8 +82,8 @@ saves.
       key: fs.readFileSync('var/privatekey.pem').toString()
       cert: fs.readFileSync('var/certificate.pem').toString()
     secureServer = https.createServer(sslOptions, app)
-    secureServer.listen(port+1)
+    secureServer.listen(sslport)
     wss = new WebSocketServer(server: secureServer)
     socketserver(wss, config, store)
-    console.log 'HTTPS listening on', "#{port+1}".blue
+    console.log 'HTTPS listening on', "#{sslport}".blue
 

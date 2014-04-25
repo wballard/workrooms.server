@@ -136,6 +136,7 @@ And then handle it remotedly with
             if message.from isnt @peerid
               @fire message.type, message.detail
               console.log('<--', message.type, message.detail) unless message.detail.nolog
+          @fire 'connected'
         @peerConnection
 
 And let everything go.

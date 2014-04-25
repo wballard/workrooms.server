@@ -2,11 +2,11 @@
 #to redirect to a known url
 
 #root key is the chrome extension runtime id
-localhost:9001:
+workrooms:9001:
   github:
     clientid: df1c093b04a9ba9660cd
     clientsecret: 6ce2be9ee60bdcaf35ea192e27df9bf81d75e6e8
-    callback: https://localhost:9001/auth/github/callback
+    callback: https://workrooms:9001/auth/github/callback
     redirect: /
   iceServers:
     -
