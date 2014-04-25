@@ -21,6 +21,10 @@ Sweep up static assest from all over.
       gulp.src '**/*.*', {cwd: 'src/images'}
         .pipe gulp.dest 'build/images'
 
+      gulp.src '**/*.svg', {cwd: 'src'}
+        .pipe flatten()
+        .pipe gulp.dest 'build/images'
+
       gulp.src '**/images/*.*', {cwd: 'bower_components'}
         .pipe flatten()
         .pipe gulp.dest 'build/bower_components/images'
