@@ -25,9 +25,9 @@ This is the identifier of this side of the running call.
     uuid = require('node-uuid')
     _ = require('lodash')
 
-    RECONNECT_TIMEOUT_THRESHOLD = 3
-    RECONNECT_TIMEOUT = 4 * 1000
-    KEEPALIVE_TIMEOUT = 2 * 1000
+    RECONNECT_TIMEOUT_THRESHOLD = 2
+    RECONNECT_TIMEOUT = 2 * 1000
+    KEEPALIVE_TIMEOUT = 1 * 1000
 
     Polymer 'ui-video-call',
 
@@ -94,7 +94,6 @@ Set up a peer-to-peer keep alive timer.
             peerid: @peerid
             fromclientid: @fromclientid
             toclientid: @toclientid
-            userprofiles: @userprofiles
             nolog: true
         , KEEPALIVE_TIMEOUT
 
@@ -171,7 +170,6 @@ semaphore down a few more counts to keep it well below the threshold.
         , RECONNECT_TIMEOUT
 
         @addEventListener 'callkeepalive', (evt) =>
-          @call.userprofiles = evt.detail.userprofiles
           @reconnectSemaphore = 0
 
 Mute control, bridge this across to peers. This side will do the actual work

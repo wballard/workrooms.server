@@ -13,66 +13,24 @@ even remotely designed to scale out to multiple processes or machines.
     fs = require('fs')
     path = require('path')
     socketserver = require('./socketserver.litcoffee')
-    passport = require('passport')
-    GitHubStrategy = require('passport-github').Strategy
-    SQLiteStore = require('connect-sqlite3')(express)
 
 Config me!
 
-    config = yaml.safeLoad(fs.readFileSync(path.join(__dirname, 'config.yaml'), 'utf8'))
-    serverConfig = config[process.env['HOST'] or 'workrooms:9001']
+    serverConfig = yaml.safeLoad(fs.readFileSync(path.join(__dirname, 'config.yaml'), 'utf8'))
     port = process.env['PORT'] or 9000
     sslport = process.env['SSLPORT'] or 9001
 
-Static service of the single page app, with passport authentication.
+Static service of the single page app, with WebSockets.
 
     app = express()
-    app.use(parser = express.cookieParser('--++--'))
-    store = new SQLiteStore(dir: '/var/data/', db: 'workrooms-sessions')
-    store.parser = parser
-    app.use(express.session(store: store, key: 'sid'))
-    passport.use(new GitHubStrategy({
-      clientID: serverConfig.github.clientid
-      clientSecret: serverConfig.github.clientsecret
-      callbackURL: serverConfig.github.callback
-      scope: ['user', 'read:org']
-      userAgent: 'glgresearch.com'
-    }, (access_token, refresh, profile, done) ->
-      console.log access_token, profile
-      touchup = JSON.parse(profile._raw)
-      profile._json.access_token = access_token
-      touchup.access_token = access_token
-      profile._raw = JSON.stringify(touchup)
-      done(undefined, profile))
-    )
-    app.use(passport.initialize())
-    app.use(passport.session())
-    app.get '/auth/github', passport.authenticate('github'), (req, res) ->
-    app.get '/auth/github/callback', passport.authenticate('github', failuserRedirect: '/#fail'), (req, res) ->
-      res.redirect serverConfig.github.redirect
-    app.get '/auth/logout', (req, res) ->
-      req.logout()
-      res.redirect serverConfig.github.redirect
-
-Route service.
-
-    app.use(app.router)
     app.use(express.static("#{__dirname}/../build"))
-
-Passport handling, there is no local use database, but we have to use session
-in order to be able to get back the user profile.
-
-    passport.serializeUser (user, done) ->
-      done undefined, user
-    passport.deserializeUser (data, done) ->
-      done undefined, data
 
 HTTP + WS service, this will be proxied with HTTPS live for production.
 
     server = http.createServer(app)
     server.listen(port)
     ws = new WebSocketServer(server: server)
-    socketserver(ws, config, store)
+    socketserver(ws, serverConfig)
     console.log 'HTTP/WS listening on', "#{port}".blue
 
 Self Signed SSL for local development, this makes it so the camera permission
@@ -84,6 +42,6 @@ saves.
     secureServer = https.createServer(sslOptions, app)
     secureServer.listen(sslport)
     wss = new WebSocketServer(server: secureServer)
-    socketserver(wss, config, store)
+    socketserver(wss, serverConfig)
     console.log 'HTTPS listening on', "#{sslport}".blue
 

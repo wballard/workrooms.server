@@ -1,26 +1,5 @@
-#Config is set up 'by server', this is becuase GitHub needs to be able
-#to redirect to a known url
-
-#root key is the chrome extension runtime id
-workrooms:9001:
-  github:
-    clientid: df1c093b04a9ba9660cd
-    clientsecret: 6ce2be9ee60bdcaf35ea192e27df9bf81d75e6e8
-    callback: https://workrooms:9001/auth/github/callback
-    redirect: /
-  iceServers:
-    -
-      url: turn:workrooms.glgresearch.com:3478?transport=udp
-      credential: go
-      username: workrooms
-workrooms.glgresearch.com:
-  github:
-    clientid: eda98e0fee66b8573312
-    clientsecret: 8dc00cee1647aab2a2e926bf45914759e26f7632
-    callback: https://workrooms.glgresearch.com/workrooms/auth/github/callback
-    redirect: /workrooms
-  iceServers:
-    -
-      url: turn:workrooms.glgresearch.com:3478?transport=udp
-      credential: go
-      username: workrooms
+iceServers:
+  -
+    url: turn:workrooms.glgresearch.com:3478?transport=udp
+    credential: go
+    username: workrooms
