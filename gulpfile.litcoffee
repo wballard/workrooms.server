@@ -11,6 +11,7 @@ build script and watch for changes.
     plumber = require 'gulp-plumber'
     shell = require 'gulp-shell'
     hash = require 'gulp-hashmap'
+    cache = require 'gulp-cached'
     es = require 'event-stream'
 
 All of the semi status stuff, don't bother to rebuild as often
@@ -20,22 +21,27 @@ All of the semi status stuff, don't bother to rebuild as often
 Sweep up static assest from all over.
 
       gulp.src '**/*.*', {cwd: 'src/images'}
+        .pipe cache('static')
         .pipe gulp.dest 'build/images'
 
       gulp.src '**/*.svg', {cwd: 'src'}
+        .pipe cache('static')
         .pipe flatten()
         .pipe gulp.dest 'build/images'
 
       gulp.src '**/images/*.*', {cwd: 'bower_components'}
+        .pipe cache('static')
         .pipe flatten()
         .pipe gulp.dest 'build/bower_components/images'
 
       gulp.src '**/fonts/*.*', {cwd: 'bower_components'}
+        .pipe cache('static')
         .pipe flatten()
         .pipe gulp.dest 'build/fonts'
         .pipe gulp.dest 'build/bower_components/fonts'
 
       gulp.src '**', {cwd: 'bower_components'}
+        .pipe cache('static')
         .pipe gulp.dest 'build/bower_components/'
 
 And our custom elements.
@@ -60,8 +66,10 @@ And our custom elements.
       src ='src/elements'
       dest = 'build/bower_components'
       gulp.src '**/*.html', {cwd: src}
+        .pipe cache('static')
         .pipe gulp.dest dest
       gulp.src '**/*.svg', {cwd: src}
+        .pipe cache('static')
         .pipe gulp.dest dest
 
     gulp.task 'pages', ['pages-code', 'pages-style', 'pages-static']
@@ -84,8 +92,10 @@ And our custom elements.
       src ='src/pages'
       dest = 'build/'
       gulp.src '**/*.html', {cwd: src}
+        .pipe cache('static')
         .pipe gulp.dest dest
       gulp.src '**/*.svg', {cwd: src}
+        .pipe cache('static')
         .pipe gulp.dest dest
 
 Vulcanize for the speed.
@@ -98,12 +108,11 @@ Vulcanize for the speed.
 
 The default task leaves a hash file to support hot reloading.
 
-    gulp.task 'default', ['vulcanize'], ->
+    gulp.task 'build', ['vulcanize'], ->
       gulp.src 'build/index.html'
         .pipe hash 'hashmap.json'
         .pipe gulp.dest 'build'
 
-
-    gulp.task 'watch', ['default'], ->
-      gulp.watch 'src/**/*.*', ['default']
+    gulp.task 'watch', ['elements', 'pages'], ->
+      gulp.watch 'src/**/*.*', ['elements', 'pages']
 

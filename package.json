@@ -37,12 +37,13 @@
     "kizzy": "0.0.5",
     "bower": "~1.3.1",
     "gulp-shell": "~0.2.4",
-    "vulcanize": "~0.2.4",
+    "vulcanize": "~0.2.5",
     "event-stream": "~3.1.0",
     "reqwest": "^1.1.0",
     "async": "^0.6.0",
     "rtc-bufferedchannel": "~0.5.0",
-    "gulp-hashmap": "0.0.2"
+    "gulp-hashmap": "0.0.2",
+    "gulp-cached": "0.0.3"
   },
   "scripts": {
     "install": "bin/install",

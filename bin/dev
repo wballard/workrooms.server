@@ -1,4 +1,2 @@
 #!/usr/bin/env bash
-while [ true ]; do
-  gulp --require coffee-script/register --gulpfile gulpfile.litcoffee watch
-done
+gulp --require coffee-script/register --gulpfile gulpfile.litcoffee watch

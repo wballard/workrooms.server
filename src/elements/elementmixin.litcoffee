@@ -5,21 +5,43 @@ Mixin methods to HTMLElement.
     morpheus = require('morpheus')
     _ = require('lodash')
 
+    ANIMATION_DURATION = 300
+
 Showing with animation and a callback that fires once it is done.
 
     if not HTMLElement::showAnimated
       HTMLElement::showAnimated = (callback) ->
-        bonzo(@).show()
+        target = @
         @visible = true
-        callback() if callback
+        @classList.remove('hide')
+        morpheus target,
+          opacity: 1
+          duration: ANIMATION_DURATION
+          complete: ->
+            callback() if callback
+
+    if not HTMLElement::show
+      HTMLElement::show = ->
+        @visible = true
+        @classList.remove('hide')
 
 Hiding with animation and a callback that fires once it is done.
 
     if not HTMLElement::hideAnimated
       HTMLElement::hideAnimated = (callback) ->
-        bonzo(@).hide()
+        target = @
         @visible = false
-        callback() if callback
+        morpheus target,
+          opacity: 0
+          duration: ANIMATION_DURATION
+          complete: ->
+            target.classList.add('hide')
+            callback() if callback
+
+    if not HTMLElement::hide
+      HTMLElement::hide = ->
+        @visible = false
+        @classList.add('hide')
 
 jQuery doesn't seem to understand offset and position with polymer.
 
