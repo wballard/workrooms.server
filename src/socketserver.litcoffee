@@ -3,6 +3,8 @@ socket server.
 
     _ = require('lodash')
     uuid = require('node-uuid')
+    fs = require('fs')
+    path = require('path')
     yaml = require('js-yaml')
 
 Track running sockets to get a sense of all sessions.
@@ -149,6 +151,11 @@ is double checking if a call already exists.
               toclientid: tosocket.clientid
             socket.signal 'outboundcall', outboundcall
             tosocket.signal 'inboundcall', inboundcall
+
+        socket.on 'ping', ->
+          hashes = yaml.safeLoad(fs.readFileSync(path.join(__dirname, '..', 'build', 'hashmap.json'), 'utf8'))
+          hashes.nolog = true
+          socket.signal 'pong', hashes
 
 Close removes the socket from tracking, but make sure to only remove yourself.
 

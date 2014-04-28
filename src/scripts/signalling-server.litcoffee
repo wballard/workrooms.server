@@ -34,7 +34,7 @@ as the custom event detail.
             catch err
               @emit 'error', err
           setInterval =>
-            @socket.send JSON.stringify(ping: true)
+            @send 'ping', nolog: true
           , KEEPALIVE_TIMEOUT
 
 All done now.

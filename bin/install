@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
-set +e
+set -e
 bower install
-gulp --require coffee-script/register --gulpfile gulpfile.litcoffee all
+gulp --require coffee-script/register --gulpfile gulpfile.litcoffee
+

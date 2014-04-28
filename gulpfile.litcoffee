@@ -10,6 +10,7 @@ build script and watch for changes.
     concat = require 'gulp-concat'
     plumber = require 'gulp-plumber'
     shell = require 'gulp-shell'
+    hash = require 'gulp-hashmap'
     es = require 'event-stream'
 
 All of the semi status stuff, don't bother to rebuild as often
@@ -95,7 +96,14 @@ Vulcanize for the speed.
           'vulcanize --inline --strip -o build/index.html build/index.html'
         ])
 
-    gulp.task 'default', ['all']
-    gulp.task 'all', ['vulcanize']
-    gulp.task 'watch', ['elements', 'pages'], ->
-      gulp.watch 'src/**/*.*', ['elements', 'pages']
+The default task leaves a hash file to support hot reloading.
+
+    gulp.task 'default', ['vulcanize'], ->
+      gulp.src 'build/index.html'
+        .pipe hash 'hashmap.json'
+        .pipe gulp.dest 'build'
+
+
+    gulp.task 'watch', ['default'], ->
+      gulp.watch 'src/**/*.*', ['default']
+

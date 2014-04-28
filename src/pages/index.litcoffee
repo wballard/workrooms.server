@@ -2,10 +2,18 @@ Main page script. Not particularly interesting as everything is an element.
 
     require '../elements/elementmixin.litcoffee'
 
+    version = undefined
+
     document.addEventListener 'hello', ->
       document.querySelector('#loading').hideAnimated()
       document.querySelector('conference-room').room = window.location.hash
 
+    document.addEventListener 'pong', (evt) ->
+      if version and evt?.detail?['index.html'] isnt version
+        window.location.reload()
+      else
+        version = evt.detail['index.html']
+        console.log 'version', version
+
     window.addEventListener 'hashchange', ->
       document.querySelector('conference-room').room = window.location.hash
-

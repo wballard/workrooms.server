@@ -69,6 +69,9 @@ protect -- or really to be able to switch -- ids for OAuth and STUN/TURN.
         @signallingServer.on 'configured', (config) =>
           @serverConfig = config
 
+        @signallingServer.on 'pong', (hashes) =>
+          @fire 'pong', hashes
+
 And sometimes you just have to let go.
 
         @signallingServer.on 'disconnect', =>
