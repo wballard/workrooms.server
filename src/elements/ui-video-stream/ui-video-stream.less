@@ -17,22 +17,14 @@ local-video {
 ui-video-stream {
   display: block;
   position: relative;
-  .display {
-    //this is in pixels, it doesn't really make sense to me to scale this
-    //relative to the font
-    width: 20em;
-    height: 15em;
-    margin: 0;
-    padding: 0;
-    margin-bottom: 0.2em;
-    img {
-      display: block;
-      -webkit-mask-image: url('images/avatar-mask.svg');
-      -webkit-filter: grayscale(90%);
-      width: 100%;
-      height: 100%;
-      position: absolute;
-    }
+  margin: 0;
+  padding: 0;
+  margin-bottom: 0.2em;
+  img {
+    display: block;
+    -webkit-mask-image: url('images/avatar-mask.svg');
+    -webkit-filter: grayscale(90%);
+    position: absolute;
   }
   video {
     display: block;
@@ -40,7 +32,6 @@ ui-video-stream {
     -webkit-mask-image: url('images/avatar-mask.svg');
     width: 100%;
     height: 100%;
-    position: absolute;
   }
   canvas {
     display: none;

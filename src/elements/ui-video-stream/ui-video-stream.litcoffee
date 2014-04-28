@@ -11,8 +11,6 @@ Show a video stream with user interface.
     bonzo = require('bonzo')
     morpheus = require('morpheus')
 
-    SNAPSHOT_TIMEOUT = 1 * 1000
-
     Polymer 'ui-video-stream',
 
       ready: ->
@@ -22,27 +20,17 @@ Show a video stream with user interface.
 Cool. Static snapshots to use when the video is muted. This gets defined when
 the video plays.
 
-      attached: ->
-        @$.video.addEventListener 'canplay', =>
-          @fire 'snapshot'
-        @addEventListener 'snapshot', =>
-          width = parseInt(getComputedStyle(@$.video).getPropertyValue('width').replace('px',''))
-          height = parseInt(getComputedStyle(@$.video).getPropertyValue('height').replace('px',''))
-          @$.takesnapshot.setAttribute('width', width)
-          @$.takesnapshot.setAttribute('height', height)
-          takeSnapshot = =>
-            return
-            try
-              ctx = @$.takesnapshot.getContext('2d')
-              ctx.drawImage(@$.video, 0, 0, width, height)
-              @$.snapshot.setAttribute('src', @$.takesnapshot.toDataURL('image/png'))
-            catch error
-              console.log error, width, height
-          takeSnapshot()
-          setInterval =>
-            if not @video is 'false'
-              takeSnapshot()
-          , SNAPSHOT_TIMEOUT
+      takeSnapshot: ->
+        width = parseInt(getComputedStyle(@$.video).getPropertyValue('width').replace('px',''))
+        height = parseInt(getComputedStyle(@$.video).getPropertyValue('height').replace('px',''))
+        @$.takesnapshot.setAttribute('width', width)
+        @$.takesnapshot.setAttribute('height', height)
+        try
+          ctx = @$.takesnapshot.getContext('2d')
+          ctx.drawImage(@$.video, 0, 0, width, height)
+          @$.snapshot.setAttribute('src', @$.takesnapshot.toDataURL('image/png'))
+        catch error
+          console.log error, width, height
 
 Looking for attributes to mute. This is a neat trick as these are attributes
 that trigger by presence, so we can hit them with the ?

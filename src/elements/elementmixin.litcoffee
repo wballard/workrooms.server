@@ -43,7 +43,17 @@ Hiding with animation and a callback that fires once it is done.
         @visible = false
         @classList.add('hide')
 
-jQuery doesn't seem to understand offset and position with polymer.
+Polymer doesn't have a callback or way to animate elements as they are
+data bound, so patch the DOM calls to trap appending and removing nodes.
+
+    if not Node::appendChild.patched?
+      Node::appendChild.patched = true
+
+    if not Node::removeChild.patched?
+      Node::removeChild.patched = true
+
+jQuery doesn't seem to understand offset and position with polymer. This patch
+makes the semantic-ui tooltips show in the right spot.
 
     if jQuery?
       jQuery.fn.position = ->
@@ -52,7 +62,7 @@ jQuery doesn't seem to understand offset and position with polymer.
         else
           bonzo(@[0]).offset()
 
-Tooltip positioning.
+Tooltip positioning for every element.
 
     if not HTMLElement::tooltipPosition
       HTMLElement::tooltipPosition = ->

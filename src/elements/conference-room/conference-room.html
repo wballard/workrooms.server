@@ -23,17 +23,13 @@
   <ui-command-tool icon="fa-comments" command="chatbar" tooltip="Text chat"></ui-command-tool>
   </ui-toolbar>
   <div class="calls">
-    <section id="selfie" class="ui tile video">
-      <ui-video-stream stream="{{localstream}}" mutedaudio mirror></ui-video-stream>
-    </section>
+    <ui-video-stream id="selfie" class="ui tile video" stream="{{localstream}}" mutedaudio mirror></ui-video-stream>
     <template id="calls" repeat="{{call in calls}}">
-      <ui-video-call id="A{{call.id}}" call="{{call}}"
+      <ui-video-call class="ui tile video" id="A{{call.id}}" call="{{call}}"
       localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}"
       remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}"
       fromclientid="{{call.fromclientid}}" toclientid="{{call.toclientid}}">
-      <section class="ui tile video">
-        <ui-video-stream stream="{{call.remotestream}}" audio="{{call.remoteaudio}}" video="{{call.remotevideo}}"></ui-video-stream>
-      </section>
+      <ui-video-stream stream="{{call.remotestream}}" audio="{{call.remoteaudio}}" video="{{call.remotevideo}}"></ui-video-stream>
       </ui-video-call>
     </template>
   </div>
