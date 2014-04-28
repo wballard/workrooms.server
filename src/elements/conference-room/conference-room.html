@@ -23,6 +23,15 @@
   <ui-command-tool icon="fa-comments" command="chatbar" tooltip="Text chat"></ui-command-tool>
   </ui-toolbar>
   <div class="calls">
+    <div class="notices">
+      <div id="chromeonly" class="ui icon signin message">
+        <i class="ui icon fa fa-hand-o-right fa-4x"></i>
+        <div class="content">
+          <div class="header">Need Some Chrome</div>
+          <p>Sorry -- this version only runs in Chrome browsers</p>
+        </div>
+      </div>
+    </div>
     <ui-video-stream id="selfie" class="ui tile video" stream="{{localstream}}" selfie mirror></ui-video-stream>
     <template id="calls" repeat="{{call in calls}}">
       <ui-video-call class="ui tile video" id="A{{call.id}}" call="{{call}}"

@@ -19,10 +19,10 @@ The server literally sends the config back to the client on a connect.
 ##nametag
 A string that is all about who you are.
 
-    require('../elementmixin.litcoffee')
-    uuid = require('node-uuid')
-    _ = require('lodash')
-    qwery = require('qwery')
+    require '../elementmixin.litcoffee'
+    uuid = require 'node-uuid'
+    _ = require 'lodash'
+    bowser = require 'bowser'
     SignallingServer = require('../../scripts/signalling-server.litcoffee')
 
     Polymer 'conference-room',
@@ -38,6 +38,8 @@ A string that is all about who you are.
           @signallingServer.send 'call', message
 
       attached: ->
+        if bowser.browser.chrome
+          @$.chromeonly.hide()
         @nametag = 'Anonymous'
         @audioon = true
         @videoon = true
