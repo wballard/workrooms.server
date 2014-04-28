@@ -14,8 +14,6 @@ you can put any style names in here to use other than FontAwesome.
 This fires a dynamic event based on `togglechanged`. Will fire a
 `.on` and a `.off` suffixed event depending on the state.
 
-    bonzo = require('bonzo')
-
     Polymer 'ui-toggle-tool',
       active: false
       attached: ->
@@ -26,11 +24,11 @@ This fires a dynamic event based on `togglechanged`. Will fire a
         if @active
           @fire "#{@togglechanged}.on"
           @$.tool.classList.add('active')
-          bonzo(@$.overlay).hide()
+          @$.overlay.hide()
         else
           @fire "#{@togglechanged}.off"
           @$.tool.classList.remove('active')
-          bonzo(@$.overlay).show()
+          @$.overlay.show()
       tooltipChanged: ->
         $(@$.tool).popup
           inline: true

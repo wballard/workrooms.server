@@ -4,18 +4,21 @@ Show a video stream with user interface.
 ##audio
 ##video
 ##mirror
-##mutedaudio
+##selfie
+Mute the local audio output to avoid feedback.
 ##stream
 
     _ = require('lodash')
-    bonzo = require('bonzo')
-    morpheus = require('morpheus')
+    require('../elementmixin.litcoffee')
 
     Polymer 'ui-video-stream',
 
       ready: ->
-        bonzo(@$.snapshot).hide()
-        bonzo(@$.sourcemutedaudio).hide()
+        @$.snapshot.hide()
+        @$.sourcemutedaudio.hide()
+        setInterval =>
+          @takeSnapshot() if @video
+        , 3000
 
 Cool. Static snapshots to use when the video is muted. This gets defined when
 the video plays.
@@ -37,32 +40,31 @@ that trigger by presence, so we can hit them with the ?
 
       audioChanged: ->
         if @audio
-          bonzo(@$.sourcemutedaudio).hide()
+          @$.sourcemutedaudio.hide()
         else
-          bonzo(@$.sourcemutedaudio).show()
+          @$.sourcemutedaudio.show()
 
       videoChanged: ->
         if @video
-          @$.video.showAnimated()
-          @$.snapshot.hideAnimated()
+          @$.snapshot.hideAnimated =>
+            @$.video.showAnimated()
         else
-          @$.video.hideAnimated()
-          @$.snapshot.showAnimated()
+          @$.video.hideAnimated =>
+            @$.snapshot.showAnimated()
 
       streamChanged: ->
-        if @hasAttribute('mutedaudio')
+        if @hasAttribute('selfie')
           @$.video.setAttribute('muted', '')
         else
           @$.video.removeAttribute('muted')
         if @hasAttribute('mirror')
-          bonzo(@$.video)
-           .css('-webkit-transform', 'scaleX(-1)')
-          bonzo(@$.snapshot)
-           .css('-webkit-transform', 'scaleX(-1)')
+          @$.video.classList.add 'mirror'
+          @$.snapshot.classList.add 'mirror'
         if @stream
           @$.video.src = URL.createObjectURL(@stream)
           @$.video.play()
-          bonzo(@$.loading).hide()
+          @$.loading.hide()
+          @takeSnapshot()
         else
           @$.video.src = ''
-          bonzo(@$.loading).show()
+          @$.loading.show()

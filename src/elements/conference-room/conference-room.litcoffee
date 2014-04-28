@@ -23,7 +23,6 @@ A string that is all about who you are.
     uuid = require('node-uuid')
     _ = require('lodash')
     qwery = require('qwery')
-    bonzo = require('bonzo')
     SignallingServer = require('../../scripts/signalling-server.litcoffee')
 
     Polymer 'conference-room',
