@@ -46,6 +46,8 @@ A string that is all about who you are.
         @serverconfig = null
         @calls = []
         @root = "#{document.location.origin}#{document.location.pathname}"
+        if @root.slice(0,3) isnt 'https'
+          window.location = "https#{@root.slice(4)}"
         if @root.slice(-1) isnt '/'
           @root += '/'
         @signallingServer = new SignallingServer("ws#{@root.slice(4)}")
