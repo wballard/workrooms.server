@@ -11,6 +11,7 @@ build script and watch for changes.
     plumber = require 'gulp-plumber'
     shell = require 'gulp-shell'
     hash = require 'gulp-hashmap'
+    debug = require 'gulp-debug'
     es = require 'event-stream'
 
 All of the semi status stuff, don't bother to rebuild as often
@@ -19,10 +20,11 @@ All of the semi status stuff, don't bother to rebuild as often
 
 Sweep up static assest from all over.
 
-      gulp.src '**/*.*', {cwd: 'src/images'}
+      gulp.src '**/*.{svg,png}', cwd: 'src'
+        .pipe flatten()
         .pipe gulp.dest 'build/images'
 
-      gulp.src '**/images/*.*', {cwd: 'bower_components'}
+      gulp.src '**/*.{svg,png}', cwd: 'bower_components'
         .pipe flatten()
         .pipe gulp.dest 'build/bower_components/images'
 
@@ -99,6 +101,7 @@ The default task leaves a hash file to support hot reloading.
         .pipe hash 'hashmap.json'
         .pipe gulp.dest 'build'
 
-    gulp.task 'watch', ['elements', 'pages'], ->
-      gulp.watch 'src/**/*.*', ['elements', 'pages']
-
+    gulp.task 'dev', ['elements', 'pages', 'assets'], ->
+      gulp.src 'src/**/*.*'
+        .pipe hash 'hashmap.json'
+        .pipe gulp.dest 'build'
