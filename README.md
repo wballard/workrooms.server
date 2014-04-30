@@ -7,9 +7,8 @@ One click video conference, just click on any GitHub gravatar and start
 working together.
 
 # How does it Work?
-With an always on Chrome plugin, a simple WebSocket
-[server](https://github.com/wballard/workrooms.server), and WebRTC, you
-can pair program and collaborate with one click.
+With google chrome, WebRTC and some basic websocket signaling, workrooms allows you to connect and collaborate without any logins or information other than a unique (arbitrary) url.
+
 
 # Build
 This uses browserify and a bootstrap shim to hot reload during
@@ -17,15 +16,17 @@ development. All you need to do is:
 
 ```
 npm install
-grunt watch
+npm start
 ```
 
-This is a Chrome Extension (chrome://extensions/), so you will need to
-*Load unpacked extension...* pointed at this checkout.
+And -- poof, you will get videos of yourself on https://localhost:9001
 
 
-You will also need the
-[server](https://github.com/wballard/workrooms.server).
+You can also set up a watch to update the app as assets are changed using"
 
-And -- poof, you will get videos of yourself.
+```
+npm test
+```
+
+
 

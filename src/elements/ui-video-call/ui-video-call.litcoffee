@@ -21,7 +21,8 @@ This is the identifier of this side of the running call.
 
     require('../elementmixin.litcoffee')
     rtc = require('webrtcsupport')
-    buffered = require('rtc-bufferedchannel')
+    buffered = require('rtc-bufferedchannel')    
+    stuff = require('../../scripts/web-audio.litcoffee')
     uuid = require('node-uuid')
     _ = require('lodash')
 
@@ -78,6 +79,7 @@ Video streams coming over RTC need to be displayed.
         #display hookup and removal
         @peerConnection.onaddstream = (evt) =>
           @remotestream = evt.stream
+
         @peerConnection.onremovestream = (evt) =>
           @remotestream = null
 

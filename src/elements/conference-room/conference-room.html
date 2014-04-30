@@ -20,7 +20,9 @@
   <ui-toggle-tool icon="fa-eye" togglechanged="selfie" tooltip="Video selfie"></ui-toggle-tool>
   <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active="{{videoon}}" tooltip="Video mute"></ui-toggle-tool>
   <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active="{{audioon}}" tooltip="Audio mute"></ui-toggle-tool>
-  <ui-command-tool icon="fa-comments" command="chatbar" tooltip="Text chat"></ui-command-tool>
+  <ui-command-tool icon="fa-comments" command="chatbar" tooltip="Text chat">
+    <div class="ui label red count-{{chatCount}}">{{chatCount}}</div>
+  </ui-command-tool>
   </ui-toolbar>
   <div class="calls">
     <div class="notices">
@@ -43,7 +45,7 @@
     </template>
   </div>
   </ui-mainbar>
-  <ui-sidebar id="chatbar" class="ui floating right">
+  <ui-sidebar id="chatbar" class="ui floating right hide">
   <chat-box id="chat"></chat-box>
   </ui-sidebar>
 </template>

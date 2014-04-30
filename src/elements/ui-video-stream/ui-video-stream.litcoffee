@@ -10,6 +10,8 @@ Mute the local audio output to avoid feedback.
 
     _ = require('lodash')
     require('../elementmixin.litcoffee')
+    audioContext = require('../../scripts/web-audio.litcoffee').getContext()
+
 
     Polymer 'ui-video-stream',
 
@@ -62,7 +64,26 @@ that trigger by presence, so we can hit them with the ?
           @$.snapshot.classList.add 'mirror'
         if @stream
           @$.video.src = URL.createObjectURL(@stream)
+
+
+We'll try manipulating the audio stream here rather than on the ui-video-call
+
+          remoteStream = audioContext.createMediaStreamSource(@stream)
+
+          console.log "Stream source from", remoteStream, @stream
+          @lowPassFilter = audioContext.createBiquadFilter()
+          @lowPassFilter.type = @lowPassFilter.LOWPASS
+          @lowPassFilter.frequency.value = 10
+
+Connect the nodes to create the filtered audio 
+
+          remoteStream.connect(@lowPassFilter)
+          @lowPassFilter.connect(audioContext.destination)
+
           @$.video.play()
+
+
+          #@$.video.muted = true
           @$.loading.hide()
           @takeSnapshot()
         else
