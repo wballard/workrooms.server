@@ -24,7 +24,7 @@ A string that is all about who you are.
     _ = require 'lodash'
     bowser = require 'bowser'
     SignallingServer = require '../../scripts/signalling-server.litcoffee'
-    getScreenMedia = require 'getScreenMedia'
+    getScreenMedia = require 'getscreenmedia'
 
     Polymer 'conference-room',
 
