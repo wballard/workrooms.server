@@ -11,7 +11,6 @@ build script and watch for changes.
     plumber = require 'gulp-plumber'
     shell = require 'gulp-shell'
     hash = require 'gulp-hashmap'
-    debug = require 'gulp-debug'
     es = require 'event-stream'
 
 All of the semi status stuff, don't bother to rebuild as often

@@ -45,8 +45,7 @@
     "gulp-hashmap": "0.0.2",
     "bowser": "~0.7.1",
     "nodemon": "~1.0.17",
-    "getscreenmedia": "git+https://github.com/wballard/getScreenMedia.git",
-    "gulp-debug": "~0.3.0"
+    "getscreenmedia": "git+https://github.com/wballard/getScreenMedia.git"
   },
   "scripts": {
     "install": "bin/install",
