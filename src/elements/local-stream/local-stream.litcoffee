@@ -22,8 +22,8 @@ Fires when a stream is available, also after then `stream` property is set.
         mediaConstraints =
           video:
             mandatory:
-              maxWidth: 640
-              maxHeight: 480
+              maxWidth: 320
+              maxHeight: 240
           audio: @hasAttribute('audio')
         getUserMedia mediaConstraints, (err, stream) =>
           if err
