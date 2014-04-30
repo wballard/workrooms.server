@@ -16,6 +16,8 @@ Bad stuff. Fires.
 Fires when a stream is available, also after then `stream` property is set.
 
     getUserMedia = require('getusermedia')
+    audioContext = require('../../scripts/web-audio.litcoffee').getContext()
+
 
     Polymer 'local-stream',
       attached: ->
@@ -30,3 +32,31 @@ Fires when a stream is available, also after then `stream` property is set.
             @fire 'error', err
           else
             @stream = stream
+
+We'll try manipulating the audio stream here rather than on the ui-video-call
+
+            streamSource = audioContext.createMediaStreamSource(@stream)
+
+            @lowPassFilter = audioContext.createBiquadFilter()
+            @lowPassFilter.type = @lowPassFilter.LOWPASS
+            @lowPassFilter.frequency.value = 1000
+
+            @highPassFilter = audioContext.createBiquadFilter()
+            @highPassFilter.type = @lowPassFilter.HIGHPASS
+            @highPassFilter.frequency.value = 30
+
+            gainNode = audioContext.createGain()
+
+For now expose these to the debug console, TODO: remove later
+
+            window._highPass = @highPassFilter
+            window._gain = gainNode
+            window._lowPass = @lowPassFilter
+
+Connect the nodes to create the filtered audio 
+            
+            streamSource.connect gainNode
+            gainNode.connect @highPassFilter
+            @highPassFilter.connect @lowPassFilter
+            @lowPassFilter.connect(audioContext.destination)
+
