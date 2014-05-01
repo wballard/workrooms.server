@@ -100,10 +100,12 @@ The default task leaves a hash file to support hot reloading.
 
     gulp.task 'build', ['vulcanize'], ->
       gulp.src 'build/index.html'
+        .pipe concat 'build/all'
         .pipe hash 'hashmap.json'
         .pipe gulp.dest 'build'
 
     gulp.task 'dev', ['elements', 'pages', 'assets'], ->
       gulp.src 'src/**/*.*'
+        .pipe concat 'build/all'
         .pipe hash 'hashmap.json'
         .pipe gulp.dest 'build'

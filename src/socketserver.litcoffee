@@ -142,11 +142,13 @@ is double checking if a call already exists.
             outboundcall =
               id: uuid.v1()
               outbound: true
+              screenshare: detail.screenshare
               fromclientid: socket.clientid
               toclientid: tosocket.clientid
             inboundcall =
               id: uuid.v1()
               inbound: true
+              screenshare: detail.screenshare
               fromclientid: socket.clientid
               toclientid: tosocket.clientid
             socket.signal 'outboundcall', outboundcall
