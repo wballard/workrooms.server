@@ -19,13 +19,14 @@ All of the semi status stuff, don't bother to rebuild as often
 
 Sweep up static assest from all over.
 
-      gulp.src '**/*.*', {cwd: 'src/images'}
+      gulp.src '**/*.{svg,png}', cwd: 'src'
+        .pipe flatten()
         .pipe gulp.dest 'build/images'
 
       gulp.src '**/*.*', {cwd: 'src/media'}
         .pipe gulp.dest 'build/media'
-
-      gulp.src '**/images/*.*', {cwd: 'bower_components'}
+      
+      gulp.src '**/*.{svg,png}', cwd: 'bower_components'
         .pipe flatten()
         .pipe gulp.dest 'build/bower_components/images'
 
@@ -102,6 +103,7 @@ The default task leaves a hash file to support hot reloading.
         .pipe hash 'hashmap.json'
         .pipe gulp.dest 'build'
 
-    gulp.task 'watch', ['elements', 'pages','assets'], ->
-      gulp.watch 'src/**/*.*', ['elements', 'pages','assets']
-
+    gulp.task 'dev', ['elements', 'pages', 'assets'], ->
+      gulp.src 'src/**/*.*'
+        .pipe hash 'hashmap.json'
+        .pipe gulp.dest 'build'

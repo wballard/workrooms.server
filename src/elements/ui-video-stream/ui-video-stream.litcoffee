@@ -23,6 +23,12 @@ Mute the local audio output to avoid feedback.
           @takeSnapshot() if @video
         , 3000
 
+
+      attached: ->
+
+        if !@hasAttribute('selfie') and !document.querySelector('conference-room').focused
+          audio.playSound '/media/startup.ogg'
+
 Cool. Static snapshots to use when the video is muted. This gets defined when
 the video plays.
 
@@ -56,20 +62,18 @@ that trigger by presence, so we can hit them with the ?
             @$.snapshot.showAnimated()
 
       streamChanged: ->
+
         if @hasAttribute('selfie')
-          @$.video.setAttribute('muted', '')
-        else
-          @$.video.removeAttribute('muted')
+          @$.video.setAttribute 'muted', ''
 
         if @hasAttribute('mirror')
           @$.video.classList.add 'mirror'
           @$.snapshot.classList.add 'mirror'
+        
         if @stream
           @$.video.src = URL.createObjectURL(@stream)
-          @$.video.muted = true
           @$.video.play()
 
-          audio.playSound '/media/chime_low_g.ogg' unless @hasAttribute('selfie')
           @$.loading.hide()
           @takeSnapshot()
         else

@@ -22,3 +22,9 @@ Main page script. Not particularly interesting as everything is an element.
 
     window.addEventListener 'hashchange', ->
       document.querySelector('conference-room').room = window.location.hash
+
+    window.addEventListener 'focus', ->
+        document.querySelector('conference-room').focused = true
+
+    window.addEventListener 'blur', ->
+        document.querySelector('conference-room').focused = false

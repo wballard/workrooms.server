@@ -23,7 +23,8 @@ A string that is all about who you are.
     uuid = require 'node-uuid'
     _ = require 'lodash'
     bowser = require 'bowser'
-    SignallingServer = require('../../scripts/signalling-server.litcoffee')
+    SignallingServer = require '../../scripts/signalling-server.litcoffee'
+    getScreenMedia = require 'getscreenmedia'
 
     Polymer 'conference-room',
 
@@ -31,11 +32,15 @@ A string that is all about who you are.
         @signallingServer.send 'register',
           room: @room
 
-      call: (clientid) ->
+      call: (clientid, screenshare) ->
         if clientid
           message =
             to: clientid
+            screenshare: screenshare?
           @signallingServer.send 'call', message
+
+      screenshare: (clientid) ->
+        @call clientid, true
 
       attached: ->
         if bowser.browser.chrome
@@ -46,6 +51,7 @@ A string that is all about who you are.
         @serverconfig = null
         @calls = []
         @chatCount = 0
+        @focused = true
         @root = "#{document.location.origin}#{document.location.pathname}"
         if @root.slice(0,3) isnt 'https'
           window.location = "https#{@root.slice(4)}#{document.location.hash or ''}"
@@ -93,10 +99,15 @@ Show and hide the selfie -- this really needs to be data bound instead.
 
 Sidebars, are you even allowed to have an application without one any more?
 
-        @addEventListener 'chatbar', =>
+         @addEventListener 'chatbar', =>
           @$.chatbar.toggle()
           @chatCount = 0 if @$.chatbar.visible
 
+Screensharing, this asks for a screen to share and adds it to the room.
+
+        @addEventListener 'screenshare', =>
+          getScreenMedia (err, screen) =>
+            console.log 'screen', err, screen
 ##Call Tracking
 
 Keeps track of all your calls, and forwards them to all connected call

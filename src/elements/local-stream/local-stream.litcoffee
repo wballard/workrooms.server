@@ -24,44 +24,11 @@ Fires when a stream is available, also after then `stream` property is set.
         mediaConstraints =
           video:
             mandatory:
-              maxWidth: 640
-              maxHeight: 480
+              maxWidth: 320
+              maxHeight: 240
           audio: @hasAttribute('audio')
         getUserMedia mediaConstraints, (err, stream) =>
           if err
             @fire 'error', err
           else
             @stream = stream
-
-We'll try manipulating the audio stream here rather than on the ui-video-call
-
-            streamSource = audioContext.createMediaStreamSource(@stream)
-
-            @lowPassFilter = audioContext.createBiquadFilter()
-            @lowPassFilter.type = @lowPassFilter.LOWPASS
-            @lowPassFilter.frequency.value = 1000
-
-            @highPassFilter = audioContext.createBiquadFilter()
-            @highPassFilter.type = @lowPassFilter.HIGHPASS
-            @highPassFilter.frequency.value = 30
-
-            gainNode = audioContext.createGain()
-
-For now expose these to the debug console, TODO: remove later
-
-            window._lowPass = @lowPassFilter
-            window._highPass = @highPassFilter
-            window._gain = gainNode
-            
-            window._setFrequencyFilters = (low=30,high=1000) ->
-              window._lowPass.frequency.value = high
-              window._highPass.frequency.value = low
-
-
-Connect the nodes to create the filtered audio 
-            
-            streamSource.connect gainNode
-            gainNode.connect @highPassFilter
-            @highPassFilter.connect @lowPassFilter
-            @lowPassFilter.connect(audioContext.destination)
-
