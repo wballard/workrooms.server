@@ -3,18 +3,28 @@
 @import "../../less/variables";
 @import "../../less/grid";
 
-.tile.video {
+.tile {
   background-color: @tileBackgroundColor;
   border-radius: @borderRadius;
   margin: @margin;
   border: 1px solid;
   border-color: darken(@tileBackgroundColor, 2%);
   flex: 1;
+  box-sizing: border-box;
+}
+
+.tile.video {
   min-height: 20%;
-  max-height: 100%;
+  max-height: 50%;
   min-width: 20%;
   max-width: 50%;
-  box-sizing: border-box;
+}
+
+.tile.screen {
+  min-height: 10%;
+  max-height: 20%;
+  min-width: 10%;
+  max-width: 20%;
 }
 
 conference-room {
@@ -26,6 +36,20 @@ conference-room {
     color: #111;
   }
   .calls {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    padding: 1em;
+  }
+  .screens {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: center;
+    padding: 1em;
+  }
+  .notices {
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;

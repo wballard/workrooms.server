@@ -28,9 +28,35 @@ A string that is all about who you are.
 
     Polymer 'conference-room',
 
+##Screen Sharing
+Sharing a screen -- just buffer it so we can data bind for display.
+
+      screenSharing: (screenStream) ->
+        screen =
+          id: screenStream.id
+          fromclientid: @signallingServer.clientid
+          stream: screenStream
+        @sharedscreens.push screen
+
+A screen is fully shared when it has a snapshot ready. So, if it is a local
+screen with an actual stream, send it along so that other room members can know.
+
+      screenShared: (evt) ->
+        screen = evt.detail
+        if screen.stream
+          @signallingServer.send 'screen',
+            id: screen.id
+            fromclientid: screen.fromclientid
+            snapshot: screen.snapshot
+
       roomChanged: ->
         @signallingServer.send 'register',
           room: @room
+
+      localstreamChanged: ->
+        if @localstream
+          console.log 'sharing my video as a fake screen'
+          @screenSharing @localstream
 
       call: (clientid, screenshare) ->
         if clientid
@@ -38,9 +64,6 @@ A string that is all about who you are.
             to: clientid
             screenshare: screenshare?
           @signallingServer.send 'call', message
-
-      screenshare: (clientid) ->
-        @call clientid, true
 
       attached: ->
         if bowser.browser.chrome
@@ -50,21 +73,23 @@ A string that is all about who you are.
         @videoon = true
         @serverconfig = null
         @calls = []
+        @sharedscreens = []
+        ## DEBUG CODE
         @root = "#{document.location.origin}#{document.location.pathname}"
         if @root.slice(0,3) isnt 'https'
           window.location = "https#{@root.slice(4)}#{document.location.hash or ''}"
         if @root.slice(-1) isnt '/'
           @root += '/'
         @signallingServer = new SignallingServer("ws#{@root.slice(4)}")
-        @signallingServer.on 'error', (err) ->
-          console.log err
         @addEventListener 'error', (err) ->
           console.log err
-
 
 ##Setting Up Signalling
 Hello from the server! Now it is time to register this client in order to
 get the rest of the configuration.
+
+        @signallingServer.on 'error', (err) ->
+          console.log err
 
         @signallingServer.on 'hello', =>
           @fire 'hello'
@@ -104,10 +129,14 @@ Sidebars, are you even allowed to have an application without one any more?
 Screensharing, this asks for a screen to share and adds it to the room.
 
         @addEventListener 'screenshare', =>
-          getScreenMedia (err, screen) =>
-            console.log 'screen', err, screen
-##Call Tracking
+          getScreenMedia (err, screenStream) =>
+            if err
+              @fire 'error', err
+            else
+              console.log screenStream
+              @screenSharing screenStream
 
+##Call Tracking
 Keeps track of all your calls, and forwards them to all connected call
 peers in order to support auto-conference.
 
@@ -115,28 +144,39 @@ peers in order to support auto-conference.
           a.fromclientid is b.fromclientid and a.toclientid is b.toclientid
 
         takeCall = (newCall) =>
-          if _.any(@calls, (call) -> callOverlap(call, newCall))
-            console.log 'already connected'
-          else
+          if not _.any(@calls, (call) -> callOverlap(newCall, call))
             newCall.config = @serverConfig
-            console.log 'new call', newCall
             @calls.push newCall
 
         @signallingServer.on 'outboundcall', takeCall
 
         @signallingServer.on 'inboundcall', takeCall
 
+##Room State
 When the room list changes, place calls. This uses a simply bully algorithm
 where the larger client id is in charge of actually making the call.
 
         @signallingServer.on 'roomlist', (clientids) =>
           for clientid in clientids
-            console.log 'call?', clientid
             if clientid < @signallingServer.clientid
-              console.log 'call!', clientid
               @call clientid
           _.remove @calls, (call) ->
             call.fromclientid not in clientids or call.toclientid not in clientids
+
+When the room screens change, track the screens locally in the room. No call
+is made, these just put thumbnails of a screen in other peers rooms, while
+in your own screen you have the original with the actual stream object that
+witll be shared peer-to-peer.
+
+        @signallingServer.on 'roomscreens', (screens) =>
+          screens.forEach (screen) =>
+            existing =  _.find(@sharedscreens, (s) -> s.id is screen.id)
+            if existing
+              existing.snapshot = screen.snapshot
+            else
+              @sharedscreens.push screen
+          ids = _.object _.pluck(screens, 'id'), _.pluck(screens, 'id')
+          removed = _.remove @sharedscreens, (screen) -> not ids[screen.id] and not screen.stream
 
 ##Call Signal Processing
 

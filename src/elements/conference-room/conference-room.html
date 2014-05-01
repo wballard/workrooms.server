@@ -1,8 +1,10 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../local-stream/local-stream.html">
+<link rel="import" href="../ui-video-stream/ui-video-stream.html">
 <link rel="import" href="../ui-video-stream/audio-control.html">
 <link rel="import" href="../ui-video-stream/video-control.html">
 <link rel="import" href="../ui-video-call/ui-video-call.html">
+<link rel="import" href="../ui-shared-screen/ui-shared-screen.html">
 <link rel="import" href="../ui-toolbar/ui-toolbar.html">
 <link rel="import" href="../ui-sidebar/ui-sidebar.html">
 <link rel="import" href="../ui-input/ui-input.html">
@@ -10,7 +12,7 @@
 <link rel="import" href="../chat-box/build/chat-box.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 
-<polymer-element name="conference-room" attributes="room localstream calls nametag audioon videoon serverconfig root signallingServer">
+<polymer-element name="conference-room" attributes="room localstream calls sharedscreens nametag audioon videoon serverconfig root signallingServer">
 <template>
   <video-control stream="{{localstream}}"></video-control>
   <audio-control stream="{{localstream}}"></audio-control>
@@ -25,16 +27,16 @@
   <section class="ui right">
   </section>
   </ui-toolbar>
-  <div class="calls">
-    <div class="notices">
-      <div id="chromeonly" class="ui icon signin message">
-        <i class="ui icon fa fa-hand-o-right fa-4x"></i>
-        <div class="content">
-          <div class="header">Need Some Chrome</div>
-          <p>Sorry -- this version only runs in Chrome browsers</p>
-        </div>
+  <div class="notices">
+    <div id="chromeonly" class="ui icon signin message">
+      <i class="ui icon fa fa-hand-o-right fa-4x"></i>
+      <div class="content">
+        <div class="header">Need Some Chrome</div>
+        <p>Sorry -- this version only runs in Chrome browsers</p>
       </div>
     </div>
+  </div>
+  <div class="calls">
     <ui-video-stream id="selfie" class="ui tile video" stream="{{localstream}}" selfie mirror></ui-video-stream>
     <template id="calls" repeat="{{call in calls}}">
       <ui-video-call class="ui tile video" id="A{{call.id}}" call="{{call}}"
@@ -43,6 +45,13 @@
       fromclientid="{{call.fromclientid}}" toclientid="{{call.toclientid}}">
       <ui-video-stream stream="{{call.remotestream}}" audio="{{call.remoteaudio}}" video="{{call.remotevideo}}"></ui-video-stream>
       </ui-video-call>
+    </template>
+  </div>
+  <div class="screens" on-screenshared="{{screenShared}}">
+    <template id="screens" repeat="{{screen in sharedscreens}}">
+      <ui-shared-screen class="ui tile screen" screen="{{screen}}">
+      <ui-video-stream stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true"></ui-video-stream>
+      </ui-shared-screen>
     </template>
   </div>
   </ui-mainbar>

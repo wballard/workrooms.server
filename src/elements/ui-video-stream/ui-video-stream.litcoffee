@@ -6,7 +6,14 @@ Show a video stream with user interface.
 ##mirror
 ##selfie
 Mute the local audio output to avoid feedback.
+##snapshot
+Encoded snapshot as a data-url, allowing easy text transport.
 ##stream
+Live video stream will be played.
+
+#Events
+##snapshot
+Fired when a fresh snapshot is taken.
 
     _ = require('lodash')
     require('../elementmixin.litcoffee')
@@ -16,9 +23,6 @@ Mute the local audio output to avoid feedback.
       ready: ->
         @$.snapshot.hide()
         @$.sourcemutedaudio.hide()
-        setInterval =>
-          @takeSnapshot() if @video
-        , 3000
 
 Cool. Static snapshots to use when the video is muted. This gets defined when
 the video plays.
@@ -31,12 +35,11 @@ the video plays.
         try
           ctx = @$.takesnapshot.getContext('2d')
           ctx.drawImage(@$.video, 0, 0, width, height)
-          @$.snapshot.setAttribute('src', @$.takesnapshot.toDataURL('image/png'))
+          @snapshot = @$.takesnapshot.toDataURL('image/png')
         catch error
           console.log error, width, height
 
-Looking for attributes to mute. This is a neat trick as these are attributes
-that trigger by presence, so we can hit them with the ?
+Looking for attributes to mute.
 
       audioChanged: ->
         if @audio
@@ -45,12 +48,25 @@ that trigger by presence, so we can hit them with the ?
           @$.sourcemutedaudio.show()
 
       videoChanged: ->
-        if @video
+        if @video and @stream
           @$.snapshot.hideAnimated =>
             @$.video.showAnimated()
         else
           @$.video.hideAnimated =>
             @$.snapshot.showAnimated()
+
+Show the snapshot in the image viewer, and if there is no stream, which will
+happen on preview tiles such as screenshares, then go ahead and display.
+
+      snapshotChanged: ->
+        @$.snapshot.setAttribute 'src', @snapshot
+        @fire 'snapshot'
+        if not @stream
+          @$.video.hideAnimated =>
+            @$.snapshot.showAnimated()
+
+Play the video stream. This mutes local audio if it is a `selfie`, otherwise
+the feedback would be brutal. Mirroing is available too.
 
       streamChanged: ->
         if @hasAttribute('selfie')
@@ -64,7 +80,7 @@ that trigger by presence, so we can hit them with the ?
           @$.video.src = URL.createObjectURL(@stream)
           @$.video.play()
           @$.loading.hide()
-          @takeSnapshot()
+          setTimeout @takeSnapshot.bind(@), 3000
         else
           @$.video.src = ''
           @$.loading.show()
