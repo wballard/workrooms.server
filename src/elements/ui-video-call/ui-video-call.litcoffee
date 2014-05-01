@@ -1,7 +1,6 @@
 Base video call, don't use this tag directly instead this is a
 bit of a base element to extend.
 
-
 #Events
 ##ice
 A NAT traversal message for WebRTC, sent to peers via signalling

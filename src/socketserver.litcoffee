@@ -22,6 +22,7 @@ Bad news straight to the console
 Sockety goodness, here are all the event handlers on a per socket basis.
 
       wss.on 'connection', (socket) ->
+        socket.screens = {}
 
 Signal -- send a message back to the connected client, this patches a method
 directly on to the socket that follows our type/detail protocol that makes
@@ -48,6 +49,13 @@ to call or disconnect.
                 _(rooms[socket.room])
                   .values()
                   .map (s) -> s.clientid
+                  .value()
+              peerSocket.signal 'roomscreens',
+                _(rooms[socket.room])
+                  .values()
+                  .map (s) -> s.screens
+                  .map (s) -> _.values(s)
+                  .flatten()
                   .value()
             catch err
               console.log "#{err}".red
@@ -142,13 +150,11 @@ is double checking if a call already exists.
             outboundcall =
               id: uuid.v1()
               outbound: true
-              screenshare: detail.screenshare
               fromclientid: socket.clientid
               toclientid: tosocket.clientid
             inboundcall =
               id: uuid.v1()
               inbound: true
-              screenshare: detail.screenshare
               fromclientid: socket.clientid
               toclientid: tosocket.clientid
             socket.signal 'outboundcall', outboundcall
@@ -158,6 +164,14 @@ is double checking if a call already exists.
           hashes = yaml.safeLoad(fs.readFileSync(path.join(__dirname, '..', 'build', 'hashmap.json'), 'utf8'))
           hashes.nolog = true
           socket.signal 'pong', hashes
+
+Handle incoming shared screens. These get registered into the room, but are removed
+when the socket goes away, so they aren't as sticky as calls, so we put them
+on the client.
+
+        socket.on 'screen', (screen) ->
+          socket.screens[screen.id] = screen
+          roomChanged()
 
 Close removes the socket from tracking, but make sure to only remove yourself.
 
