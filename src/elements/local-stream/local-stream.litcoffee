@@ -49,9 +49,14 @@ We'll try manipulating the audio stream here rather than on the ui-video-call
 
 For now expose these to the debug console, TODO: remove later
 
+            window._lowPass = @lowPassFilter
             window._highPass = @highPassFilter
             window._gain = gainNode
-            window._lowPass = @lowPassFilter
+            
+            window._setFrequencyFilters = (low=30,high=1000) ->
+              window._lowPass.frequency.value = high
+              window._highPass.frequency.value = low
+
 
 Connect the nodes to create the filtered audio 
             

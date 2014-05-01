@@ -10,7 +10,8 @@ Mute the local audio output to avoid feedback.
 
     _ = require('lodash')
     require('../elementmixin.litcoffee')
-    audioContext = require('../../scripts/web-audio.litcoffee').getContext()
+    audio = require('../../scripts/web-audio.litcoffee')
+    audioContext = audio.getContext()
 
 
     Polymer 'ui-video-stream',
@@ -59,16 +60,16 @@ that trigger by presence, so we can hit them with the ?
           @$.video.setAttribute('muted', '')
         else
           @$.video.removeAttribute('muted')
+
         if @hasAttribute('mirror')
           @$.video.classList.add 'mirror'
           @$.snapshot.classList.add 'mirror'
         if @stream
           @$.video.src = URL.createObjectURL(@stream)
-
           @$.video.muted = true
-          
           @$.video.play()
 
+          audio.playSound '/media/chime_low_g.ogg' unless @hasAttribute('selfie')
           @$.loading.hide()
           @takeSnapshot()
         else
