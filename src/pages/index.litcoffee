@@ -14,10 +14,10 @@ Main page script. Not particularly interesting as everything is an element.
       document.querySelector('conference-room').showAnimated()
 
     document.addEventListener 'pong', (evt) ->
-      if version and evt?.detail?['index.html'] isnt version
+      if version and evt?.detail?['all'] isnt version
         window.location.reload()
       else
-        version = evt.detail['index.html']
+        version = evt.detail['all']
         console.log 'version', version
 
     window.addEventListener 'hashchange', ->
