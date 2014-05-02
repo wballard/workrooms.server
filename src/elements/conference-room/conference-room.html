@@ -9,6 +9,7 @@
 <link rel="import" href="../ui-sidebar/ui-sidebar.html">
 <link rel="import" href="../ui-input/ui-input.html">
 <link rel="import" href="../ui-hide/ui-hide.html">
+<link rel="import" href="../ui-overlays/ui-overlay-command.html">
 <link rel="import" href="../chat-box/build/chat-box.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 
@@ -52,8 +53,16 @@
   <div class="screens" on-screenshared="{{screenShared}}">
     <template id="screens" repeat="{{screen in sharedscreens}}">
       <ui-shared-screen class="ui tile screen" screen="{{screen}}">
-      <ui-video-stream stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true"></ui-video-stream>
+      <template if="{{screen.stream}}">
+        <ui-overlay-command icon="fa-times-circle-o" command="unsharescreen" detail="{{screen}}">
+        <ui-video-stream stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true"></ui-video-stream>
+      </template>
+      <template if="{{!screen.stream}}">
+        <ui-overlay-command icon="fa-desktop" command="connectscreen" detail="{{screen}}">
+        <ui-video-stream stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true"></ui-video-stream>
+      </template>
       </ui-shared-screen>
+      </ui-overlay-command>
     </template>
   </div>
   </ui-mainbar>
