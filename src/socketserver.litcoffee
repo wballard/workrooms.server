@@ -172,6 +172,9 @@ on the client.
         socket.on 'screen', (screen) ->
           socket.screens[screen.id] = screen
           roomChanged()
+        socket.on 'deletescreen', (screen) ->
+          delete socket.screens[screen.id]
+          roomChanged()
 
 Close removes the socket from tracking, but make sure to only remove yourself.
 
