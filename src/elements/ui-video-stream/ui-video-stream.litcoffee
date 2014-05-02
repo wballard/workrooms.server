@@ -23,7 +23,6 @@ Mute the local audio output to avoid feedback.
           @takeSnapshot() if @video
         , 3000
 
-
       attached: ->
 
         if !@hasAttribute('selfie') and !document.querySelector('conference-room').focused

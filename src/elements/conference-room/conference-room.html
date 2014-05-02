@@ -17,10 +17,10 @@
   <local-stream id="local" audio video stream="{{localstream}}"></local-stream>
   <ui-mainbar>
   <ui-toolbar>
-  <ui-toggle-tool icon="fa-eye" togglechanged="selfie" tooltip="Video selfie" hotkey="s"></ui-toggle-tool>
-  <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active="{{videoon}}" tooltip="Video mute" hotkey="v"></ui-toggle-tool>
-  <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active="{{audioon}}" tooltip="Audio mute" hotkey="32"></ui-toggle-tool>
-  <ui-toggle-tool icon="fa-comments" togglechanged="chatbar" tooltip="Text chat" hotkey="13">
+  <ui-toggle-tool icon="fa-eye" togglechanged="selfie" tooltip="Video selfie (s)" hotkey="s"></ui-toggle-tool>
+  <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active="{{videoon}}" tooltip="Video mute (v)" hotkey="v"></ui-toggle-tool>
+  <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active="{{audioon}}" tooltip="Audio mute (spacebar)" hotkey="32"></ui-toggle-tool>
+  <ui-toggle-tool icon="fa-comments" togglechanged="chatbar" tooltip="Text chat (enter)" hotkey="13">
     <div class="ui label red count-{{chatCount}}">{{chatCount}}</div>
   </ui-toggle-tool>
   <section class="ui right">
