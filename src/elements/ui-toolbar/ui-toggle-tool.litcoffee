@@ -20,6 +20,15 @@ This fires a dynamic event based on `togglechanged`. Will fire a
         @addEventListener 'click', =>
           @active = not @active
         @activeChanged()
+        document.addEventListener 'keydown', (e) =>
+          return unless @hotkey
+          
+          key = if isNaN(@hotkey) then String.fromCharCode(e.keyCode).toLowerCase() else e.keyCode.toString()
+          activeElem = document.activeElement.tagName.toLowerCase()
+
+          if key is @hotkey and activeElem != 'textarea' and activeElem != 'input'
+            @active = not @active
+
       activeChanged: ->
         if @active
           @fire "#{@togglechanged}.on"

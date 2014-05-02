@@ -99,9 +99,12 @@ Show and hide the selfie -- this really needs to be data bound instead.
 
 Sidebars, are you even allowed to have an application without one any more?
 
-         @addEventListener 'chatbar', =>
-          @$.chatbar.toggle()
-          @chatCount = 0 if @$.chatbar.visible
+         @addEventListener 'chatbar.on', =>
+          @$.chatbar.visible = true
+          @chatCount = 0
+
+        @addEventListener 'chatbar.off', =>
+          @$.chatbar.visible = false
 
 Screensharing, this asks for a screen to share and adds it to the room.
 

@@ -28,6 +28,7 @@ Mute the local audio output to avoid feedback.
 
         if !@hasAttribute('selfie') and !document.querySelector('conference-room').focused
           audio.playSound '/media/startup.ogg'
+          window.focus()
 
 Cool. Static snapshots to use when the video is muted. This gets defined when
 the video plays.

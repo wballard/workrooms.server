@@ -31,4 +31,35 @@ Fires when a stream is available, also after then `stream` property is set.
           if err
             @fire 'error', err
           else
+
+We need to filter the audio to make it a bit more easy on the ears
+so we'll get a MediaStream source that we can manipulate with the Web Audio api
+
+            source = audioContext.createMediaStreamSource(stream)
+            destination = audioContext.createMediaStreamDestination()
+            
+            lowPassFilter = audioContext.createBiquadFilter()
+            lowPassFilter.type = lowPassFilter.LOWPASS
+            lowPassFilter.frequency.value = 250
+            
+            gainFilter = audioContext.createGain()
+
+            source.connect lowPassFilter
+            lowPassFilter.connect destination
+
+Pull the original stream's audio and replace it with the audio from the filtered stream
+
+            console.log "Stream audio tracks originally:", stream.getAudioTracks()[0].id
+
+            #stream.removeTrack(stream.getAudioTracks()[0])
+            #stream.addTrack(destination.stream.getAudioTracks()[0])
+
+            console.log "Stream audio tracks now set up to:", stream.getAudioTracks()[0].id
+
+Some temporary(?) helpers for adjusting the audio filtering properties while we test
+
+            window._audio = 
+              low: lowPassFilter.frequency
+              gain: gainFilter.gain
+
             @stream = stream
