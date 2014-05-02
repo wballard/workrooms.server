@@ -63,7 +63,8 @@ happen on preview tiles such as screenshares, then go ahead and display.
         @fire 'snapshot'
         if not @stream
           @$.video.hideAnimated =>
-            @$.snapshot.showAnimated()
+            @$.loading.hideAnimated =>
+              @$.snapshot.showAnimated()
 
 Play the video stream. This mutes local audio if it is a `selfie`, otherwise
 the feedback would be brutal. Mirroing is available too.
