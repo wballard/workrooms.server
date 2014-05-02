@@ -3,7 +3,7 @@
 
 <polymer-element name="ui-overlay-command" attributes="icon command detail tooltip">
 <template>
-  <i class="overlay fa {{icon}}" on-click="{{clickLink}}"></i>
+  <i id="overlay" class="overlay fa {{icon}}" on-click="{{clickLink}}"></i>
   <content></content>
 </template>
 <script src="../semantic/build/uncompressed/modules/popup.js"></script>

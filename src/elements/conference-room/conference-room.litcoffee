@@ -49,6 +49,10 @@ screen with an actual stream, send it along so that other room members can know.
             fromclientid: screen.fromclientid
             snapshot: screen.snapshot
 
+      screenUnshared: (evt) ->
+        screen = evt.detail
+        _.remove @sharedscreens, (s) -> s.id is screen.id
+
       roomChanged: ->
         @signallingServer.send 'register',
           room: @room

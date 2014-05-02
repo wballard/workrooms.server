@@ -50,15 +50,15 @@
       </ui-video-call>
     </template>
   </div>
-  <div class="screens" on-screenshared="{{screenShared}}">
+  <div class="screens" on-screenshared="{{screenShared}}" on-screenunshared="{{screenUnshared}}">
     <template id="screens" repeat="{{screen in sharedscreens}}">
       <ui-shared-screen class="ui tile screen" screen="{{screen}}">
       <template if="{{screen.stream}}">
-        <ui-overlay-command icon="fa-times-circle-o" command="unsharescreen" detail="{{screen}}">
+        <ui-overlay-command icon="fa-times-circle-o" command="screenunshared" detail="{{screen}}">
         <ui-video-stream stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true"></ui-video-stream>
       </template>
       <template if="{{!screen.stream}}">
-        <ui-overlay-command icon="fa-desktop" command="connectscreen" detail="{{screen}}">
+        <ui-overlay-command icon="fa-desktop" command="screenconnect" detail="{{screen}}">
         <ui-video-stream stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true"></ui-video-stream>
       </template>
       </ui-shared-screen>
