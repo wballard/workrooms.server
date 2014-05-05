@@ -28,12 +28,12 @@ A string that is all about who you are.
 
     Polymer 'conference-room',
 
-##Screen Sharing
+#Screen Sharing
 Sharing a screen -- just buffer it so we can data bind for display.
 
       screenSharing: (screenStream) ->
         screen =
-          id: screenStream.id
+          screenid: screenStream.id
           fromclientid: @signallingServer.clientid
           stream: screenStream
         @sharedscreens.push screen
@@ -45,15 +45,15 @@ screen with an actual stream, send it along so that other room members can know.
         screen = evt.detail
         if screen.stream
           @signallingServer.send 'screen',
-            id: screen.id
+            screenid: screen.screenid
             fromclientid: screen.fromclientid
             snapshot: screen.snapshot
 
       screenUnshared: (evt) ->
         screen = evt.detail
-        _.remove @sharedscreens, (s) -> s.id is screen.id
+        _.remove @sharedscreens, (s) -> s.screenid is screen.screenid
         @signallingServer.send 'deletescreen',
-          id: screen.id
+          id: screen.screenid
 
       roomChanged: ->
         @signallingServer.send 'register',
@@ -64,12 +64,18 @@ screen with an actual stream, send it along so that other room members can know.
           console.log 'sharing my video as a fake screen'
           @screenSharing @localstream
 
-      call: (clientid, screenshare) ->
+#Calling
+Set up a call by signalling to the server. This instructs the server to
+tell each peer to set up inbound and outbound peer calls.
+
+      call: (clientid) ->
         if clientid
-          message =
+          @signallingServer.send 'call',
             to: clientid
-            screenshare: screenshare?
-          @signallingServer.send 'call', message
+
+#Polymer Lifecycle
+Main thing going on here it setting up signalling service, which isn't an
+element, it is just code.
 
       attached: ->
         if bowser.browser.chrome
@@ -86,13 +92,12 @@ screen with an actual stream, send it along so that other room members can know.
           window.location = "https#{@root.slice(4)}#{document.location.hash or ''}"
         if @root.slice(-1) isnt '/'
           @root += '/'
-        @signallingServer = new SignallingServer("ws#{@root.slice(4)}")
-        @addEventListener 'error', (err) ->
-          console.log err
 
 ##Setting Up Signalling
 Hello from the server! Now it is time to register this client in order to
 get the rest of the configuration.
+
+        @signallingServer = new SignallingServer("ws#{@root.slice(4)}")
 
         @signallingServer.on 'error', (err) ->
           console.log err
@@ -176,16 +181,15 @@ witll be shared peer-to-peer.
 
         @signallingServer.on 'roomscreens', (screens) =>
           screens.forEach (screen) =>
-            existing =  _.find(@sharedscreens, (s) -> s.id is screen.id)
+            existing =  _.find(@sharedscreens, (s) -> s.screenid is screen.screenid)
             if existing
               existing.snapshot = screen.snapshot
             else
               @sharedscreens.push screen
-          ids = _.object _.pluck(screens, 'id'), _.pluck(screens, 'id')
-          removed = _.remove @sharedscreens, (screen) -> not ids[screen.id] and not screen.stream
+          ids = _.object _.pluck(screens, 'screenid'), _.pluck(screens, 'screenid')
+          removed = _.remove @sharedscreens, (screen) -> not ids[screen.screenid] and not screen.stream
 
 ##Call Signal Processing
-
 Relay signalling server messages into the calls.
 
         @addEventListener 'ice', (evt) =>
@@ -209,11 +213,8 @@ Relay signalling server messages into the calls.
 
         @addEventListener 'call', (evt) =>
           @call evt.detail.to
-        window.debugFailCall = =>
-          @call 'fail'
 
 ##Chat
-
 Hook up chat message processing, most important thing is to attach your local
 user identity to messages as they are posted. This will send messages as they
 are posted to the connected WebRTC calls on the page so everyone gets a chat.

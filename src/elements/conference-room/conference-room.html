@@ -43,7 +43,7 @@
       <ui-video-call class="ui tile video" id="A{{call.id}}" call="{{call}}"
       localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}"
       remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}"
-      fromclientid="{{call.fromclientid}}" toclientid="{{call.toclientid}}">
+      fromclientid="{{call.fromclientid}}" toclientid="{{call.toclientid}}" callid="{{call.callid}}">
       <ui-video-stream stream="{{call.remotestream}}" audio="{{call.remoteaudio}}" video="{{call.remotevideo}}"></ui-video-stream>
       </ui-video-call>
     </template>
@@ -56,7 +56,7 @@
         <ui-video-stream stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true"></ui-video-stream>
       </template>
       <template if="{{!screen.stream}}">
-        <ui-overlay-command icon="fa-desktop" command="screenconnect" detail="{{screen}}" href="screen#{{screen.fromclientid}}/{{screen.id}}">
+        <ui-overlay-command icon="fa-desktop" command="screenconnect" detail="{{screen}}" href="screen#{{screen.fromclientid}}/{{screen.screenid}}">
         <ui-video-stream stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true"></ui-video-stream>
       </template>
       </ui-shared-screen>
