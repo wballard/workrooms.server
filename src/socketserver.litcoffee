@@ -32,7 +32,7 @@ WebSocket messages essentially the same as DOM events.
           message =
             type: type
             detail: detail or {}
-          console.log '<-'.green, yaml.safeDump(message), '\n---'.green
+          console.log '<-'.green, yaml.safeDump(message), '\n---'.green unless detail?.nolog
           message = JSON.stringify(message)
           socket.send message, (err) ->
             if err
@@ -60,7 +60,6 @@ to call or disconnect.
             catch err
               console.log "#{err}".red
 
-
 Send a hello on a connection, this tells the client to get going.
 
         socket.signal 'hello'
@@ -72,8 +71,7 @@ in charge of setting up the `clientid` on to socket, but not registering in
         socket.on 'message', (req) ->
           try
             message = JSON.parse(req)
-            return if message.ping #logging pings will drive you mad
-            console.log '->'.blue, yaml.safeDump(message), '\n---'.blue
+            console.log '->'.blue, yaml.safeDump(message), '\n---'.blue unless message?.detail?.nolog
             socket.clientid = message.clientid
             socket.emit message.type, message.detail
           catch error
@@ -132,33 +130,28 @@ This has a special case for debugging if you call 'fail' which sets up an
 outbound call to nobody to test failing RTC negotiation.
 
 Calls are made 'from' a caller 'to' a callee. The caller is will set up
-an 'outboundcall', the callee will set up an 'inboundcall'. Part of this setup
-is double checking if a call already exists.
+an 'outboundcall', the callee will set up an 'inboundcall'.
 
         socket.on 'call', (detail) ->
-
-          if detail.to is 'fail'
-            outboundcall =
-              outbound: true
-              toclientid: 'fail'
-              fromclientid: 'fail'
-            socket.signal 'outboundcall', outboundcall
-
           tosocket = sockets[detail.to]
+          callid = uuid.v1()
           if tosocket
             console.log "connecting #{socket.clientid} to #{tosocket.clientid}".blue
             outboundcall =
-              id: uuid.v1()
               outbound: true
+              callid: callid
               fromclientid: socket.clientid
               toclientid: tosocket.clientid
             inboundcall =
-              id: uuid.v1()
               inbound: true
+              callid: callid
               fromclientid: socket.clientid
               toclientid: tosocket.clientid
             socket.signal 'outboundcall', outboundcall
             tosocket.signal 'inboundcall', inboundcall
+
+Ping handling comes back with a version hash, allowing clients to know when they
+are out of date.
 
         socket.on 'ping', ->
           hashes = yaml.safeLoad(fs.readFileSync(path.join(__dirname, '..', 'build', 'hashmap.json'), 'utf8'))
@@ -170,11 +163,14 @@ when the socket goes away, so they aren't as sticky as calls, so we put them
 on the client.
 
         socket.on 'screen', (screen) ->
-          socket.screens[screen.id] = screen
+          socket.screens[screen.screenid] = screen
           roomChanged()
         socket.on 'deletescreen', (screen) ->
-          delete socket.screens[screen.id]
+          delete socket.screens[screen.screenid]
           roomChanged()
+
+Handle a connection to a shared screen. This is a bit different than a `call` as
+it pulls the screen, asking the sharer to start the outbound side.
 
 Close removes the socket from tracking, but make sure to only remove yourself.
 
