@@ -26,12 +26,15 @@ Fired when a fresh snapshot is taken.
       ready: ->
         @$.snapshot.hide()
         @$.sourcemutedaudio.hide()
+<<<<<<< HEAD
 
       attached: ->
 
         if !@hasAttribute('selfie') and !document.querySelector('conference-room').focused
           audio.playSound 'media/startup.ogg'
           window.focus()
+=======
+>>>>>>> 07d0962d2bf9a332eb2a8403a56a85c16ab79c21
 
 Cool. Static snapshots to use when the video is muted. This gets defined when
 the video plays.
