@@ -36,6 +36,7 @@ Sharing a screen -- just buffer it so we can data bind for display.
           screenid: screenStream.id
           fromclientid: @signallingServer.clientid
           stream: screenStream
+          shares: []
         @sharedscreens.push screen
 
 A screen is fully shared when it has a snapshot ready. So, if it is a local
@@ -115,12 +116,6 @@ protect -- or really to be able to switch -- ids for OAuth and STUN/TURN.
 
         @signallingServer.on 'pong', (hashes) =>
           @fire 'pong', hashes
-
-And sometimes you just have to let go.
-
-        @signallingServer.on 'disconnect', =>
-          @signallingServer.close()
-          @signallingServer = null
 
 ##Toolbar Buttons
 

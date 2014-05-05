@@ -84,10 +84,7 @@ means you can clear out your local storage on any client and get a different
 identifier, providing for privacy.
 
 This is a problem if two clients allocate the same identifier, so clients need
-to protect users by creating a nice big random string that is hard to guess. If
-this happens, which is easy enough to do by opening two tabs, a disconnect
-message is sent, which should be honored by the previous client tab to close
-off. This way the most recent tab ends up being the live one.
+to protect users by creating a nice big random string that is hard to guess.
 
 Rooms are simply a hash of sockets in the room. This lets you send messages
 along to just the members of the room easily, since every socket is marked
