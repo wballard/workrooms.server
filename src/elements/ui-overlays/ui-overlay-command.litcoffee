@@ -29,6 +29,8 @@ This fires a dynamic event based on `command`.
       clickLink: (evt) ->
         if @command
           @fire @command, @detail
+        if not @href?.length
+          evt.preventDefault()
       tooltipChanged: ->
         $(@$.tool).popup
           inline: true
