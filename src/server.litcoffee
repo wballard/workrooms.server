@@ -23,7 +23,9 @@ Config me!
 Static service of the single page app, with WebSockets.
 
     app = express()
-    app.use(express.static("#{__dirname}/../build"))
+    app.use(express.static(path.join __dirname, "../build"))
+    app.get '/screen', (req, res, next) ->
+      res.sendfile path.join __dirname, '../build/screen.html'
 
 HTTP + WS service, this will be proxied with HTTPS live for production.
 
