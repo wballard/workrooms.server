@@ -58,7 +58,7 @@
         <ui-video-stream stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true"></ui-video-stream>
       </template>
       <template if="{{!screen.stream}}">
-        <ui-overlay-command icon="fa-desktop" command="screenconnect" detail="{{screen}}">
+        <ui-overlay-command icon="fa-desktop" command="screenconnect" detail="{{screen}}" href="screen#{{screen.fromclientid}}/{{screen.id}}">
         <ui-video-stream stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true"></ui-video-stream>
       </template>
       </ui-shared-screen>

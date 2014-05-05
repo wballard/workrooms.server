@@ -1,9 +1,9 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="stylesheet" type="text/css" href="./ui-overlays.css">
 
-<polymer-element name="ui-overlay-command" attributes="icon command detail tooltip">
+<polymer-element name="ui-overlay-command" attributes="icon command detail href tooltip">
 <template>
-  <i id="overlay" class="overlay fa {{icon}}" on-click="{{clickLink}}"></i>
+  <a id="overlay" class="overlay fa {{icon}}" href="{{href}}" target="_blank" on-click="{{clickLink}}"></a>
   <content></content>
 </template>
 <script src="../semantic/build/uncompressed/modules/popup.js"></script>
