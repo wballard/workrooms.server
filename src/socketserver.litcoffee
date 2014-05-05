@@ -172,6 +172,23 @@ on the client.
 Handle a connection to a shared screen. This is a bit different than a `call` as
 it pulls the screen, asking the sharer to start the outbound side.
 
+        socket.on 'callscreen', (detail) ->
+          fromsocket = sockets[detail.fromclientid]
+          if fromsocket
+            console.log "connecting #{socket.clientid} to #{fromsocket.clientid} screen #{detail.screenid}".blue
+            outboundcall =
+              outbound: true
+              screenid: detail.screenid
+              fromclientid: fromsocket.clientid
+              toclientid: socket.clientid
+            inboundcall =
+              inbound: true
+              screenid: detail.screenid
+              fromclientid: fromsocket.clientid
+              toclientid: socket.clientid
+            fromsocket.signal 'outboundscreen', outboundcall
+            socket.signal 'inboundscreen', inboundcall
+
 Close removes the socket from tracking, but make sure to only remove yourself.
 
         socket.on 'close', ->
