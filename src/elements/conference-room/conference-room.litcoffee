@@ -33,8 +33,9 @@ A string that is all about who you are.
         window.location.hash = "/" + _.str.dasherize @$.roomSelector.value?.toLowerCase()
         
       roomChanged: _.debounce ->
-        @signallingServer.send 'register',
-          room: @room   
+        if @roomLabel.length > 2
+          @signallingServer.send 'register',
+            room: @room   
       , 500
 
       call: (clientid, screenshare) ->
@@ -72,14 +73,11 @@ A string that is all about who you are.
 
 
 ##Setting Up Signalling
-Hello from the server! Now it is time to register this client in order to
-get the rest of the configuration.
+Hello from the server! The roomChanged event handler will hook the rest of the registration
 
         @signallingServer.on 'hello', =>
           @fire 'hello'
-          if @roomLabel?.length >= 2
-            @signallingServer.send 'register',
-              room: @room
+          
 
 After we have registered, the server sends along a configuration, this is to
 protect -- or really to be able to switch -- ids for OAuth and STUN/TURN.
