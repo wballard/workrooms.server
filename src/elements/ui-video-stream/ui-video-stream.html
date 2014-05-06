@@ -1,13 +1,8 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="stylesheet" type="text/css" href="./ui-video-stream.css">
 
-<polymer-element name="ui-video-stream" attributes="audio selfie mirror stream snapshot">
+<polymer-element name="ui-video-stream" attributes="selfie mirror stream snapshot">
 <template>
-  <span id="sourcemutedaudio" class="like ui corner label">
-    <i class="icon">
-      <i class="fa fa-microphone-slash"></i>
-    </i>
-  </span>
   <img id="loading" src="images/loading-bars.svg" alt="Loading icon" />
   <canvas id="takesnapshot"></canvas>
   <video id="video"></video>

@@ -1,9 +1,8 @@
 Show a video stream with user interface.
 
 #Attributes
-##audio
-##video
 ##mirror
+Backward video. Looks like a mirror.
 ##selfie
 Mute the local audio output to avoid feedback.
 ##snapshot
@@ -25,7 +24,6 @@ Fired when a fresh snapshot is taken.
 Startup audio to let you know a call is coming in.
 
       attached: ->
-        @$.sourcemutedaudio.hide()
         if !@hasAttribute('selfie')
           audio.playSound 'media/startup.ogg'
           window.focus()
@@ -43,14 +41,6 @@ Cool. Static snapshots to use when the video is muted.
           @snapshot = @$.takesnapshot.toDataURL('image/png')
         catch error
           console.log error, width, height
-
-Looking for attributes to mute.
-
-      audioChanged: ->
-        if @audio
-          @$.sourcemutedaudio.hide()
-        else
-          @$.sourcemutedaudio.show()
 
       snapshotChanged: (oldValue, newValue) ->
         if newValue isnt oldValue
