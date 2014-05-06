@@ -60,8 +60,6 @@ to seeing themselves in a mirror -- backwards.
         if @stream
           @$.video.src = URL.createObjectURL(@stream)
           @$.video.play()
-          @$.loading.hideAnimated()
           setTimeout @takeSnapshot.bind(@), 1000
         else
           @$.video.src = ''
-          @$.loading.showAnimated()
