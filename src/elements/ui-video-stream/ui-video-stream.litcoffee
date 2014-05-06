@@ -20,7 +20,6 @@ Fired when a fresh snapshot is taken.
     audio = require('../../scripts/web-audio.litcoffee')
     audioContext = audio.getContext()
 
-
     Polymer 'ui-video-stream',
 
 Startup audio to let you know a call is coming in.
@@ -53,32 +52,8 @@ Looking for attributes to mute.
         else
           @$.sourcemutedaudio.show()
 
-This one gets a bit tricky, first off -- the muted effect only applies
-if there was ever a video stream. Past that, this toggles whether the 
-video or the snapshot is 'undercover', which is fiddling absolute positioning
-and then fading away.
-
-      videoChanged: ->
-        if @video and @stream
-          @$.loading.hideAnimated =>
-            @$.snapshot.classList.add 'undercover'
-            @$.video.classList.remove 'undercover'
-        else
-          @$.snapshot.src = @snapshot
-          if @stream
-            @$.snapshot.classList.add 'muted'
-          else
-            @$.snapshot.classList.remove 'muted'
-          @$.loading.hideAnimated =>
-            @$.snapshot.classList.remove 'undercover'
-            @$.video.classList.add 'undercover'
-
-Show the snapshot in the image viewer, and if there is no stream, which will
-happen on preview tiles such as screenshares, then go ahead and display.
-
       snapshotChanged: (oldValue, newValue) ->
         if newValue isnt oldValue
-          @$.snapshot.src = @snapshot
           @fire 'snapshot', @snapshot
 
 Play the video stream. This mutes local audio if it is a `selfie`, otherwise
@@ -91,7 +66,6 @@ to seeing themselves in a mirror -- backwards.
 
         if @hasAttribute('mirror')
           @$.video.classList.add 'mirror'
-          @$.snapshot.classList.add 'mirror'
 
         if @stream
           @$.video.src = URL.createObjectURL(@stream)

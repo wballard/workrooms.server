@@ -1,0 +1,10 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="stylesheet" type="text/css" href="./ui-overlays.css">
+
+<polymer-element name="ui-overlay-image" attributes="image muted visible">
+<template>
+  <img id="overlay" class="overlay {{ {muted: muted} | tokenList }}" src="{{image}}"></a>
+  <content></content>
+</template>
+<script src="./ui-overlay-image.js"></script>
+</polymer-element>

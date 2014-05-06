@@ -2,9 +2,12 @@
 @import '../../../bower_components/semantic/build/less/modules/popup.less';
 @import "../../less/variables";
 
-ui-overlay-command {
+ui-overlay-command, ui-overlay-image {
   display: block;
   position: relative;
+  .muted {
+    -webkit-filter: grayscale(90%);
+  }
   .overlay {
     box-sizing: border-box;
     position: absolute;
@@ -13,9 +16,12 @@ ui-overlay-command {
     width: 100%;
     height: 100%;
     text-align: center;
+    z-index: 100;
+  }
+  .command {
     color: rgba(255, 255, 255, @nearlyOpaque);
     background-color: rgba(0, 0, 0, @faded);
-    z-index: 100;
+    z-index: 101;
     opacity: 0;
     transition: opacity @transition;
     &:hover {
