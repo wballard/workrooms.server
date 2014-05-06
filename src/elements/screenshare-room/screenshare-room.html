@@ -3,13 +3,13 @@
 <link rel="import" href="../ui-video-stream/ui-video-stream.html">
 <link rel="stylesheet" type="text/css" href="./screenshare-room.css">
 
-<polymer-element name="screenshare-room" attributes="screenLink screen">
+<polymer-element name="screenshare-room" attributes="screenLink screen size">
 <template>
   <template if="{{screen}}">
     <ui-video-call class="ui full video" call="{{screen}}"
     localaudio="true" localvideo="true" autoconnect
     remotestream="{{screen.remotestream}}" remoteaudio="{{screen.remoteaudio}}" remotevideo="{{screen.remotevideo}}">
-    <ui-video-stream stream="{{screen.remotestream}}" audio="{{screen.remoteaudio}}" video="{{screen.remotevideo}}"></ui-video-stream>
+    <ui-video-stream id="screenPlayer" stream="{{screen.remotestream}}" audio="{{screen.remoteaudio}}" video="{{screen.remotevideo}}" videoSize="{{size}}"></ui-video-stream>
     </ui-video-call>
   </template>
 </template>

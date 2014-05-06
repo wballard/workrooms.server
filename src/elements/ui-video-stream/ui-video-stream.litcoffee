@@ -13,10 +13,14 @@ Live video stream will be played.
 #Events
 ##snapshot
 Fired when a fresh snapshot is taken.
+##sized
+Fired when the video is sized. Use this to control zoom levels to prevent
+pixellation.
 
-    _ = require('lodash')
-    require('../elementmixin.litcoffee')
-    audio = require('../../scripts/web-audio.litcoffee')
+    _ = require 'lodash'
+    bonzo = require 'bonzo'
+    require '../elementmixin.litcoffee'
+    audio = require '../../scripts/web-audio.litcoffee'
     audioContext = audio.getContext()
 
     Polymer 'ui-video-stream',
@@ -27,6 +31,19 @@ Startup audio to let you know a call is coming in.
         if !@hasAttribute('selfie')
           audio.playSound 'media/startup.ogg'
           window.focus()
+
+Snapshot on play.
+
+        @$.video.addEventListener 'canplay', =>
+          console.log 'playme'
+          @takeSnapshot()
+          bonzo(@$.video).css(
+            'max-height': "#{@$.video.videoHeight}px"
+            'max-width': "#{@$.video.videoWidth}px"
+          )
+          @videoSize =
+            width: @$.video.videoWidth
+            height: @$.video.videoHeight
 
 Cool. Static snapshots to use when the video is muted.
 
@@ -60,6 +77,5 @@ to seeing themselves in a mirror -- backwards.
         if @stream
           @$.video.src = URL.createObjectURL(@stream)
           @$.video.play()
-          setTimeout @takeSnapshot.bind(@), 1000
         else
           @$.video.src = ''
