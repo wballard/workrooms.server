@@ -23,13 +23,10 @@ Fired when a fresh snapshot is taken.
 
     Polymer 'ui-video-stream',
 
-      ready: ->
-        @$.snapshot.hide()
-        @$.sourcemutedaudio.hide()
-
 Startup audio to let you know a call is coming in.
 
       attached: ->
+        @$.sourcemutedaudio.hide()
         if !@hasAttribute('selfie')
           audio.playSound 'media/startup.ogg'
           window.focus()
@@ -56,24 +53,33 @@ Looking for attributes to mute.
         else
           @$.sourcemutedaudio.show()
 
+This one gets a bit tricky, first off -- the muted effect only applies
+if there was ever a video stream. Past that, this toggles whether the 
+video or the snapshot is 'undercover', which is fiddling absolute positioning
+and then fading away.
+
       videoChanged: ->
         if @video and @stream
-          @$.snapshot.hideAnimated =>
-            @$.video.showAnimated()
+          @$.loading.hideAnimated =>
+            @$.snapshot.classList.add 'undercover'
+            @$.video.classList.remove 'undercover'
         else
-          @$.video.hideAnimated =>
-            @$.snapshot.showAnimated()
+          @$.snapshot.src = @snapshot
+          if @stream
+            @$.snapshot.classList.add 'muted'
+          else
+            @$.snapshot.classList.remove 'muted'
+          @$.loading.hideAnimated =>
+            @$.snapshot.classList.remove 'undercover'
+            @$.video.classList.add 'undercover'
 
 Show the snapshot in the image viewer, and if there is no stream, which will
 happen on preview tiles such as screenshares, then go ahead and display.
 
-      snapshotChanged: ->
-        @$.snapshot.src = @snapshot
-        @fire 'snapshot'
-        if not @stream
-          @$.video.hideAnimated =>
-            @$.loading.hideAnimated =>
-              @$.snapshot.showAnimated()
+      snapshotChanged: (oldValue, newValue) ->
+        if newValue isnt oldValue
+          @$.snapshot.src = @snapshot
+          @fire 'snapshot', @snapshot
 
 Play the video stream. This mutes local audio if it is a `selfie`, otherwise
 the feedback would be brutal. Mirroing is available too, folks are used
@@ -90,8 +96,8 @@ to seeing themselves in a mirror -- backwards.
         if @stream
           @$.video.src = URL.createObjectURL(@stream)
           @$.video.play()
-          @$.loading.hide()
+          @$.loading.hideAnimated()
           setTimeout @takeSnapshot.bind(@), 1000
         else
           @$.video.src = ''
-          @$.loading.show()
+          @$.loading.showAnimated()

@@ -184,6 +184,9 @@ off at the source when muted.
           @reconnectSemaphore = 0
           @remoteaudio = evt.detail.localaudio
           @remotevideo = evt.detail.localvideo
+          if @remotevideo
+            _.each @querySelectorAll('ui-video-stream'), (s) ->
+              s.takeSnapshot()
 
 When the element is removed from the DOM -- really hung up, there is no need
 to reconnect any more.

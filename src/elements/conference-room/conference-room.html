@@ -44,7 +44,7 @@
       <ui-video-call class="ui tile video" call="{{call}}"
       localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}"
       remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}">
-      <ui-video-stream stream="{{call.remotestream}}" audio="{{call.remoteaudio}}" video="{{call.remotevideo}}" focused="{{focused}}"></ui-video-stream>
+      <ui-video-stream stream="{{call.remotestream}}" snapshot="{{call.snapshot}}" audio="{{call.remoteaudio}}" video="{{call.remotevideo}}"></ui-video-stream>
       </ui-video-call>
     </template>
   </div>
@@ -57,12 +57,12 @@
         <template repeat="{{share in screen.shares}}">
           <ui-video-call class="hide" call="{{share}}"
           localstream="{{screen.stream}}" localaudio="true" localvideo="true"
-          remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}">
+          remotestream="{{screen.remotestream}}" remoteaudio="{{screen.remoteaudio}}" remotevideo="{{screen.remotevideo}}">
         </template>
       </template>
       <template if="{{!screen.stream}}">
         <ui-overlay-command icon="fa-desktop" command="screenconnect" detail="{{screen}}" href="screen#{{screen.fromclientid}}/{{screen.screenid}}">
-        <ui-video-stream stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true"></ui-video-stream>
+        <ui-video-stream stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="false"></ui-video-stream>
       </template>
       </ui-shared-screen>
       </ui-overlay-command>

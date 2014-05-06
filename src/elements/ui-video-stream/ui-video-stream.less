@@ -22,11 +22,6 @@ ui-video-stream {
   .mirror {
     -webkit-transform: scaleX(-1);
   }
-  img {
-    display: block;
-    width: 100%;
-    height: 100%;
-  }
   .muted {
     -webkit-filter: grayscale(90%);
   }
@@ -35,16 +30,36 @@ ui-video-stream {
     width: 100%;
     height: 100%;
   }
-  canvas {
+  #takesnapshot {
     display: none;
+  }
+  #loading {
+    .cover;
+    opacity: @nearlyOpaque;
+  }
+  #snapshot {
+    display: block;
     width: 100%;
     height: 100%;
   }
-  #loading {
+  .cover {
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     position: absolute;
     margin: 0;
-    opacity: @nearlyOpaque;
+    opacity: 1.0;
+    transition: opacity @transition;
+  }
+  .undercover {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    margin: 0;
+    opacity: 0;
+    transition: opacity @transition;
   }
 }
