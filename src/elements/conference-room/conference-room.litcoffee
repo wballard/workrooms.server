@@ -14,8 +14,6 @@ This is your local video/audio data stream.
 ##calls
 Array of all active calls metadata. These aren't calls themselves, just
 identifiers used to data bind and generate `ui-video-call` elements.
-##serverconfig
-The server literally sends the config back to the client on a connect.
 ##nametag
 A string that is all about who you are.
 
@@ -54,7 +52,7 @@ screen with an actual stream, send it along so that other room members can know.
         screen = evt.detail
         _.remove @sharedscreens, (s) -> s.screenid is screen.screenid
         @signallingServer.send 'deletescreen',
-          id: screen.screenid
+          screenid: screen.screenid
 
       roomChanged: ->
         @signallingServer.send 'register',
@@ -109,12 +107,6 @@ get the rest of the configuration.
           @signallingServer.send 'register',
             room: @room
 
-After we have registered, the server sends along a configuration, this is to
-protect -- or really to be able to switch -- ids for OAuth and STUN/TURN.
-
-        @signallingServer.on 'configured', (config) =>
-          @serverConfig = config
-
         @signallingServer.on 'pong', (hashes) =>
           @fire 'pong', hashes
 
@@ -155,7 +147,6 @@ peers in order to support auto-conference.
 
         takeCall = (newCall) =>
           if not _.any(@calls, (call) -> callOverlap(newCall, call))
-            newCall.config = @serverConfig
             @calls.push newCall
 
         @signallingServer.on 'outboundcall', takeCall
@@ -188,6 +179,16 @@ witll be shared peer-to-peer.
           ids = _.object _.pluck(screens, 'screenid'), _.pluck(screens, 'screenid')
           removed = _.remove @sharedscreens, (screen) -> not ids[screen.screenid] and not screen.stream
 
+##Screen Call Tracking
+Screen request for this peer to push a screen.
+
+        @signallingServer.on 'outboundscreen', (newScreen) =>
+          _(@sharedscreens)
+            .select (s) -> s.screenid is newScreen.screenid
+            .each (s) ->
+              if not _.any(s.shares, (screen) -> callOverlap(newScreen, screen))
+                s.shares.push newScreen
+
 ##Call Signal Processing
 Relay signalling server messages into the calls.
 
@@ -209,9 +210,6 @@ Relay signalling server messages into the calls.
         @signallingServer.on 'answer', (detail) =>
           _.each @shadowRoot.querySelectorAll('ui-video-call'), (call) ->
             call.processAnswer detail
-
-        @addEventListener 'call', (evt) =>
-          @call evt.detail.to
 
 ##Chat
 Hook up chat message processing, most important thing is to attach your local

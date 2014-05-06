@@ -14,17 +14,13 @@ Main page script. Not particularly interesting as everything is an element.
       document.querySelector('conference-room').showAnimated()
 
     document.addEventListener 'pong', (evt) ->
-      if version and evt?.detail?['all'] isnt version
-        window.location.reload()
-      else
-        version = evt.detail['all']
-        console.log 'version', version
+      version = evt.detail['all']
 
     window.addEventListener 'hashchange', ->
       document.querySelector('conference-room').room = window.location.hash
 
     window.addEventListener 'focus', ->
-        document.querySelector('conference-room').focused = true
+      document.querySelector('conference-room').focused = true
 
     window.addEventListener 'blur', ->
-        document.querySelector('conference-room').focused = false
+      document.querySelector('conference-room').focused = false

@@ -28,8 +28,7 @@ as the custom event detail.
             try
               message = JSON.parse(evt.data)
               if message.type
-                unless message.detail.nolog
-                  console.log('<--', message.type, message.detail)
+                console.log('<--', message.type, message.detail) unless message?.detail?.nolog
                 @emit message.type, message.detail
             catch err
               @emit 'error', err
@@ -46,18 +45,9 @@ Send and event structured `type` and `detail` message along to the
 server.
 
         send: (type, detail) ->
-          unless detail.nolog
-            console.log('-->', type, detail)
+          console.log('-->', type, detail) unless detail?.nolog
           @socket?.send JSON.stringify(
             type: type
             detail: detail
             clientid: @clientid
           )
-
-Pipe a `name` message from `this` to `target`.
-
-        pipe: (name, target) ->
-          @on name, (detail) ->
-            console.log 'piping', name, target
-            target.send name, detail
-

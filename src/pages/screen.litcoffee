@@ -8,10 +8,10 @@ Main page script. Not particularly interesting as everything is an element.
 
     document.addEventListener 'hello', ->
       document.querySelector('#loading').hideAnimated()
-      document.querySelector('screenshare-room').screen =
+      document.querySelector('screenshare-room').screenLink =
         window.location.hash
       document.querySelector('screenshare-room').showAnimated()
 
     window.addEventListener 'hashchange', ->
-      document.querySelector('screenshare-room').screen =
+      document.querySelector('screenshare-room').screenLink =
         window.location.hash

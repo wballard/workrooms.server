@@ -1,19 +1,20 @@
 Screenshare 'room' fills up the entire tab with screen sharing.
 
     SignallingServer = require '../../scripts/signalling-server.litcoffee'
+    _ = require 'lodash'
 
     Polymer 'screenshare-room',
 
 #Attributes
-##screen
-The screen is an encoded `client/screen` pair.
+##screenLink
+The screen is an encoded `client/screen` pair. When it changes, go to the 
+server to signal inbound and outbound call pairs.
 
-      screenChanged: ->
-        console.log @screen
+      screenLinkChanged: ->
         @signallingServer.send 'callscreen',
-          fromclientid: @screen.split('/')[0].slice(1)
+          fromclientid: @screenLink.split('/')[0].slice(1)
           toclientid: @signallingServer.clientid
-          screenid: @screen.split('/')[1]
+          screenid: @screenLink.split('/')[1]
 
 #Polymer Lifecycle
 Main thing going on here it setting up signalling service, which isn't an
@@ -35,5 +36,35 @@ get the rest of the configuration.
         @signallingServer.on 'error', (err) ->
           console.log err
 
+Register without a room. This allows RTC signalling to flow.
+
         @signallingServer.on 'hello', =>
           @fire 'hello'
+          @signallingServer.send 'register',
+
+This view has only the one screen, it is a full screen tab.
+
+        @signallingServer.on 'inboundscreen', (screen) =>
+          @screen = screen
+
+##Call Signal Processing
+Relay signalling server messages into the calls.
+
+        @addEventListener 'ice', (evt) =>
+          evt.detail.nolog = true
+          @signallingServer.send 'ice', evt.detail
+        @signallingServer.on 'ice', (detail) =>
+          _.each @shadowRoot.querySelectorAll('ui-video-call'), (call) ->
+            call.processIce detail
+
+        @addEventListener 'offer', (evt) =>
+          @signallingServer.send 'offer', evt.detail
+        @signallingServer.on 'offer', (detail) =>
+          _.each @shadowRoot.querySelectorAll('ui-video-call'), (call) ->
+            call.processOffer detail
+
+        @addEventListener 'answer', (evt) =>
+          @signallingServer.send 'answer', evt.detail
+        @signallingServer.on 'answer', (detail) =>
+          _.each @shadowRoot.querySelectorAll('ui-video-call'), (call) ->
+            call.processAnswer detail

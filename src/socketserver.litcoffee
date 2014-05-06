@@ -10,6 +10,9 @@ socket server.
 Track running sockets to get a sense of all sessions.
 
     sockets = {}
+
+All rooms, made up by users on the fly.
+
     rooms = {}
 
     module.exports = (wss, config) ->
@@ -22,6 +25,10 @@ Bad news straight to the console
 Sockety goodness, here are all the event handlers on a per socket basis.
 
       wss.on 'connection', (socket) ->
+
+Track all the screens pushed from this socket. So, when a socket disconnects,
+the screens all go with it.
+
         socket.screens = {}
 
 Signal -- send a message back to the connected client, this patches a method
@@ -60,9 +67,6 @@ to call or disconnect.
             catch err
               console.log "#{err}".red
 
-Send a hello on a connection, this tells the client to get going.
-
-        socket.signal 'hello'
 
 Translate messages into events allowing declarative event handling. This is
 in charge of setting up the `clientid` on to socket, but not registering in
@@ -93,16 +97,13 @@ be in one room. For sure!
 
         socket.on 'register', (user) ->
           sockets[socket.clientid] = socket
-          delete rooms?[socket.room]?[socket.clientid]
-          roomChanged()
-          socket.room = user.room
-          rooms[socket.room] ?= {}
-          rooms[socket.room][socket.clientid] = socket
-
-Provide configuration to the client.
-
-          socket.signal 'configured', config
-          roomChanged()
+          if user.room
+            delete rooms?[socket.room]?[socket.clientid]
+            roomChanged()
+            socket.room = user.room
+            rooms[socket.room] ?= {}
+            rooms[socket.room][socket.clientid] = socket
+            roomChanged()
 
 Send WebRTC negotiation along to all peers and let them process it, this will
 reflect ice back to the sender, this allows self-calling for testing.
@@ -139,11 +140,13 @@ an 'outboundcall', the callee will set up an 'inboundcall'.
               callid: callid
               fromclientid: socket.clientid
               toclientid: tosocket.clientid
+              config: config
             inboundcall =
               inbound: true
               callid: callid
               fromclientid: socket.clientid
               toclientid: tosocket.clientid
+              config: config
             socket.signal 'outboundcall', outboundcall
             tosocket.signal 'inboundcall', inboundcall
 
@@ -178,11 +181,13 @@ it pulls the screen, asking the sharer to start the outbound side.
               screenid: detail.screenid
               fromclientid: fromsocket.clientid
               toclientid: socket.clientid
+              config: config
             inboundcall =
               inbound: true
               screenid: detail.screenid
               fromclientid: fromsocket.clientid
               toclientid: socket.clientid
+              config: config
             fromsocket.signal 'outboundscreen', outboundcall
             socket.signal 'inboundscreen', inboundcall
 
@@ -196,3 +201,7 @@ Close removes the socket from tracking, but make sure to only remove yourself.
               roomChanged()
           catch error
             console.error "#{error}".red
+
+All set up!  Send a hello on a connection, this tells the client to get going.
+
+        socket.signal 'hello'
