@@ -22,15 +22,20 @@ A string that is all about who you are.
     require '../elementmixin.litcoffee'
     uuid = require 'node-uuid'
     _ = require 'lodash'
+    _.str = require 'underscore.string'
     bowser = require 'bowser'
     SignallingServer = require '../../scripts/signalling-server.litcoffee'
     getScreenMedia = require 'getscreenmedia'
 
     Polymer 'conference-room',
 
-      roomChanged: ->
+      roomSelectorKeypressed: -> 
+        window.location.hash = "/" + _.str.dasherize @$.roomSelector.value?.toLowerCase()
+        
+      roomChanged: _.debounce ->
         @signallingServer.send 'register',
-          room: @room
+          room: @room   
+      , 500
 
       call: (clientid, screenshare) ->
         if clientid
@@ -52,6 +57,8 @@ A string that is all about who you are.
         @calls = []
         @chatCount = 0
         @focused = true
+        @roomLabel = _.str.humanize window.location.hash?.replace('#/', '')
+
         @root = "#{document.location.origin}#{document.location.pathname}"
         if @root.slice(0,3) isnt 'https'
           window.location = "https#{@root.slice(4)}#{document.location.hash or ''}"
@@ -70,8 +77,9 @@ get the rest of the configuration.
 
         @signallingServer.on 'hello', =>
           @fire 'hello'
-          @signallingServer.send 'register',
-            room: @room
+          if @roomLabel?.length >= 2
+            @signallingServer.send 'register',
+              room: @room
 
 After we have registered, the server sends along a configuration, this is to
 protect -- or really to be able to switch -- ids for OAuth and STUN/TURN.

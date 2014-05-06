@@ -26,8 +26,10 @@ This fires a dynamic event based on `togglechanged`. Will fire a
           key = if isNaN(@hotkey) then String.fromCharCode(e.keyCode).toLowerCase() else e.keyCode.toString()
           activeElem = document.activeElement.tagName.toLowerCase()
 
-          if key is @hotkey and activeElem != 'textarea' and activeElem != 'input'
+          if key is @hotkey and ( e.altKey or ( activeElem != 'textarea' and activeElem != 'input' ) )
             @active = not @active
+            e.preventDefault?()
+            e.stopPropagation?()
 
       activeChanged: ->
         if @active

@@ -67,6 +67,61 @@ conference-room {
       text-decoration: underline;
     }
   }
+
+  .room-selector {
+    display:none;
+    position: initial;
+  }
+
+  .room-selector.full {
+    display:block;
+    margin: 60px 15% 0;
+    
+    p {
+      font-size: 1.5em;
+    } 
+    .ui.form label {
+      display:none;
+    }
+
+    .circular.checkmark.icon {
+      -webkit-transition: opacity .5s;
+      opacity: 1 !important;
+      &.hidden {
+        opacity: 0 !important;
+      }
+    }
+  }
+
+  .room-selector.mini {
+    display:block;
+    position:absolute;
+    right: 10px;
+    left: auto;
+    top: 0;
+    width: 200px;
+    margin:0;
+    text-align: right;
+
+    p {
+      display:none;
+    }
+    .ui.form label {
+      display:inline;
+      font-size: .4em;
+    }
+    .ui.form input {
+      font-size: .4em;
+      padding: .3em .66em;
+      color: #ddd;
+      background: rgba(0,0,0,.25);
+      width: 120px;
+    }
+    .checkmark.icon {
+      display:none;
+    }
+
+  }
 }
 
 inbound-video-call, outbound-video-call {

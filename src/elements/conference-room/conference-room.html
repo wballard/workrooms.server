@@ -46,6 +46,37 @@
       </ui-video-call>
     </template>
   </div>
+
+
+
+  <div class="ui container room-selector {{ { full: (!calls || calls.length === 0), mini: calls.length > 0 } | tokenList }}">
+    <div class="ui inverted">
+      <div class="content">
+        <div class="ui large form inverted">
+          <div class="ui field">
+            <div class="ui massive icon input">
+              <label>Room: &nbsp; </label>
+              <input id="roomSelector" type="text" value="{{roomLabel}}" on-keyup="{{roomSelectorKeypressed}}" placeholder="Enter a workroom name to create/join" />
+              <i class="circular green checkmark icon {{ { hidden: roomLabel.length < 2 } | tokenList }}"></i>
+            </div>
+          </div>
+        </div>
+
+        <template if="{{ !(roomLabel && roomLabel.length >= 2) }}">
+          <p>
+            Welcome to workrooms, choose a room to start collaborating.  If the room doesn't already exist, we'll create it for you so others can join you.
+          </p>
+        </template>
+        <template if="{{roomLabel && roomLabel.length >= 2}}">
+          <p>
+            This room is currently empty, just waiting for others to show up.  You should probably share this url anyone you want to join.
+          </p>
+        </template>
+      </div>
+    </div>
+  </div>
+
+
   </ui-mainbar>
   <ui-sidebar id="chatbar" class="ui floating right hide">
   <chat-box id="chat"></chat-box>
