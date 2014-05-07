@@ -142,7 +142,7 @@ Sidebars, are you even allowed to have an application without one any more?
 Screensharing, this asks for a screen to share and adds it to the room.
 
         @addEventListener 'screenshare', =>
-          if document.getElementById('extension-is-installed')
+          if document.getElementById('workrooms-extension-is-installed')
             getScreenMedia (err, screenStream) =>
               if err
                 @fire 'error', err
