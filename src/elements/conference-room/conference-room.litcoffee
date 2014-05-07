@@ -20,6 +20,7 @@ A string that is all about who you are.
     require '../elementmixin.litcoffee'
     uuid = require 'node-uuid'
     _ = require 'lodash'
+    _.str = require 'underscore.string'
     bowser = require 'bowser'
     SignallingServer = require '../../scripts/signalling-server.litcoffee'
     getScreenMedia = require 'getscreenmedia'
@@ -54,14 +55,16 @@ screen with an actual stream, send it along so that other room members can know.
         @signallingServer.send 'deletescreen',
           screenid: screen.screenid
 
-      roomChanged: ->
-        @signallingServer.send 'register',
-          room: @room
+#Room Selection
 
-      localstreamChanged: ->
-        if @localstream
-          console.log 'sharing my video as a fake screen'
-          @screenSharing @localstream
+      roomSelectorKeypressed: ->
+        window.location.hash = "/" + _.str.dasherize @$.roomSelector.value?.toLowerCase()
+
+      roomChanged: _.debounce ->
+        if @roomLabel.length
+          @signallingServer.send 'register',
+            room: @room
+      , 500
 
 #Calling
 Set up a call by signalling to the server. This instructs the server to
@@ -76,9 +79,14 @@ tell each peer to set up inbound and outbound peer calls.
 Main thing going on here it setting up signalling service, which isn't an
 element, it is just code.
 
+      ready: ->
+        @fire 'ready'
+
       attached: ->
         if bowser.browser.chrome
           @$.chromeonly.hide()
+        else
+          @shadowRoot.querySelector('ui-mainbar').hide()
         @nametag = 'Anonymous'
         @audioon = true
         @videoon = true
@@ -87,15 +95,20 @@ element, it is just code.
         @chatCount = 0
         @focused = true
         @sharedscreens = []
+        @roomLabel = _.str.humanize window.location.hash?.replace('#/', '')
         @root = "#{document.location.origin}#{document.location.pathname}"
-        if @root.slice(0,3) isnt 'https'
-          window.location = "https#{@root.slice(4)}#{document.location.hash or ''}"
+        if not @root.match(/^https/i)
+          window.location = "https://#{document.location.host}#{document.location.pathname}#{document.location.hash}"
         if @root.slice(-1) isnt '/'
           @root += '/'
+        @signallingServer = new SignallingServer("ws#{@root.slice(4)}")
+        @signallingServer.on 'error', (err) ->
+          console.log err
+        @addEventListener 'error', (err) ->
+          console.log err
 
 ##Setting Up Signalling
-Hello from the server! Now it is time to register this client in order to
-get the rest of the configuration.
+Hello from the server! The roomChanged event handler will hook the rest of the registration
 
         @signallingServer = new SignallingServer("ws#{@root.slice(4)}")
 
@@ -104,8 +117,6 @@ get the rest of the configuration.
 
         @signallingServer.on 'hello', =>
           @fire 'hello'
-          @signallingServer.send 'register',
-            room: @room
 
         @signallingServer.on 'pong', (hashes) =>
           @fire 'pong', hashes

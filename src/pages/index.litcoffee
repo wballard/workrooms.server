@@ -8,13 +8,16 @@ Main page script. Not particularly interesting as everything is an element.
     domready ->
       document.querySelector('conference-room').hide()
 
-    document.addEventListener 'hello', ->
-      document.querySelector('#loading').hideAnimated()
-      document.querySelector('conference-room').room = window.location.hash
-      document.querySelector('conference-room').showAnimated()
+    document.addEventListener 'ready', ->
+      document.querySelector('#loading').hideAnimated ->
+        document.querySelector('conference-room').room = window.location.hash
+        document.querySelector('conference-room').showAnimated()
 
     document.addEventListener 'pong', (evt) ->
-      version = evt.detail['all']
+      if version and evt?.detail?['index.html'] isnt version
+        window.location.reload()
+      else
+        version = evt.detail['index.html']
 
     window.addEventListener 'hashchange', ->
       document.querySelector('conference-room').room = window.location.hash

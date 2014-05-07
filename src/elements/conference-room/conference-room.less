@@ -56,7 +56,24 @@ conference-room {
     flex-wrap: wrap;
     flex-direction: row;
     justify-content: center;
-    padding: 1em;
+    padding: 2em;
+  }
+  .ui.form.inverted {
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .ui.field {
+      margin: 0;
+    }
+    input {
+      color: @white;
+      background: @black;
+      margin: 0;
+      &:focus {
+        color: @white;
+      }
+    }
   }
   ui-sidebar {
     ul {
@@ -91,6 +108,30 @@ conference-room {
     }
     .action.header {
       text-decoration: underline;
+    }
+  }
+
+  .room-selector {
+    display:none;
+    position: initial;
+  }
+
+  .room-selector.full {
+    display:block;
+    margin: 2em 15% 0;
+    p {
+      font-size: 1.5em;
+    }
+    .ui.form label {
+      display:none;
+    }
+
+    .circular.checkmark.icon {
+      -webkit-transition: opacity .5s;
+      opacity: 1 !important;
+      &.hidden {
+        opacity: 0 !important;
+      }
     }
   }
 }

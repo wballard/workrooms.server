@@ -19,7 +19,19 @@
   <video-control stream="{{localstream}}"></video-control>
   <audio-control stream="{{localstream}}"></audio-control>
   <local-stream id="local" audio video stream="{{localstream}}"></local-stream>
+
+  <section id="chromeonly" class="ui notices">
+    <div class="ui notice icon signin message">
+      <i class="ui icon fa fa-hand-o-right fa-4x"></i>
+      <div class="content">
+        <div class="header">Need Some Chrome</div>
+        <p>Sorry -- this version only runs in Chrome browsers</p>
+      </div>
+    </div>
+  </section>
+
   <ui-mainbar>
+
   <ui-toolbar>
   <ui-toggle-tool icon="fa-eye" togglechanged="selfie" tooltip="Video selfie (s)" hotkey="s"></ui-toggle-tool>
   <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active="{{videoon}}" tooltip="Video mute (v)" hotkey="v"></ui-toggle-tool>
@@ -28,19 +40,44 @@
   <div class="ui label red count-{{chatCount}}">{{chatCount}}</div>
   </ui-toggle-tool>
   <ui-command-tool icon="fa-desktop" command="screenshare" tooltip="Share your screens"></ui-command-tool>
-  <section class="ui right">
-  </section>
-  </ui-toolbar>
-  <div class="notices">
-    <div id="chromeonly" class="ui icon signin message">
-      <i class="ui icon fa fa-hand-o-right fa-4x"></i>
-      <div class="content">
-        <div class="header">Need Some Chrome</div>
-        <p>Sorry -- this version only runs in Chrome browsers</p>
+  <ui-toolbar-pad></ui-toolbar-pad>
+  <section class="ui form inverted">
+    <div class="ui field">
+      <div class="ui input">
+        <input id="miniRoomSelector" type="text" value="{{roomLabel}}" on-keyup="{{roomSelectorKeypressed}}" placeholder="Enter a workroom name" />
       </div>
     </div>
-  </div>
-  <div class="calls">
+  </section>
+  </ui-toolbar>
+
+
+  <section class="ui container room-selector {{ { full: (!calls || calls.length === 0), mini: calls.length > 0 } | tokenList }}">
+    <div class="ui inverted">
+      <div class="content">
+        <div class="ui large form">
+          <div class="ui field">
+            <div class="ui massive icon input">
+              <input id="roomSelector" type="text" value="{{roomLabel}}" on-keyup="{{roomSelectorKeypressed}}" placeholder="Enter a workroom name to create/join" />
+              <i class="circular green checkmark icon {{ { hidden: roomLabel.length < 2 } | tokenList }}"></i>
+            </div>
+          </div>
+        </div>
+        <template if="{{ !(roomLabel && roomLabel.length >= 2) }}">
+          <p>
+            Welcome to workrooms, choose a room to start collaborating.  If the room doesn't already exist, we'll create it for you so others can join you.
+          </p>
+        </template>
+        <template if="{{roomLabel && roomLabel.length >= 2}}">
+          <p>
+            This room is currently empty, just waiting for others to show up.  You should probably share this url anyone you want to join.
+          </p>
+        </template>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="calls">
     <ui-video-stream id="selfie" class="ui tile video" stream="{{localstream}}" selfie mirror></ui-video-stream>
     <template id="calls" repeat="{{call in calls}}">
       <ui-video-call class="ui tile video" call="{{call}}"
@@ -55,8 +92,10 @@
       </ui-overlay-image>
       </ui-video-call>
     </template>
-  </div>
-  <div class="screens" on-screenshared="{{screenShared}}" on-screenunshared="{{screenUnshared}}">
+  </section>
+
+
+  <section class="screens" on-screenshared="{{screenShared}}" on-screenunshared="{{screenUnshared}}">
     <template repeat="{{screen in sharedscreens}}">
       <ui-shared-screen class="ui tile screen" screen="{{screen}}">
       <template if="{{screen.stream}}">
@@ -76,11 +115,17 @@
       </template>
       </ui-shared-screen>
     </template>
-  </div>
+  </section>
+
+
   </ui-mainbar>
+
+
   <ui-sidebar id="chatbar" class="ui floating right hide">
   <chat-box id="chat"></chat-box>
   </ui-sidebar>
+
+
 </template>
 <script src="./conference-room.js"></script>
 </polymer-element>
