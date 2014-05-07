@@ -25,8 +25,8 @@ conference-room {
   chat-box {
     color: #111;
   }
-  .notices {
-    margin: 2em;
+  .ui.notices {
+    padding: 2em;
   }
   .calls {
     display: flex;
@@ -34,6 +34,23 @@ conference-room {
     flex-direction: row;
     justify-content: center;
     padding: 1em;
+  }
+  .ui.form.inverted {
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .ui.field {
+      margin: 0;
+    }
+    input {
+      color: @white;
+      background: @black;
+      margin: 0;
+      &:focus {
+        color: @white;
+      }
+    }
   }
   ui-sidebar {
     ul {
@@ -78,7 +95,7 @@ conference-room {
 
   .room-selector.full {
     display:block;
-    margin: 60px 15% 0;
+    margin: 2em 15% 0;
     p {
       font-size: 1.5em;
     }
@@ -93,36 +110,6 @@ conference-room {
         opacity: 0 !important;
       }
     }
-  }
-
-  .room-selector.mini {
-    display:block;
-    position:absolute;
-    right: 10px;
-    left: auto;
-    top: 0;
-    width: 200px;
-    margin:0;
-    text-align: right;
-
-    p {
-      display:none;
-    }
-    .ui.form label {
-      display:inline;
-      font-size: .4em;
-    }
-    .ui.form input {
-      font-size: .4em;
-      padding: .3em .66em;
-      color: #ddd;
-      background: rgba(0,0,0,.25);
-      width: 120px;
-    }
-    .checkmark.icon {
-      display:none;
-    }
-
   }
 }
 

@@ -20,12 +20,14 @@ This fires a dynamic event based on `togglechanged`. Will fire a
         @addEventListener 'click', =>
           @active = not @active
         @activeChanged()
+
+Handle some hotkeys, this is smart enough to not trap hotkeys when you are in a
+text input as the source, as it should be the case that text aread should key.
+
         document.addEventListener 'keydown', (e) =>
           return unless @hotkey
-          
           key = if isNaN(@hotkey) then String.fromCharCode(e.keyCode).toLowerCase() else e.keyCode.toString()
           activeElem = document.activeElement.tagName.toLowerCase()
-
           if key is @hotkey and ( e.altKey or ( activeElem != 'textarea' and activeElem != 'input' ) )
             @active = not @active
             e.preventDefault?()
@@ -40,6 +42,7 @@ This fires a dynamic event based on `togglechanged`. Will fire a
           @fire "#{@togglechanged}.off"
           @$.tool.classList.remove('active')
           @$.overlay.show()
+
       tooltipChanged: ->
         $(@$.tool).popup
           inline: true

@@ -33,7 +33,7 @@ A string that is all about who you are.
         window.location.hash = "/" + _.str.dasherize @$.roomSelector.value?.toLowerCase()
 
       roomChanged: _.debounce ->
-        if @roomLabel.length > 2
+        if @roomLabel.length
           @signallingServer.send 'register',
             room: @room
       , 500

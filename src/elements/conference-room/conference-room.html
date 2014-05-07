@@ -16,15 +16,15 @@
   <audio-control stream="{{localstream}}"></audio-control>
   <local-stream id="local" audio video stream="{{localstream}}"></local-stream>
 
-  <div class="notices">
-    <div id="chromeonly" class="ui icon signin message">
+  <section id="chromeonly" class="ui notices">
+    <div class="ui notice icon signin message">
       <i class="ui icon fa fa-hand-o-right fa-4x"></i>
       <div class="content">
         <div class="header">Need Some Chrome</div>
         <p>Sorry -- this version only runs in Chrome browsers</p>
       </div>
     </div>
-  </div>
+  </section>
 
   <ui-mainbar>
 
@@ -33,20 +33,25 @@
   <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active="{{videoon}}" tooltip="Video mute (v)" hotkey="v"></ui-toggle-tool>
   <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active="{{audioon}}" tooltip="Audio mute (spacebar)" hotkey="32"></ui-toggle-tool>
   <ui-toggle-tool icon="fa-comments" togglechanged="chatbar" tooltip="Text chat (enter)" hotkey="13">
-    <div class="ui label red count-{{chatCount}}">{{chatCount}}</div>
+  <div class="ui label red count-{{chatCount}}">{{chatCount}}</div>
   </ui-toggle-tool>
-  <section class="ui right">
+  <ui-toolbar-pad></ui-toolbar-pad>
+  <section class="ui form inverted">
+    <div class="ui field">
+      <div class="ui input">
+        <input id="miniRoomSelector" type="text" value="{{roomLabel}}" on-keyup="{{roomSelectorKeypressed}}" placeholder="Enter a workroom name" />
+      </div>
+    </div>
   </section>
   </ui-toolbar>
 
 
-  <div class="ui container room-selector {{ { full: (!calls || calls.length === 0), mini: calls.length > 0 } | tokenList }}">
+  <section class="ui container room-selector {{ { full: (!calls || calls.length === 0), mini: calls.length > 0 } | tokenList }}">
     <div class="ui inverted">
       <div class="content">
-        <div class="ui large form inverted">
+        <div class="ui large form">
           <div class="ui field">
             <div class="ui massive icon input">
-              <label>Room: &nbsp; </label>
               <input id="roomSelector" type="text" value="{{roomLabel}}" on-keyup="{{roomSelectorKeypressed}}" placeholder="Enter a workroom name to create/join" />
               <i class="circular green checkmark icon {{ { hidden: roomLabel.length < 2 } | tokenList }}"></i>
             </div>
@@ -64,12 +69,10 @@
         </template>
       </div>
     </div>
-  </div>
+  </section>
 
 
-
-
-  <div class="calls">
+  <section class="calls">
     <ui-video-stream id="selfie" class="ui tile video" stream="{{localstream}}" selfie mirror></ui-video-stream>
     <template id="calls" repeat="{{call in calls}}">
       <ui-video-call class="ui tile video" id="A{{call.id}}" call="{{call}}"
@@ -79,7 +82,7 @@
       <ui-video-stream stream="{{call.remotestream}}" audio="{{call.remoteaudio}}" video="{{call.remotevideo}}"></ui-video-stream>
       </ui-video-call>
     </template>
-  </div>
+  </section>
 
 
   </ui-mainbar>

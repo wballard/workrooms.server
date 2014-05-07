@@ -6,25 +6,27 @@
 .@{fa-css-prefix}-rotate-135 { .fa-icon-rotate(135deg, 2); }
 
 ui-toolbar {
-  display: block;
+  .ui.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  section {
+    margin-right: 0.5em;
+  }
 }
 
-ui-right-toolbar {
-  display: inline;
+ui-toolbar-pad {
+  display: inline-block;
+  flex: 1;
 }
 
 ui-toggle-tool {
   display: inline-block;
-}
-
-ui-toggle-tool {
-  display: inline-block;
-
   .label.count-0 {
     display:none;
   }
 }
-
 
 .item {
   .fa-stack {
@@ -40,8 +42,4 @@ ui-toggle-tool {
   &:before {
     content:'/';
   }
-}
-
-.ui.right {
-  float: right;
 }
