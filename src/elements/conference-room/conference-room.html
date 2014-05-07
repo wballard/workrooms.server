@@ -15,7 +15,19 @@
   <video-control stream="{{localstream}}"></video-control>
   <audio-control stream="{{localstream}}"></audio-control>
   <local-stream id="local" audio video stream="{{localstream}}"></local-stream>
+
+  <div class="notices">
+    <div id="chromeonly" class="ui icon signin message">
+      <i class="ui icon fa fa-hand-o-right fa-4x"></i>
+      <div class="content">
+        <div class="header">Need Some Chrome</div>
+        <p>Sorry -- this version only runs in Chrome browsers</p>
+      </div>
+    </div>
+  </div>
+
   <ui-mainbar>
+
   <ui-toolbar>
   <ui-toggle-tool icon="fa-eye" togglechanged="selfie" tooltip="Video selfie (s)" hotkey="s"></ui-toggle-tool>
   <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active="{{videoon}}" tooltip="Video mute (v)" hotkey="v"></ui-toggle-tool>
@@ -55,15 +67,6 @@
   </div>
 
 
-  <div class="notices">
-    <div id="chromeonly" class="ui icon signin message">
-      <i class="ui icon fa fa-hand-o-right fa-4x"></i>
-      <div class="content">
-        <div class="header">Need Some Chrome</div>
-        <p>Sorry -- this version only runs in Chrome browsers</p>
-      </div>
-    </div>
-  </div>
 
 
   <div class="calls">

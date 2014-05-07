@@ -8,7 +8,7 @@ Main page script. Not particularly interesting as everything is an element.
     domready ->
       document.querySelector('conference-room').hide()
 
-    document.addEventListener 'hello', ->
+    document.addEventListener 'ready', ->
       document.querySelector('#loading').hideAnimated()
       document.querySelector('conference-room').room = window.location.hash
       document.querySelector('conference-room').showAnimated()

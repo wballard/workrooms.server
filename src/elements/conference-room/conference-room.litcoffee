@@ -48,9 +48,14 @@ A string that is all about who you are.
       screenshare: (clientid) ->
         @call clientid, true
 
+      ready: ->
+        @fire 'ready'
+
       attached: ->
         if bowser.browser.chrome
           @$.chromeonly.hide()
+        else
+          @shadowRoot.querySelector('ui-mainbar').hide()
         @nametag = 'Anonymous'
         @audioon = true
         @videoon = true
