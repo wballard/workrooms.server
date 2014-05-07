@@ -142,12 +142,18 @@ Sidebars, are you even allowed to have an application without one any more?
 Screensharing, this asks for a screen to share and adds it to the room.
 
         @addEventListener 'screenshare', =>
-          getScreenMedia (err, screenStream) =>
-            if err
-              @fire 'error', err
-            else
-              console.log screenStream
-              @screenSharing screenStream
+          if document.getElementById('extension-is-installed')
+            getScreenMedia (err, screenStream) =>
+              if err
+                @fire 'error', err
+              else
+                console.log screenStream
+                @screenSharing screenStream
+          else
+            chrome.webstore.install "https://chrome.google.com/webstore/detail/hndpmcmfdenfebmdoakeeeinlllkhapk", =>
+              @fire 'screenshare'
+            , (err) =>
+              console.log 'extension install failed', err
 
 ##Call Tracking
 Keeps track of all your calls, and forwards them to all connected call
