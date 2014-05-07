@@ -29,13 +29,13 @@ A string that is all about who you are.
 
     Polymer 'conference-room',
 
-      roomSelectorKeypressed: -> 
+      roomSelectorKeypressed: ->
         window.location.hash = "/" + _.str.dasherize @$.roomSelector.value?.toLowerCase()
-        
+
       roomChanged: _.debounce ->
         if @roomLabel.length > 2
           @signallingServer.send 'register',
-            room: @room   
+            room: @room
       , 500
 
       call: (clientid, screenshare) ->
@@ -61,8 +61,8 @@ A string that is all about who you are.
         @roomLabel = _.str.humanize window.location.hash?.replace('#/', '')
 
         @root = "#{document.location.origin}#{document.location.pathname}"
-        if @root.slice(0,3) isnt 'https'
-          window.location = "https#{@root.slice(4)}#{document.location.hash or ''}"
+        if not @root.match(/^https/i)
+          window.location = "https://#{document.location.host}#{document.location.pathname}#{document.location.hash}"
         if @root.slice(-1) isnt '/'
           @root += '/'
         @signallingServer = new SignallingServer("ws#{@root.slice(4)}")
@@ -71,13 +71,11 @@ A string that is all about who you are.
         @addEventListener 'error', (err) ->
           console.log err
 
-
 ##Setting Up Signalling
 Hello from the server! The roomChanged event handler will hook the rest of the registration
 
         @signallingServer.on 'hello', =>
           @fire 'hello'
-          
 
 After we have registered, the server sends along a configuration, this is to
 protect -- or really to be able to switch -- ids for OAuth and STUN/TURN.

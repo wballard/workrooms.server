@@ -26,27 +26,6 @@
   <section class="ui right">
   </section>
   </ui-toolbar>
-  <div class="calls">
-    <div class="notices">
-      <div id="chromeonly" class="ui icon signin message">
-        <i class="ui icon fa fa-hand-o-right fa-4x"></i>
-        <div class="content">
-          <div class="header">Need Some Chrome</div>
-          <p>Sorry -- this version only runs in Chrome browsers</p>
-        </div>
-      </div>
-    </div>
-    <ui-video-stream id="selfie" class="ui tile video" stream="{{localstream}}" selfie mirror></ui-video-stream>
-    <template id="calls" repeat="{{call in calls}}">
-      <ui-video-call class="ui tile video" id="A{{call.id}}" call="{{call}}"
-      localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}"
-      remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}"
-      fromclientid="{{call.fromclientid}}" toclientid="{{call.toclientid}}">
-      <ui-video-stream stream="{{call.remotestream}}" audio="{{call.remoteaudio}}" video="{{call.remotevideo}}"></ui-video-stream>
-      </ui-video-call>
-    </template>
-  </div>
-
 
 
   <div class="ui container room-selector {{ { full: (!calls || calls.length === 0), mini: calls.length > 0 } | tokenList }}">
@@ -61,7 +40,6 @@
             </div>
           </div>
         </div>
-
         <template if="{{ !(roomLabel && roomLabel.length >= 2) }}">
           <p>
             Welcome to workrooms, choose a room to start collaborating.  If the room doesn't already exist, we'll create it for you so others can join you.
@@ -77,10 +55,38 @@
   </div>
 
 
+  <div class="notices">
+    <div id="chromeonly" class="ui icon signin message">
+      <i class="ui icon fa fa-hand-o-right fa-4x"></i>
+      <div class="content">
+        <div class="header">Need Some Chrome</div>
+        <p>Sorry -- this version only runs in Chrome browsers</p>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="calls">
+    <ui-video-stream id="selfie" class="ui tile video" stream="{{localstream}}" selfie mirror></ui-video-stream>
+    <template id="calls" repeat="{{call in calls}}">
+      <ui-video-call class="ui tile video" id="A{{call.id}}" call="{{call}}"
+      localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}"
+      remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}"
+      fromclientid="{{call.fromclientid}}" toclientid="{{call.toclientid}}">
+      <ui-video-stream stream="{{call.remotestream}}" audio="{{call.remoteaudio}}" video="{{call.remotevideo}}"></ui-video-stream>
+      </ui-video-call>
+    </template>
+  </div>
+
+
   </ui-mainbar>
+
+
   <ui-sidebar id="chatbar" class="ui floating right hide">
   <chat-box id="chat"></chat-box>
   </ui-sidebar>
+
+
 </template>
 <script src="./conference-room.js"></script>
 </polymer-element>
