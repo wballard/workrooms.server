@@ -11,7 +11,7 @@
 <link rel="import" href="../ui-overlays/ui-overlay-icon.html">
 <link rel="import" href="../chat-box/build/chat-box.html">
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
-<polymer-element name="conference-room" attributes="room localstream calls sharedscreens nametag audioon videoon selfieon root signallingServer focused">
+<polymer-element name="conference-room" attributes="room localstream calls sharedscreens nametag audioon videoon selfieon chatbaron root signallingServer focused">
 <template>
   <local-stream id="local" audio="{{audioon}}" video="{{videoon}}" stream="{{localstream}}"></local-stream>
 
@@ -31,7 +31,7 @@
     <ui-toggle-tool icon="fa-eye" togglechanged="selfie" active="{{selfieon}}" tooltip="Video selfie (s)" hotkey="s"></ui-toggle-tool>
     <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active="{{videoon}}" tooltip="Video mute (v)" hotkey="v"></ui-toggle-tool>
     <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active="{{audioon}}" tooltip="Audio mute (spacebar)" hotkey="32"></ui-toggle-tool>
-    <ui-toggle-tool icon="fa-comments" togglechanged="chatbar" tooltip="Text chat (enter)" hotkey="13">
+    <ui-toggle-tool icon="fa-comments" togglechanged="chatbar" active="{{chatbaron}}" tooltip="Text chat (enter)" hotkey="13">
     <div class="ui label red count-{{chatCount}}">{{chatCount}}</div>
     </ui-toggle-tool>
     <ui-command-tool icon="fa-desktop" command="screenshare" tooltip="Share your screens"></ui-command-tool>
@@ -118,7 +118,7 @@
   </section>
 
 
-  <ui-sidebar id="chatbar" class="ui floating right hide">
+  <ui-sidebar id="chatbar" class="ui floating right hide" visible="{{chatbaron}}">
   <chat-box id="chat"></chat-box>
   </ui-sidebar>
 

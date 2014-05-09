@@ -75,6 +75,12 @@ tell each peer to set up inbound and outbound peer calls.
           @signallingServer.send 'call',
             to: clientid
 
+#Chat
+Turning on the chat bar clears the counters.
+
+      chatbaronChanged: ->
+        @chatCount = 0 if @chatbaron
+
 #Polymer Lifecycle
 Main thing going on here it setting up signalling service, which isn't an
 element, it is just code.
@@ -122,15 +128,6 @@ Hello from the server! The roomChanged event handler will hook the rest of the r
           @fire 'pong', hashes
 
 ##Toolbar Buttons
-
-Sidebars, are you even allowed to have an application without one any more?
-
-         @addEventListener 'chatbar.on', =>
-          @$.chatbar.visible = true
-          @chatCount = 0
-
-        @addEventListener 'chatbar.off', =>
-          @$.chatbar.visible = false
 
 Screensharing, this asks for a screen to share and adds it to the room.
 
