@@ -24,8 +24,8 @@ Fires when a stream is available, also after then `stream` property is set.
         mediaConstraints =
           video:
             mandatory:
-              maxWidth: 320
-              maxHeight: 240
+              maxWidth: 640
+              maxHeight: 480
           audio: @hasAttribute('audio')
         getUserMedia mediaConstraints, (err, stream) =>
           if err
@@ -37,11 +37,9 @@ so we'll get a MediaStream source that we can manipulate with the Web Audio api
 
             source = audioContext.createMediaStreamSource(stream)
             destination = audioContext.createMediaStreamDestination()
-            
             lowPassFilter = audioContext.createBiquadFilter()
             lowPassFilter.type = lowPassFilter.LOWPASS
             lowPassFilter.frequency.value = 250
-            
             gainFilter = audioContext.createGain()
 
             source.connect lowPassFilter

@@ -78,7 +78,9 @@
 
 
   <section class="calls">
-    <ui-video-stream id="selfie" class="ui tile video" stream="{{localstream}}" selfie mirror></ui-video-stream>
+    <template if="{{selfieon}}">
+      <ui-video-stream id="selfie" class="ui tile video" stream="{{localstream}}" selfie mirror></ui-video-stream>
+    </template>
     <template id="calls" repeat="{{call in calls}}">
       <ui-video-call class="ui tile video" call="{{call}}"
       localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}"
