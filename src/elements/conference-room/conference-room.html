@@ -1,8 +1,6 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../local-stream/local-stream.html">
 <link rel="import" href="../ui-video-stream/ui-video-stream.html">
-<link rel="import" href="../ui-video-stream/audio-control.html">
-<link rel="import" href="../ui-video-stream/video-control.html">
 <link rel="import" href="../ui-video-call/ui-video-call.html">
 <link rel="import" href="../ui-shared-screen/ui-shared-screen.html">
 <link rel="import" href="../ui-toolbar/ui-toolbar.html">
@@ -16,9 +14,7 @@
 <link rel="stylesheet" type="text/css" href="./conference-room.css">
 <polymer-element name="conference-room" attributes="room localstream calls sharedscreens nametag audioon videoon selfieon root signallingServer focused">
 <template>
-  <video-control stream="{{localstream}}"></video-control>
-  <audio-control stream="{{localstream}}"></audio-control>
-  <local-stream id="local" audio video stream="{{localstream}}"></local-stream>
+  <local-stream id="local" audio="{{audioon}}" video="{{videoon}}" stream="{{localstream}}"></local-stream>
 
   <section id="chromeonly" class="ui notices">
     <div class="ui notice icon signin message">
