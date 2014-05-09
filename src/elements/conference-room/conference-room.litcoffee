@@ -123,13 +123,6 @@ Hello from the server! The roomChanged event handler will hook the rest of the r
 
 ##Toolbar Buttons
 
-Show and hide the selfie -- this really needs to be data bound instead.
-
-        @addEventListener 'selfie.on', =>
-          @$.selfie.showAnimated()
-        @addEventListener 'selfie.off', =>
-          @$.selfie.hideAnimated()
-
 Sidebars, are you even allowed to have an application without one any more?
 
          @addEventListener 'chatbar.on', =>
