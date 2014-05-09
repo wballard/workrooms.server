@@ -1,7 +1,6 @@
 @import "../../less/variables";
 
-
-ui-sidebar {
+:host {
   display: flex;
   width: 25%;
   min-width: 20em;
@@ -18,7 +17,6 @@ ui-sidebar {
       padding: 0;
     }
   }
-  -webkit-animation: showing 1s;
 }
 
 ui-sidebar.ui.floating.left {
@@ -32,11 +30,4 @@ ui-sidebar.ui.floating.right {
 ui-sidebar.narrow {
   width: 18em;
 }
-
-ui-mainbar {
-  display: block;
-  height: 100%;
-  flex: 1;
-}
-
 

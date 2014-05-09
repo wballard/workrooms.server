@@ -6,7 +6,6 @@
 <link rel="import" href="../ui-toolbar/ui-toolbar.html">
 <link rel="import" href="../ui-sidebar/ui-sidebar.html">
 <link rel="import" href="../ui-input/ui-input.html">
-<link rel="import" href="../ui-hide/ui-hide.html">
 <link rel="import" href="../ui-overlays/ui-overlay-command.html">
 <link rel="import" href="../ui-overlays/ui-overlay-image.html">
 <link rel="import" href="../ui-overlays/ui-overlay-icon.html">
@@ -26,97 +25,97 @@
     </div>
   </section>
 
-  <ui-mainbar>
+  <section class="main">
 
-  <ui-toolbar>
-  <ui-toggle-tool icon="fa-eye" togglechanged="selfie" active="{{selfieon}}" tooltip="Video selfie (s)" hotkey="s"></ui-toggle-tool>
-  <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active="{{videoon}}" tooltip="Video mute (v)" hotkey="v"></ui-toggle-tool>
-  <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active="{{audioon}}" tooltip="Audio mute (spacebar)" hotkey="32"></ui-toggle-tool>
-  <ui-toggle-tool icon="fa-comments" togglechanged="chatbar" tooltip="Text chat (enter)" hotkey="13">
-  <div class="ui label red count-{{chatCount}}">{{chatCount}}</div>
-  </ui-toggle-tool>
-  <ui-command-tool icon="fa-desktop" command="screenshare" tooltip="Share your screens"></ui-command-tool>
-  <ui-toolbar-pad></ui-toolbar-pad>
-  <section class="ui form inverted">
-    <div class="ui field">
-      <div class="ui input">
-        <input id="miniRoomSelector" type="text" value="{{roomLabel}}" on-keyup="{{roomSelectorKeypressed}}" placeholder="Enter a workroom name" />
+    <ui-toolbar>
+    <ui-toggle-tool icon="fa-eye" togglechanged="selfie" active="{{selfieon}}" tooltip="Video selfie (s)" hotkey="s"></ui-toggle-tool>
+    <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active="{{videoon}}" tooltip="Video mute (v)" hotkey="v"></ui-toggle-tool>
+    <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active="{{audioon}}" tooltip="Audio mute (spacebar)" hotkey="32"></ui-toggle-tool>
+    <ui-toggle-tool icon="fa-comments" togglechanged="chatbar" tooltip="Text chat (enter)" hotkey="13">
+    <div class="ui label red count-{{chatCount}}">{{chatCount}}</div>
+    </ui-toggle-tool>
+    <ui-command-tool icon="fa-desktop" command="screenshare" tooltip="Share your screens"></ui-command-tool>
+    <ui-toolbar-pad></ui-toolbar-pad>
+    <section class="ui form inverted">
+      <div class="ui field">
+        <div class="ui input">
+          <input id="miniRoomSelector" type="text" value="{{roomLabel}}" on-keyup="{{roomSelectorKeypressed}}" placeholder="Enter a workroom name" />
+        </div>
       </div>
-    </div>
-  </section>
-  </ui-toolbar>
+    </section>
+    </ui-toolbar>
 
 
-  <section class="ui container room-selector {{ { full: (!calls || calls.length === 0), mini: calls.length > 0 } | tokenList }}">
-    <div class="ui inverted">
-      <div class="content">
-        <div class="ui large form">
-          <div class="ui field">
-            <div class="ui massive icon input">
-              <input id="roomSelector" type="text" value="{{roomLabel}}" on-keyup="{{roomSelectorKeypressed}}" placeholder="Enter a workroom name to create/join" />
-              <i class="circular green checkmark icon {{ { hidden: roomLabel.length < 2 } | tokenList }}"></i>
+    <section class="ui container room-selector {{ { full: (!calls || calls.length === 0), mini: calls.length > 0 } | tokenList }}">
+      <div class="ui inverted">
+        <div class="content">
+          <div class="ui large form">
+            <div class="ui field">
+              <div class="ui massive icon input">
+                <input id="roomSelector" type="text" value="{{roomLabel}}" on-keyup="{{roomSelectorKeypressed}}" placeholder="Enter a workroom name to create/join" />
+                <i class="circular green checkmark icon {{ { hidden: roomLabel.length < 2 } | tokenList }}"></i>
+              </div>
             </div>
           </div>
+          <template if="{{ !(roomLabel && roomLabel.length >= 2) }}">
+            <p>
+              Welcome to workrooms, choose a room to start collaborating.  If the room doesn't already exist, we'll create it for you so others can join you.
+            </p>
+          </template>
+          <template if="{{roomLabel && roomLabel.length >= 2}}">
+            <p>
+              This room is currently empty, just waiting for others to show up.  You should probably share this url anyone you want to join.
+            </p>
+          </template>
         </div>
-        <template if="{{ !(roomLabel && roomLabel.length >= 2) }}">
-          <p>
-            Welcome to workrooms, choose a room to start collaborating.  If the room doesn't already exist, we'll create it for you so others can join you.
-          </p>
-        </template>
-        <template if="{{roomLabel && roomLabel.length >= 2}}">
-          <p>
-            This room is currently empty, just waiting for others to show up.  You should probably share this url anyone you want to join.
-          </p>
-        </template>
       </div>
-    </div>
-  </section>
+    </section>
 
 
-  <section class="calls">
-    <template if="{{selfieon}}">
-      <ui-video-stream id="selfie" class="ui tile video" stream="{{localstream}}" selfie mirror></ui-video-stream>
-    </template>
-    <template id="calls" repeat="{{call in calls}}">
-      <ui-video-call class="ui tile video" call="{{call}}"
-      localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}"
-      remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}">
-      <ui-overlay-image image="images/loading-bars.svg" visible="{{!call.remotestream}}">
-      <ui-overlay-icon icon="fa-microphone-slash" visible="{{!call.remoteaudio}}">
-      <ui-overlay-image image="{{call.snapshot}}" muted="true" visible="{{!call.remotevideo}}">
-      <ui-video-stream stream="{{call.remotestream}}" snapshot="{{call.snapshot}}"></ui-video-stream>
-      </ui-overlay-image>
-      </ui-overlay-icon>
-      </ui-overlay-image>
-      </ui-video-call>
-    </template>
-  </section>
+    <section class="calls">
+      <template if="{{selfieon}}">
+        <ui-video-stream id="selfie" class="ui tile video" stream="{{localstream}}" selfie mirror></ui-video-stream>
+      </template>
+      <template id="calls" repeat="{{call in calls}}">
+        <ui-video-call class="ui tile video" call="{{call}}"
+        localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}"
+        remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}">
+        <ui-overlay-image image="images/loading-bars.svg" visible="{{!call.remotestream}}">
+        <ui-overlay-icon icon="fa-microphone-slash" visible="{{!call.remoteaudio}}">
+        <ui-overlay-image image="{{call.snapshot}}" muted="true" visible="{{!call.remotevideo}}">
+        <ui-video-stream stream="{{call.remotestream}}" snapshot="{{call.snapshot}}"></ui-video-stream>
+        </ui-overlay-image>
+        </ui-overlay-icon>
+        </ui-overlay-image>
+        </ui-video-call>
+      </template>
+    </section>
 
 
-  <section class="screens" on-screenshared="{{screenShared}}" on-screenunshared="{{screenUnshared}}">
-    <template repeat="{{screen in sharedscreens}}">
-      <ui-shared-screen class="ui tile screen" screen="{{screen}}">
-      <template if="{{screen.stream}}">
-        <ui-overlay-command icon="fa-times-circle-o" command="screenunshared" detail="{{screen}}">
-        <ui-video-stream stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true" selfie></ui-video-stream>
-        <template repeat="{{share in screen.shares}}">
-          <ui-video-call class="hide" call="{{share}}"
-          localstream="{{screen.stream}}" localaudio="true" localvideo="true"
-          remotestream="{{screen.remotestream}}" remoteaudio="{{screen.remoteaudio}}" remotevideo="{{screen.remotevideo}}">
+    <section class="screens" on-screenshared="{{screenShared}}" on-screenunshared="{{screenUnshared}}">
+      <template repeat="{{screen in sharedscreens}}">
+        <ui-shared-screen class="ui tile screen" screen="{{screen}}">
+        <template if="{{screen.stream}}">
+          <ui-overlay-command icon="fa-times-circle-o" command="screenunshared" detail="{{screen}}">
+          <ui-video-stream stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true" selfie></ui-video-stream>
+          <template repeat="{{share in screen.shares}}">
+            <ui-video-call class="hide" call="{{share}}"
+            localstream="{{screen.stream}}" localaudio="true" localvideo="true"
+            remotestream="{{screen.remotestream}}" remoteaudio="{{screen.remoteaudio}}" remotevideo="{{screen.remotevideo}}">
+          </template>
+          </ui-overlay-command>
         </template>
-        </ui-overlay-command>
+        <template if="{{!screen.stream}}">
+          <ui-overlay-command icon="fa-desktop" command="screenconnect" detail="{{screen}}" href="screen#{{screen.fromclientid}}/{{screen.screenid}}">
+          <img class="snapshot" src="{{screen.snapshot}}"></img>
+          </ui-overlay-command>
+        </template>
+        </ui-shared-screen>
       </template>
-      <template if="{{!screen.stream}}">
-        <ui-overlay-command icon="fa-desktop" command="screenconnect" detail="{{screen}}" href="screen#{{screen.fromclientid}}/{{screen.screenid}}">
-        <img class="snapshot" src="{{screen.snapshot}}"></img>
-        </ui-overlay-command>
-      </template>
-      </ui-shared-screen>
-    </template>
+    </section>
+
+
   </section>
-
-
-  </ui-mainbar>
 
 
   <ui-sidebar id="chatbar" class="ui floating right hide">
