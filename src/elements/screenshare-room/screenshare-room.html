@@ -1,10 +1,10 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../ui-video-call/ui-video-call.html">
 <link rel="import" href="../ui-video-stream/ui-video-stream.html">
-<link rel="stylesheet" type="text/css" href="./screenshare-room.css">
 
 <polymer-element name="screenshare-room" attributes="screenLink screen size">
 <template>
+  <link rel="stylesheet" type="text/css" href="./screenshare-room.css">
   <template if="{{screen}}">
     <ui-video-call class="ui full video" call="{{screen}}"
     localaudio="true" localvideo="true" autoconnect

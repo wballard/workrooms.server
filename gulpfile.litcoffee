@@ -96,6 +96,12 @@ Vulcanize for the speed.
           'vulcanize --inline --strip -o build/index.html build/index.html'
         ])
 
+    gulp.task 'devvulcanize', ['elements', 'pages', 'assets'], ->
+      gulp.src ''
+        .pipe shell([
+          'vulcanize --inline -o build/index.html build/index.html'
+        ])
+
 The default task leaves a hash file to support hot reloading.
 
     gulp.task 'build', ['vulcanize'], ->
@@ -104,7 +110,7 @@ The default task leaves a hash file to support hot reloading.
         .pipe hash 'hashmap.json'
         .pipe gulp.dest 'build'
 
-    gulp.task 'dev', ['elements', 'pages', 'assets'], ->
+    gulp.task 'dev', ['devvulcanize'], ->
       gulp.src 'src/**/*.*'
         .pipe concat 'build/all'
         .pipe hash 'hashmap.json'
