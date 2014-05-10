@@ -5,7 +5,6 @@
 <link rel="import" href="../ui-shared-screen/ui-shared-screen.html">
 <link rel="import" href="../ui-toolbar/ui-toolbar.html">
 <link rel="import" href="../ui-sidebar/ui-sidebar.html">
-<link rel="import" href="../ui-input/ui-input.html">
 <link rel="import" href="../ui-overlays/ui-overlay-command.html">
 <link rel="import" href="../ui-overlays/ui-overlay-image.html">
 <link rel="import" href="../ui-overlays/ui-overlay-icon.html">
@@ -46,29 +45,37 @@
     </ui-toolbar>
 
 
-    <section class="ui container room-selector {{ { full: (!calls || calls.length === 0), mini: calls.length > 0 } | tokenList }}">
-      <div class="ui inverted">
-        <div class="content">
-          <div class="ui large form">
-            <div class="ui field">
-              <div class="ui massive icon input">
-                <input id="roomSelector" type="text" value="{{roomLabel}}" on-keyup="{{roomSelectorKeypressed}}" placeholder="Enter a workroom name to create/join" />
-                <i class="circular green checkmark icon {{ { hidden: roomLabel.length < 2 } | tokenList }}"></i>
-              </div>
-            </div>
+    <section class="ui room-selector {{ { full: (!calls || calls.length === 0), mini: calls.length > 0 } | tokenList }}">
+      <div class="ui large form">
+        <div class="ui field">
+          <div class="ui massive icon input">
+            <input id="roomSelector" type="text" value="{{roomLabel}}" on-keyup="{{roomSelectorKeypressed}}" placeholder="Enter a workroom name to create/join" />
+            <i class="circular green checkmark icon {{ { hidden: roomLabel.length < 2 } | tokenList }}"></i>
           </div>
-          <template if="{{ !(roomLabel && roomLabel.length >= 2) }}">
+        </div>
+      </div>
+      <template if="{{ !(roomLabel && roomLabel.length >= 2) }}">
+        <div class="ui notice icon signin message">
+          <i class="ui icon fa fa-users fa-4x"></i>
+          <div class="content">
+            <div class="header">Hello!</div>
             <p>
               Welcome to workrooms, choose a room to start collaborating.  If the room doesn't already exist, we'll create it for you so others can join you.
             </p>
-          </template>
-          <template if="{{roomLabel && roomLabel.length >= 2}}">
+          </div>
+        </div>
+      </template>
+      <template if="{{roomLabel && roomLabel.length >= 2}}">
+        <div class="ui notice icon signin message">
+          <i class="ui icon fa fa-eye fa-4x"></i>
+          <div class="content">
+            <div class="header">Where is Everyone?</div>
             <p>
               This room is currently empty, just waiting for others to show up.  You should probably share this url anyone you want to join.
             </p>
-          </template>
+          </div>
         </div>
-      </div>
+      </template>
     </section>
 
 

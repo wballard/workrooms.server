@@ -92,7 +92,7 @@ element, it is just code.
         if bowser.browser.chrome
           @$.chromeonly.hide()
         else
-          @shadowRoot.querySelector('ui-mainbar').hide()
+          @shadowRoot.querySelector('.main').hide()
         @nametag = 'Anonymous'
         @audioon = true
         @videoon = true
