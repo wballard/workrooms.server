@@ -1,8 +1,8 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="stylesheet" type="text/css" href="./ui-toolbar.css">
 
 <polymer-element name="ui-toolbar" attributes="">
 <template>
+  <link rel="stylesheet" type="text/css" href="./ui-toolbar.css">
   <div class="ui toolbar menu inverted">
     <content></content>
   </div>
@@ -12,6 +12,7 @@
 
 <polymer-element name="ui-toolbar-pad" attributes="">
 <template>
+  <link rel="stylesheet" type="text/css" href="./ui-toolbar-pad.css">
   <content></content>
 </template>
 <script src="./ui-toolbar.js"></script>
@@ -19,6 +20,7 @@
 
 <polymer-element name="ui-toggle-tool" attributes="icon togglechanged active tooltip hotkey">
 <template>
+  <link rel="stylesheet" type="text/css" href="./ui-toolbar-tool.css">
   <a id="tool" class="item">
     <span class="fa-stack">
       <i id="icon" class="toolicon fa {{ icon }} fa-stack-1x"></i>
@@ -33,6 +35,7 @@
 
 <polymer-element name="ui-command-tool" attributes="icon command detail href tooltip">
 <template>
+  <link rel="stylesheet" type="text/css" href="./ui-toolbar-tool.css">
   <a id="tool" class="item" href="{{href}}" on-click="{{clickLink}}">
     <i class="fa {{icon}}"></i>
     <content></content>

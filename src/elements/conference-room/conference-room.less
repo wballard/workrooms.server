@@ -1,5 +1,8 @@
 @import "../../../bower_components/font-awesome/less/font-awesome";
-@import '../../../bower_components/semantic/build/less/collections/message.less';
+@import '../../../bower_components/semantic/build/less/collections/message';
+@import "../../../bower_components/semantic/build/less/collections/form";
+@import "../../../bower_components/semantic/build/less/elements/input";
+@import "../../../bower_components/semantic/build/less/elements/icon";
 @import "../../less/variables";
 @import "../../less/grid";
 
@@ -61,8 +64,16 @@ conference-room {
     justify-content: center;
     padding: 2em;
   }
+  .ui.notice {
+    border-radius: 0;
+  }
+  .ui.large.form {
+    input {
+      border-radius: 0;
+    }
+  }
   .ui.form.inverted {
-    font-size: 0.75rem;
+    font-size: 1.0rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -71,8 +82,9 @@ conference-room {
     }
     input {
       color: @white;
+      padding: 0.5em 0.6em;
       background: @black;
-      margin: 0;
+      border-radius: 0;
       &:focus {
         color: @white;
       }
@@ -133,20 +145,5 @@ conference-room {
         opacity: 0 !important;
       }
     }
-  }
-}
-
-inbound-video-call, outbound-video-call {
-  display: block;
-  margin: 2em;
-  .gravatar {
-    margin: @margin;
-    position: absolute;
-    left: 0;
-    top: 0;
-    border-radius: @borderRadius;
-  }
-  section {
-    position: relative;
   }
 }
