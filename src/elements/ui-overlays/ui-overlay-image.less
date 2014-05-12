@@ -1,0 +1,19 @@
+@import "../../less/variables";
+
+:host {
+  display: block;
+  position: relative;
+  .muted {
+    -webkit-filter: grayscale(90%);
+  }
+  .overlay {
+    box-sizing: border-box;
+    position: absolute;
+    display: inline-block;
+    text-decoration: none;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    z-index: 1;
+  }
+}
