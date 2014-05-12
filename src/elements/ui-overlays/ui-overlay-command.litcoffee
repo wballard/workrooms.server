@@ -15,6 +15,9 @@ This fires a dynamic event based on `command`.
     bonzo = require 'bonzo'
 
     Polymer 'ui-overlay-command',
+
+Dynamically resize the font to fill in the overlay region
+
       resize: ->
         offset = bonzo(@$.overlay).offset()
         size = Math.min(offset.width, offset.height) * 0.8
@@ -22,18 +25,12 @@ This fires a dynamic event based on `command`.
           .css 'font-size', size
           .css 'padding-top', size * 0.125
       attached: ->
-        setInterval =>
+        window.addEventListener 'resize', =>
           @resize()
-        , 1000
         @resize()
       clickLink: (evt) ->
         if @command
           @fire @command, @detail
         if not @href?.length
           evt.preventDefault()
-      tooltipChanged: ->
-        $(@$.tool).popup
-          inline: true
-          content: @tooltip
-          position: @tooltipPosition()
 
