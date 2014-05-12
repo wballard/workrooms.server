@@ -97,7 +97,7 @@ element, it is just code.
           @$.chromeonly.hide()
         else
           @shadowRoot.querySelector('.main').hide()
-        @nametag = cache.get('nickname') or "Anonymous #{Math.random() * (1024 - 1) + 1}"
+        @nametag = cache.get('nickname') or "Anonymous #{Math.floor(Math.random() * (1024 - 1 + 1)) + 1}"
         @audioon = true
         @videoon = true
         @serverconfig = null
