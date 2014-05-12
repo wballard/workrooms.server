@@ -24,6 +24,7 @@ A string that is all about who you are.
     bowser = require 'bowser'
     SignallingServer = require '../../scripts/signalling-server.litcoffee'
     getScreenMedia = require 'getscreenmedia'
+    cache = require('kizzy')('settings')
 
     Polymer 'conference-room',
 
@@ -66,6 +67,9 @@ screen with an actual stream, send it along so that other room members can know.
             room: @room
       , 500
 
+      nicknameChanged: ->
+        cache.set 'nickname', @nickname
+
 #Calling
 Set up a call by signalling to the server. This instructs the server to
 tell each peer to set up inbound and outbound peer calls.
@@ -93,7 +97,7 @@ element, it is just code.
           @$.chromeonly.hide()
         else
           @shadowRoot.querySelector('.main').hide()
-        @nametag = 'Anonymous'
+        @nametag = cache.get('nickname') or "Anonymous #{Math.random() * (1024 - 1) + 1}"
         @audioon = true
         @videoon = true
         @serverconfig = null
