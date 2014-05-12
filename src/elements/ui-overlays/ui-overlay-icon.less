@@ -1,0 +1,25 @@
+@import "../../../bower_components/font-awesome/less/font-awesome";
+@import "../../less/variables";
+
+:host {
+  display: block;
+  position: relative;
+}
+.overlay.icon {
+  position: absolute;
+  z-index: 2;
+  .left.corner.dogear {
+    position: absolute;
+    z-index: 1;
+    border-top: 3em solid @black;
+    border-bottom: none;
+    border-left: none;
+    border-right: 3em solid transparent;
+  }
+  .left.corner.fa {
+    position: absolute;
+    z-index: 2;
+    color: @white;
+    padding: 0.5em;
+  }
+}

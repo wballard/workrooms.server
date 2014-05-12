@@ -3,7 +3,7 @@
 <polymer-element name="ui-overlay-image" attributes="image muted visible">
 <template>
   <link rel="stylesheet" type="text/css" href="./ui-overlay-image.css">
-  <img id="overlay" class="overlay {{ {muted: muted} | tokenList }}" src="{{image}}"></a>
+  <img id="overlay" class="overlay image {{ {muted: muted} | tokenList }}" src="{{image}}"></a>
   <content></content>
 </template>
 <script src="./ui-overlay-image.js"></script>

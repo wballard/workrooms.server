@@ -1,12 +1,12 @@
 <link rel="import" href="../polymer/polymer.html">
-<link rel="stylesheet" type="text/css" href="./ui-overlays.css">
 
 <polymer-element name="ui-overlay-icon" attributes="icon visible">
 <template>
-  <span id="overlay" class="ui right corner label">
-    <i class="icon">
-      <i class="fa {{icon}}"></i>
-    </i>
+  <link rel="stylesheet" type="text/css" href="./ui-overlay-icon.css">
+  <span id="overlay" class="overlay icon">
+    <span class="left corner dogear">
+    </span>
+    <i class="left corner fa {{icon}}"></i>
   </span>
   <content></content>
 </template>
