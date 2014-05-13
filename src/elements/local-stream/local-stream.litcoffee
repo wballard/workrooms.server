@@ -23,9 +23,18 @@ Fires when a stream is available, also after then `stream` property is set.
       audioChanged: ->
         if @stream
           @stream?.getAudioTracks()?.forEach (x) => x.enabled = @audio
+
+Toggle the stream to truly mute the video signal. When disabling, put in a
+delay so that on the far side, animation has time to switch over to a muted
+image. There is no need to do this when turning it back on as the mute image
+already has the video covered and will fade away on the far side.
+
       videoChanged: ->
+        delay = 1000 if not @video
         if @stream
-          @stream?.getVideoTracks()?.forEach (x) => x.enabled = @video
+          setTimeout =>
+            @stream?.getVideoTracks()?.forEach (x) => x.enabled = @video
+          , delay
       attached: ->
         mediaConstraints =
           video:
