@@ -20,6 +20,7 @@
     "jquery-ui": "~1.10.4",
     "chat-box": "https://github.com/wballard/chat-box.git",
     "open-sans-fontface": "~1.0.4",
-    "polymer": "~0.2.2"
+    "polymer": "https://github.com/Polymer/polymer.git#0.2.4",
+    "core-splitter": "https://github.com/wballard/core-splitter.git#~0.2.4"
   }
 }
