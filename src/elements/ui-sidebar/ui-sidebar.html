@@ -3,9 +3,10 @@
 <polymer-element name="ui-sidebar" attributes="visible">
 <template>
   <link rel="stylesheet" type="text/css" href="./ui-sidebar.css">
-  <div id="display" class="ui inverted">
+  <section id="splitter" on-trackstart="{{trackStart}}" on-track="{{track}}"></section>
+  <section id="display" class="ui inverted">
     <content></content>
-  </div>
+  </section>
 </template>
 <script src="./ui-sidebar.js"></script>
 </polymer-element>

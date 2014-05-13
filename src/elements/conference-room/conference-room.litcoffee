@@ -100,6 +100,7 @@ element, it is just code.
         @nametag = cache.get('nickname') or "Anonymous #{Math.floor(Math.random() * (1024 - 1 + 1)) + 1}"
         @audioon = true
         @videoon = true
+        @chatbaron = false
         @serverconfig = null
         @calls = []
         @chatCount = 0
