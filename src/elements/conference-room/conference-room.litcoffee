@@ -67,8 +67,8 @@ screen with an actual stream, send it along so that other room members can know.
             room: @room
       , 500
 
-      nicknameChanged: ->
-        cache.set 'nickname', @nickname
+      nametagChanged: ->
+        cache.set 'nametag', @nametag
 
 #Calling
 Set up a call by signalling to the server. This instructs the server to
@@ -97,7 +97,7 @@ element, it is just code.
           @$.chromeonly.hide()
         else
           @shadowRoot.querySelector('.main').hide()
-        @nametag = cache.get('nickname') or "Anonymous #{Math.floor(Math.random() * (1024 - 1 + 1)) + 1}"
+        @nametag = cache.get('nametag') or "Anonymous #{Math.floor(Math.random() * (1024 - 1 + 1)) + 1}"
         @audioon = true
         @videoon = true
         @chatbaron = false
