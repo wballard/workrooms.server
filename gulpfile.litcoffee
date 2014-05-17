@@ -25,7 +25,7 @@ Sweep up static assest from all over.
 
       gulp.src '**/*.*', {cwd: 'src/media'}
         .pipe gulp.dest 'build/media'
-      
+
       gulp.src '**/*.{svg,png}', cwd: 'bower_components'
         .pipe flatten()
         .pipe gulp.dest 'build/bower_components/images'
@@ -94,13 +94,17 @@ Vulcanize for the speed.
       gulp.src ''
         .pipe shell([
           'vulcanize --inline --strip -o build/index.html build/index.html'
-        ])
+          ])
 
     gulp.task 'devvulcanize', ['elements', 'pages', 'assets'], ->
       gulp.src ''
         .pipe shell([
           'vulcanize --inline -o build/index.html build/index.html'
-        ])
+          ])
+      gulp.src ''
+        .pipe shell([
+          'ctags -R src/'
+          ])
 
 The default task leaves a hash file to support hot reloading.
 
