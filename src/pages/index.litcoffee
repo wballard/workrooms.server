@@ -9,9 +9,9 @@ Main page script. Not particularly interesting as everything is an element.
       document.querySelector('conference-room').hide()
 
     document.addEventListener 'ready', ->
-      document.querySelector('#loading').hideAnimated ->
+      document.querySelector('#loading').hide ->
         document.querySelector('conference-room').room = window.location.hash
-        document.querySelector('conference-room').showAnimated()
+        document.querySelector('conference-room').show()
 
     document.addEventListener 'pong', (evt) ->
       if version and evt?.detail?['index.html'] isnt version

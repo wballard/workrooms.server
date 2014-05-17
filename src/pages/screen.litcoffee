@@ -7,10 +7,10 @@ Main page script. Not particularly interesting as everything is an element.
       document.querySelector('screenshare-room').hide()
 
     document.addEventListener 'hello', ->
-      document.querySelector('#loading').hideAnimated()
+      document.querySelector('#loading').hide()
       document.querySelector('screenshare-room').screenLink =
         window.location.hash
-      document.querySelector('screenshare-room').showAnimated()
+      document.querySelector('screenshare-room').show()
 
     window.addEventListener 'hashchange', ->
       document.querySelector('screenshare-room').screenLink =

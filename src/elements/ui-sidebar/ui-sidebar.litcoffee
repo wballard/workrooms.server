@@ -3,9 +3,9 @@ Sidebar, this is a nice place to hide controls out of the way.
     Polymer 'ui-sidebar',
       visibleChanged: ->
         if @visible
-          @showAnimated()
+          @show()
         else
-          @hideAnimated()
+          @hide()
 
       trackStart: ->
         @size = parseInt(getComputedStyle(@)['width'])

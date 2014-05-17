@@ -8,6 +8,6 @@ Name that icon `fa-` and all.
     Polymer 'ui-overlay-icon',
       visibleChanged: ->
         if @visible
-          @$.overlay.showAnimated()
+          @$.overlay.show()
         else
-          @$.overlay.hideAnimated()
+          @$.overlay.hide()

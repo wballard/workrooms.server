@@ -156,7 +156,7 @@ The document acts as an event bus, so we're hooking up events to the document
 and the element itself when it is attached to the DOM.
 
       attached: ->
-        @showAnimated()
+        @show()
         @connect() if @hasAttribute 'autoconnect'
 
 Call keep alives, when these fail -- it is time to reconnect the call. This is
@@ -249,4 +249,3 @@ Outbound side needs to take the answer and complete the call.
         if @call.outbound? and message.fromclientid is @call.fromclientid and message.toclientid is @call.toclientid
           @peerConnection.setRemoteDescription new rtc.SessionDescription(message.sdp), (err) ->
             console.log(err) if err
-

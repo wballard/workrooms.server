@@ -82,16 +82,16 @@
 
     <section class="calls">
       <template if="{{selfieon}}">
-        <ui-video-stream id="selfie" class="ui tile video" stream="{{localstream}}" selfie mirror></ui-video-stream>
+        <ui-video-stream animated id="selfie" class="ui tile video" stream="{{localstream}}" selfie mirror></ui-video-stream>
       </template>
       <template id="calls" repeat="{{call in calls}}">
         <ui-video-call class="ui tile video" call="{{call}}"
         localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}"
         remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}">
         <ui-overlay-image image="images/loading-bars.svg" visible="{{!call.remotestream}}">
-        <ui-overlay-icon icon="fa-microphone-slash" visible="{{!call.remoteaudio}}">
-        <ui-overlay-image image="{{call.snapshot}}" muted="true" visible="{{!call.remotevideo}}">
-        <ui-video-stream stream="{{call.remotestream}}" snapshot="{{call.snapshot}}"></ui-video-stream>
+        <ui-overlay-icon animated icon="fa-microphone-slash" visible="{{!call.remoteaudio}}">
+        <ui-overlay-image animated image="{{call.snapshot}}" muted="true" visible="{{!call.remotevideo}}">
+        <ui-video-stream animated stream="{{call.remotestream}}" snapshot="{{call.snapshot}}"></ui-video-stream>
         </ui-overlay-image>
         </ui-overlay-icon>
         </ui-overlay-image>
@@ -105,9 +105,9 @@
         <ui-shared-screen class="ui tile screen" screen="{{screen}}">
         <template if="{{screen.stream}}">
           <ui-overlay-command icon="fa-times-circle-o" command="screenunshared" detail="{{screen}}">
-          <ui-video-stream stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true" selfie></ui-video-stream>
+          <ui-video-stream animated stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true" selfie></ui-video-stream>
           <template repeat="{{share in screen.shares}}">
-            <ui-video-call class="hide" call="{{share}}"
+            <ui-video-call animated class="hide" call="{{share}}"
             localstream="{{screen.stream}}" localaudio="true" localvideo="true"
             remotestream="{{screen.remotestream}}" remoteaudio="{{screen.remoteaudio}}" remotevideo="{{screen.remotevideo}}">
           </template>
@@ -126,7 +126,7 @@
   </section>
 
 
-  <ui-sidebar id="chatbar" class="ui floating right hide" visible="{{chatbaron}}">
+  <ui-sidebar animated id="chatbar" class="ui floating right hide" visible="{{chatbaron}}">
   <chat-box id="chat"></chat-box>
   </ui-sidebar>
 
@@ -134,4 +134,3 @@
 </template>
 <script src="./conference-room.js"></script>
 </polymer-element>
-

@@ -8,6 +8,6 @@ An image source url, a link or data -- I love those data urls.
     Polymer 'ui-overlay-image',
       visibleChanged: ->
         if @visible
-          @$.overlay.showAnimated()
+          @$.overlay.show()
         else
-          @$.overlay.hideAnimated()
+          @$.overlay.hide()
