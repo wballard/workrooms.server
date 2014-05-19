@@ -81,7 +81,7 @@
     </section>
 
 
-    <ui-grid-tiler class="calls" tileSelector=".tile.video" startPercentage="99">
+    <ui-grid-tiler class="calls" startPercentage="99">
       <template if="{{selfieon}}">
         <ui-video-stream animated id="selfie" class="ui tile video" stream="{{localstream}}" selfie mirror></ui-video-stream>
       </template>
@@ -101,7 +101,7 @@
       </ui-grid-tiler>
 
 
-    <ui-grid-tiler class="screens" tileSelector=".tile.screen" startPercentage="25" on-screenshared="{{screenShared}}" on-screenunshared="{{screenUnshared}}">
+    <ui-grid-tiler class="screens" startPercentage="25" on-screenshared="{{screenShared}}" on-screenunshared="{{screenUnshared}}">
       <template repeat="{{screen in sharedscreens}}">
         <ui-shared-screen class="ui tile screen" screen="{{screen}}">
         <template if="{{screen.stream}}">
