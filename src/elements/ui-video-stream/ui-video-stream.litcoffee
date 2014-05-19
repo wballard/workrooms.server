@@ -35,15 +35,11 @@ Startup audio to let you know a call is coming in.
 Snapshot on play.
 
         @$.video.addEventListener 'canplay', =>
-          console.log 'playme'
           @takeSnapshot()
-          bonzo(@$.video).css(
-            'max-height': "#{@$.video.videoHeight}px"
-            'max-width': "#{@$.video.videoWidth}px"
-          )
           @videoSize =
             width: @$.video.videoWidth
             height: @$.video.videoHeight
+          @fire 'videoplay'
 
 Cool. Static snapshots to use when the video is muted.
 

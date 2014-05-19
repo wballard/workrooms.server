@@ -224,6 +224,9 @@ Relay signalling server messages into the calls.
           _.each @shadowRoot.querySelectorAll('ui-video-call'), (call) ->
             call.processAnswer detail
 
+        @addEventListener 'videoplay', =>
+          _.each @shadowRoot.querySelectorAll('ui-grid-tiler'), (x) -> x.resize()
+
 ##Chat
 Hook up chat message processing, most important thing is to attach your local
 user identity to messages as they are posted. This will send messages as they
