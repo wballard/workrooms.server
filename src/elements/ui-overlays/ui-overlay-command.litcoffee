@@ -24,10 +24,6 @@ Dynamically resize the font to fill in the overlay region
         bonzo(@$.overlay)
           .css 'font-size', size
           .css 'padding-top', size * 0.125
-      attached: ->
-        window.addEventListener 'resize', =>
-          @resize()
-        @resize()
       clickLink: (evt) ->
         if @command
           @fire @command, @detail

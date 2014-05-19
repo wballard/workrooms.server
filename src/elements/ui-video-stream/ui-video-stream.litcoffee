@@ -74,8 +74,11 @@ to seeing themselves in a mirror -- backwards.
         if @hasAttribute('mirror')
           @$.video.classList.add 'mirror'
 
+
         if @stream
+          @$.video.classList.remove 'placeholder'
           @$.video.src = URL.createObjectURL(@stream)
           @$.video.play()
         else
+          @$.video.classList.add 'placeholder'
           @$.video.src = ''

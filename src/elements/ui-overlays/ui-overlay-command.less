@@ -4,14 +4,19 @@
 :host {
   display: block;
   position: relative;
+  overflow: hidden;
 }
 .overlay.command {
   box-sizing: border-box;
+  font-size: 10vmin;
+  padding: 1vim;
   position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: inline-block;
   text-decoration: none;
-  width: 100%;
-  height: 100%;
   text-align: center;
   z-index: 101;
   color: rgba(255, 255, 255, @nearlyOpaque);

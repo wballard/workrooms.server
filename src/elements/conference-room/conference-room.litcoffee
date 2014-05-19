@@ -84,6 +84,7 @@ Turning on the chat bar clears the counters.
 
       chatbaronChanged: ->
         @chatCount = 0 if @chatbaron
+        _.each @shadowRoot.querySelectorAll('ui-grid-tiler'), (x) -> x.resize()
 
 #Polymer Lifecycle
 Main thing going on here it setting up signalling service, which isn't an
