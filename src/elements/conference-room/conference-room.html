@@ -9,6 +9,7 @@
 <link rel="import" href="../ui-overlays/ui-overlay-image.html">
 <link rel="import" href="../ui-overlays/ui-overlay-icon.html">
 <link rel="import" href="../chat-box/build/chat-box.html">
+<link rel="import" href="../ui-grid-tiler/ui-grid-tiler.html">
 <polymer-element name="conference-room" attributes="room localstream calls sharedscreens nametag audioon videoon selfieon chatbaron root signallingServer focused">
 <template>
   <link rel="stylesheet" type="text/css" href="./conference-room.css">
@@ -80,7 +81,7 @@
     </section>
 
 
-    <section class="calls">
+    <ui-grid-tiler class="calls" tileSelector=".tile.video" startPercentage="99">
       <template if="{{selfieon}}">
         <ui-video-stream animated id="selfie" class="ui tile video" stream="{{localstream}}" selfie mirror></ui-video-stream>
       </template>
@@ -97,10 +98,10 @@
         </ui-overlay-image>
         </ui-video-call>
       </template>
-    </section>
+      </ui-grid-tiler>
 
 
-    <section class="screens" on-screenshared="{{screenShared}}" on-screenunshared="{{screenUnshared}}">
+    <ui-grid-tiler class="screens" tileSelector=".tile.screen" startPercentage="25" on-screenshared="{{screenShared}}" on-screenunshared="{{screenUnshared}}">
       <template repeat="{{screen in sharedscreens}}">
         <ui-shared-screen class="ui tile screen" screen="{{screen}}">
         <template if="{{screen.stream}}">
@@ -120,7 +121,7 @@
         </template>
         </ui-shared-screen>
       </template>
-    </section>
+    </ui-grid-tiler>
 
 
   </section>

@@ -20,6 +20,7 @@
     "jquery-ui": "~1.10.4",
     "chat-box": "https://github.com/wballard/chat-box.git",
     "open-sans-fontface": "~1.0.4",
-    "polymer": "~0.2.2"
+    "polymer": "~0.2.2",
+    "ui-grid-tiler": "https://github.com/wballard/ui-grid-tiler.git"
   }
 }

@@ -9,22 +9,13 @@
 .tile {
   background-color: transparent;
   margin: 1em;
-  flex: 1;
   box-sizing: border-box;
-}
-
-.tile.video {
-  min-height: 10%;
-  max-height: 46%;
-  min-width: 10%;
-  max-width: 46%;
+  display: inline-block;
 }
 
 .tile.screen {
-  min-height: 5%;
-  max-height: 15%;
-  min-width: 5%;
-  max-width: 15%;
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 :host {
@@ -37,20 +28,17 @@
   }
   .main {
     flex: 1;
+    display: flex;
+    flex-direction: column;
   }
   .calls {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    justify-content: center;
     padding: 1em;
+    flex: 1;
   }
   .screens {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    justify-content: center;
-    padding: 1em;
+    height: 10%;
+    padding: 0;
+    flex: 0.2;
     .snapshot {
       display: block;
       width: 100%;
