@@ -39,9 +39,9 @@ already has the video covered and will fade away on the far side.
         mediaConstraints =
           video:
             mandatory:
-              maxWidth: 640
+              maxWidth: 320
               minWidth: 320
-              maxHeight: 480
+              maxHeight: 240
               minHeight: 240
           audio: true
         getUserMedia mediaConstraints, (err, stream) =>
