@@ -5,11 +5,11 @@
 <link rel="import" href="../ui-shared-screen/ui-shared-screen.html">
 <link rel="import" href="../ui-toolbar/ui-toolbar.html">
 <link rel="import" href="../ui-sidebar/ui-sidebar.html">
-<link rel="import" href="../ui-overlays/ui-overlay-command.html">
 <link rel="import" href="../ui-overlays/ui-overlay-image.html">
 <link rel="import" href="../ui-overlays/ui-overlay-icon.html">
 <link rel="import" href="../chat-box/build/chat-box.html">
 <link rel="import" href="../ui-grid-tiler/ui-grid-tiler.html">
+<link rel="import" href="../ui-overlay/ui-overlay.html">
 <polymer-element name="conference-room" attributes="room localstream calls sharedscreens nametag audioon videoon selfieon chatbaron root signallingServer focused">
 <template>
   <link rel="stylesheet" type="text/css" href="./conference-room.css">
@@ -81,57 +81,55 @@
     </section>
 
 
-    <ui-grid-tiler class="calls" aspectRatio="1.1">
-      <template if="{{selfieon}}">
-        <ui-video-stream animated id="selfie" class="ui tile video" stream="{{localstream}}" selfie mirror></ui-video-stream>
-      </template>
-      <template id="calls" repeat="{{call in calls}}">
-        <ui-video-call class="ui tile video" call="{{call}}"
-        localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}"
-        remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}">
-        <ui-overlay-image image="images/loading-bars.svg" visible="{{!call.remotestream}}">
-        <ui-overlay-icon animated icon="fa-microphone-slash" visible="{{!call.remoteaudio}}">
-        <ui-overlay-image animated image="{{call.snapshot}}" muted="true" visible="{{!call.remotevideo}}">
-        <ui-video-stream animated stream="{{call.remotestream}}" snapshot="{{call.snapshot}}"></ui-video-stream>
-        </ui-overlay-image>
-        </ui-overlay-icon>
-        </ui-overlay-image>
-        </ui-video-call>
-      </template>
-      </ui-grid-tiler>
-
-
-    <ui-grid-tiler class="screens" aspectRatio="1.1" on-screenshared="{{screenShared}}" on-screenunshared="{{screenUnshared}}">
-      <template repeat="{{screen in sharedscreens}}">
-        <ui-shared-screen class="ui tile screen" screen="{{screen}}">
-        <template if="{{screen.stream}}">
-          <ui-overlay-command icon="fa-times-circle-o" command="screenunshared" detail="{{screen}}">
-          <ui-video-stream animated stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true" selfie></ui-video-stream>
-          <template repeat="{{share in screen.shares}}">
-            <ui-video-call animated class="hide" call="{{share}}"
-            localstream="{{screen.stream}}" localaudio="true" localvideo="true"
-            remotestream="{{screen.remotestream}}" remoteaudio="{{screen.remoteaudio}}" remotevideo="{{screen.remotevideo}}">
-          </template>
-          </ui-overlay-command>
-        </template>
-        <template if="{{!screen.stream}}">
-          <ui-overlay-command icon="fa-desktop" command="screenconnect" detail="{{screen}}" href="screen#{{screen.fromclientid}}/{{screen.screenid}}">
-          <img class="snapshot" src="{{screen.snapshot}}"></img>
-          </ui-overlay-command>
-        </template>
-        </ui-shared-screen>
-      </template>
+    <ui-grid-tiler class="calls">
+    <template if="{{selfieon}}">
+      <ui-video-stream animated id="selfie" class="ui tile video" stream="{{localstream}}" selfie mirror></ui-video-stream>
+    </template>
+    <template id="calls" repeat="{{call in calls}}">
+      <ui-video-call class="ui tile video" call="{{call}}"
+      localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}"
+      remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}">
+      <ui-overlay-image image="images/loading-bars.svg" visible="{{!call.remotestream}}">
+      <ui-overlay-icon animated icon="fa-microphone-slash" visible="{{!call.remoteaudio}}">
+      <ui-overlay-image animated image="{{call.snapshot}}" muted="true" visible="{{!call.remotevideo}}">
+      <ui-video-stream animated stream="{{call.remotestream}}" snapshot="{{call.snapshot}}"></ui-video-stream>
+      </ui-overlay-image>
+      </ui-overlay-icon>
+      </ui-overlay-image>
+      </ui-video-call>
+    </template>
     </ui-grid-tiler>
 
 
-  </section>
+    <ui-grid-tiler class="screens" on-screenshared="{{screenShared}}">
+    <template repeat="{{screen in sharedscreens}}">
+      <ui-shared-screen class="ui tile screen" screen="{{screen}}">
+      <template if="{{screen.stream}}">
+        <ui-overlay hoverclass="overlay-command fa fa-times-circle-o" on-click="{{screenUnshared}}" detail="{{screen}}">
+        <ui-video-stream animated stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true" selfie></ui-video-stream>
+        <template repeat="{{share in screen.shares}}">
+          <ui-video-call animated class="hide" call="{{share}}"
+          localstream="{{screen.stream}}" localaudio="true" localvideo="true"
+          remotestream="{{screen.remotestream}}" remoteaudio="{{screen.remoteaudio}}" remotevideo="{{screen.remotevideo}}">
+        </template>
+        </ui-overlay>
+      </template>
+      <template if="{{!screen.stream}}">
+        <a href="screen#{{screen.fromclientid}}/{{screen.screenid}}" target="_blank">
+          <ui-overlay hoverclass="overlay-command fa fa-play-circle-o">
+          <img class="snapshot" src="{{screen.snapshot}}"></img>
+          </ui-overlay>
+        </a>
+      </template>
+      </ui-shared-screen>
+    </template>
+    </ui-grid-tiler>
+
+    <ui-sidebar animated id="chatbar" class="ui floating right hide" visible="{{chatbaron}}">
+    <chat-box id="chat"></chat-box>
+    </ui-sidebar>
 
 
-  <ui-sidebar animated id="chatbar" class="ui floating right hide" visible="{{chatbaron}}">
-  <chat-box id="chat"></chat-box>
-  </ui-sidebar>
-
-
-</template>
-<script src="./conference-room.js"></script>
-</polymer-element>
+  </template>
+  <script src="./conference-room.js"></script>
+  </polymer-element>

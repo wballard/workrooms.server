@@ -8,14 +8,6 @@ This differs from a controller in that only the DOM scoping is used, events
 bubble up from contained elements, and messages are send back down
 via method calls and property sets. Nice and simple.
 
-#Attributes
-##localstream
-This is your local video/audio data stream.
-##calls
-Array of all active calls metadata. These aren't calls themselves, just
-identifiers used to data bind and generate `ui-video-call` elements.
-##nametag
-A string that is all about who you are.
 
     require '../elementmixin.litcoffee'
     uuid = require 'node-uuid'
@@ -27,6 +19,17 @@ A string that is all about who you are.
     cache = require('kizzy')('settings')
 
     Polymer 'conference-room',
+
+#Attributes
+##localstream
+This is your local video/audio data stream.
+
+##calls
+Array of all active calls metadata. These aren't calls themselves, just
+identifiers used to data bind and generate `ui-video-call` elements.
+
+##nametag
+A string that is all about who you are.
 
 #Screen Sharing
 Sharing a screen -- just buffer it so we can data bind for display.
@@ -51,7 +54,7 @@ screen with an actual stream, send it along so that other room members can know.
             snapshot: screen.snapshot
 
       screenUnshared: (evt) ->
-        screen = evt.detail
+        screen = evt.target.detail
         _.remove @sharedscreens, (s) -> s.screenid is screen.screenid
         @signallingServer.send 'deletescreen',
           screenid: screen.screenid
