@@ -93,9 +93,6 @@ Turning on the chat bar clears the counters.
 Main thing going on here it setting up signalling service, which isn't an
 element, it is just code.
 
-      ready: ->
-        @fire 'ready'
-
       attached: ->
         if bowser.browser.chrome
           @$.chromeonly.hide()
