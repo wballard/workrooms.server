@@ -40,18 +40,18 @@ already has the video covered and will fade away on the far side.
           video:
             mandatory:
               maxWidth: 320
-              minWidth: 320
               maxHeight: 240
-              minHeight: 240
           audio: true
         getUserMedia mediaConstraints, (err, stream) =>
           if err
+            console.log err
             @fire 'error', err
           else
 
 We need to filter the audio to make it a bit more easy on the ears
 so we'll get a MediaStream source that we can manipulate with the Web Audio api
 
+            console.log stream
             source = audioContext.createMediaStreamSource(stream)
             destination = audioContext.createMediaStreamDestination()
             lowPassFilter = audioContext.createBiquadFilter()
