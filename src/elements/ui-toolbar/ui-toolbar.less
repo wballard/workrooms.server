@@ -1,42 +1,9 @@
-@import '../../../bower_components/semantic/build/less/collections/menu.less';
 @import "../../less/variables";
-
 
 :host {
   display: block;
-  .ui.toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    .item {
-      font-size: 1.25rem;
-      padding: 0.5em 0.6em;
-      .fa-stack {
-        margin: -0.5em;
-      }
-    }
-    .label.count-0 {
-      display:none;
-    }
-    .toolicon {
-      min-width: 100%;
-      min-height: 100%;
-      text-align: center;
-      vertical-align: middle;
-    }
-    .tooloverlay {
-      font-size: 1.7em;
-      min-width: 100%;
-      min-height: 100%;
-      text-align: center;
-      vertical-align: middle;
-      font-weight: bolder;
-      color: #ef272d;
-      &:before {
-        content:'/';
-      }
-    }
-  }
+  background-color: @roomBackgroundColor;
+  display: flex;
   section {
     margin-right: 0.5em;
   }

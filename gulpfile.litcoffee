@@ -30,11 +30,6 @@ Sweep up static assest from all over.
         .pipe flatten()
         .pipe gulp.dest 'build/bower_components/images'
 
-      gulp.src '**/fonts/*.*', {cwd: 'bower_components'}
-        .pipe flatten()
-        .pipe gulp.dest 'build/fonts'
-        .pipe gulp.dest 'build/bower_components/fonts'
-
       gulp.src '**', {cwd: 'bower_components'}
         .pipe gulp.dest 'build/bower_components/'
 

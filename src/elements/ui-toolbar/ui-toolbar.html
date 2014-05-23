@@ -3,9 +3,7 @@
 <polymer-element name="ui-toolbar" attributes="">
 <template>
   <link rel="stylesheet" type="text/css" href="./ui-toolbar.css">
-  <div class="ui toolbar menu inverted">
-    <content></content>
-  </div>
+  <content></content>
 </template>
 <script src="./ui-toolbar.js"></script>
 </polymer-element>
@@ -18,29 +16,29 @@
 <script src="./ui-toolbar.js"></script>
 </polymer-element>
 
-<polymer-element name="ui-toggle-tool" attributes="icon togglechanged active tooltip hotkey">
+<polymer-element name="ui-toggle-tool" attributes="icon togglechanged active hotkey">
 <template>
   <link rel="stylesheet" type="text/css" href="./ui-toolbar-tool.css">
-  <a id="tool" class="item">
+  <span id="tool">
     <span class="fa-stack">
       <i id="icon" class="toolicon fa {{ icon }} fa-stack-1x"></i>
       <i id="overlay" class="tooloverlay fa disabled fa-stack-1x"></i>
     </span>
     <content></content>
-  </a>
+  </span>
 </template>
-<script src="../semantic/build/uncompressed/modules/popup.js"></script>
 <script src="./ui-toggle-tool.js"></script>
 </polymer-element>
 
-<polymer-element name="ui-command-tool" attributes="icon command detail href tooltip">
+<polymer-element name="ui-command-tool" attributes="icon command detail">
 <template>
   <link rel="stylesheet" type="text/css" href="./ui-toolbar-tool.css">
-  <a id="tool" class="item" href="{{href}}" on-click="{{clickLink}}">
-    <i class="fa {{icon}}"></i>
+  <span id="tool" on-click="{{clickLink}}">
+    <span class="fa-stack">
+      <i id="icon" class="toolicon fa {{ icon }} fa-stack-1x"></i>
+    </span>
     <content></content>
-  </a>
+  </span>
 </template>
-<script src="../semantic/build/uncompressed/modules/popup.js"></script>
 <script src="./ui-command-tool.js"></script>
 </polymer-element>

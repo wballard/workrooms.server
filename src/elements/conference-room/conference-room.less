@@ -1,4 +1,3 @@
-@import "../../../bower_components/font-awesome/less/font-awesome";
 @import '../../../bower_components/semantic/build/less/collections/message';
 @import "../../../bower_components/semantic/build/less/collections/form";
 @import "../../../bower_components/semantic/build/less/elements/input";
@@ -136,7 +135,7 @@
     }
   }
   .overlay-command {
-    color: rgba(255, 255, 255, @nearlyOpaque);
-    background-color: rgba(0, 0, 0, @faded);
+    color: fade(@white, @nearlyOpaque);
+    background-color: fade(@black, @faded);
   }
 }

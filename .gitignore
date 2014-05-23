@@ -1,5 +1,6 @@
 build/
 bower_components/
+node_modules/
 release/
 build.crx
 tags

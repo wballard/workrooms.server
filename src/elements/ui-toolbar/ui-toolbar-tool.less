@@ -1,7 +1,29 @@
 @import "../../less/variables";
-@import '../../../bower_components/semantic/build/less/collections/menu.less';
-@import '../../../bower_components/semantic/build/less/modules/popup.less';
+@import "../../../bower_components/font-awesome/less/font-awesome.less";
 
 :host {
   display: inline-block;
+  font-size: 1.5rem;
+  color: fade(@white, @nearlyOpaque);
+  &:hover {
+    color: @white;
+  }
+  .toolicon {
+    min-width: 100%;
+    min-height: 100%;
+    text-align: center;
+    vertical-align: middle;
+  }
+  .tooloverlay {
+    font-size: 1.7em;
+    min-width: 100%;
+    min-height: 100%;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: bolder;
+    color: #ef272d;
+    &:before {
+      content:'/';
+    }
+  }
 }
