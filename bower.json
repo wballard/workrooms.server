@@ -21,7 +21,6 @@
     "chat-box": "https://github.com/wballard/chat-box.git",
     "open-sans-fontface": "~1.0.4",
     "polymer": "~0.2.3",
-    "ui-grid-tiler": "https://github.com/wballard/ui-grid-tiler.git",
-    "ui-overlay": "https://github.com/wballard/ui-overlay.git"
+    "ui-grid-tiler": "https://github.com/wballard/ui-grid-tiler.git"
   }
 }

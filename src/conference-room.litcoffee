@@ -9,12 +9,12 @@ bubble up from contained elements, and messages are send back down
 via method calls and property sets. Nice and simple.
 
 
-    require '../elementmixin.litcoffee'
+    require './elementmixin.litcoffee'
     uuid = require 'node-uuid'
     _ = require 'lodash'
     _.str = require 'underscore.string'
     bowser = require 'bowser'
-    SignallingServer = require '../../scripts/signalling-server.litcoffee'
+    SignallingServer = require './scripts/signalling-server.litcoffee'
     getScreenMedia = require 'getscreenmedia'
     cache = require('kizzy')('settings')
 

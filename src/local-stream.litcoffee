@@ -16,7 +16,7 @@ Bad stuff. Fires.
 Fires when a stream is available, also after then `stream` property is set.
 
     getUserMedia = require('getusermedia')
-    audioContext = require('../../scripts/web-audio.litcoffee').getContext()
+    audioContext = require('./scripts/web-audio.litcoffee').getContext()
 
 
     Polymer 'local-stream',

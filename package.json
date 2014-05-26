@@ -46,7 +46,13 @@
     "urlparse": "0.0.1",
     "vulcanize": "~0.2.6",
     "webrtcsupport": "~0.7.1",
-    "ws": "~0.4.31"
+    "ws": "~0.4.31",
+    "ui-overlay": "git+https://github.com/wballard/ui-overlay.git",
+    "ui-toolbar": "git+https://github.com/wballard/ui-toolbar.git",
+    "ui-toolbar-button": "git+https://github.com/wballard/ui-toolbar-button.git",
+    "ui-tooltip": "git+https://github.com/wballard/ui-tooltip.git",
+    "ui-fonts": "git+https://github.com/wballard/ui-fonts.git",
+    "ui-grid-tiler": "git+https://github.com/wballard/ui-grid-tiler.git"
   },
   "scripts": {
     "install": "bin/install",

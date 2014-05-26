@@ -13,85 +13,35 @@ build script and watch for changes.
     hash = require 'gulp-hashmap'
     es = require 'event-stream'
 
-All of the semi status stuff, don't bother to rebuild as often
-
-    gulp.task 'assets', ->
-
-Sweep up static assest from all over.
-
-      gulp.src '**/*.{svg,png}', cwd: 'src'
-        .pipe flatten()
-        .pipe gulp.dest 'build/images'
-
-      gulp.src '**/*.*', {cwd: 'src/media'}
-        .pipe gulp.dest 'build/media'
-
-      gulp.src '**/*.{svg,png}', cwd: 'bower_components'
-        .pipe flatten()
-        .pipe gulp.dest 'build/bower_components/images'
-
-      gulp.src '**', {cwd: 'bower_components'}
-        .pipe gulp.dest 'build/bower_components/'
-
-And our custom elements.
-
-    gulp.task 'elements', ['elements-code', 'elements-style', 'elements-static']
-    gulp.task  'elements-code', ->
-      src ='src/elements'
-      dest = 'build/bower_components'
+    src ='src'
+    dest = 'build'
+    gulp.task 'compile.js', ->
       gulp.src '**/*.litcoffee', {cwd: src, read: false}
         .pipe browserify
           transform: ['coffeeify', 'browserify-data']
           debug: true
         .pipe rename extname: '.js'
         .pipe gulp.dest dest
-    gulp.task  'elements-style', ->
-      src ='src/elements'
-      dest = 'build/bower_components'
+    gulp.task 'compile', ['compile.js'], ->
       gulp.src '**/*.less', {cwd: src}
         .pipe less()
         .pipe gulp.dest dest
-    gulp.task  'elements-static', ->
-      src ='src/elements'
-      dest = 'build/bower_components'
       gulp.src '**/*.html', {cwd: src}
         .pipe gulp.dest dest
       gulp.src '**/*.svg', {cwd: src}
         .pipe gulp.dest dest
-
-    gulp.task 'pages', ['pages-code', 'pages-style', 'pages-static']
-    gulp.task  'pages-code', ->
-      src ='src/pages'
-      dest = 'build'
-      gulp.src '**/*.litcoffee', {cwd: src, read: false}
-        .pipe browserify
-          transform: ['coffeeify', 'browserify-data']
-          debug: true
-        .pipe rename extname: '.js'
-        .pipe gulp.dest dest
-    gulp.task  'pages-style', ->
-      src ='src/pages'
-      dest = 'build/'
-      gulp.src '**/*.less', {cwd: src}
-        .pipe less()
-        .pipe gulp.dest dest
-    gulp.task  'pages-static', ->
-      src ='src/pages'
-      dest = 'build/'
-      gulp.src '**/*.html', {cwd: src}
-        .pipe gulp.dest dest
-      gulp.src '**/*.svg', {cwd: src}
+      gulp.src '**/*.ogg', {cwd: src}
         .pipe gulp.dest dest
 
 Vulcanize for the speed.
 
-    gulp.task 'vulcanize', ['elements', 'pages', 'assets'], ->
+    gulp.task 'vulcanize', ['compile'], ->
       gulp.src ''
         .pipe shell([
           'vulcanize --inline --strip -o build/index.html build/index.html'
           ])
 
-    gulp.task 'devvulcanize', ['elements', 'pages', 'assets'], ->
+    gulp.task 'devvulcanize', ['compile'], ->
       gulp.src ''
         .pipe shell([
           'vulcanize --inline -o build/index.html build/index.html'
@@ -101,16 +51,10 @@ Vulcanize for the speed.
           'ctags -R src/'
           ])
 
-The default task leaves a hash file to support hot reloading.
+The main build task.
 
-    gulp.task 'build', ['vulcanize'], ->
-      gulp.src 'build/index.html'
-        .pipe concat 'build/all'
-        .pipe hash 'hashmap.json'
-        .pipe gulp.dest 'build'
+    gulp.task 'build', ['vulcanize']
 
-    gulp.task 'dev', ['devvulcanize'], ->
-      gulp.src 'src/**/*.*'
-        .pipe concat 'build/all'
-        .pipe hash 'hashmap.json'
-        .pipe gulp.dest 'build'
+Dev task, not the same optimziation on the vulcanize.
+
+    gulp.task 'dev', ['devvulcanize']

@@ -1,6 +1,6 @@
 Main page script. Not particularly interesting as everything is an element.
 
-    require '../elements/elementmixin.litcoffee'
+    require './elementmixin.litcoffee'
     domready = require 'domready'
 
     version = undefined

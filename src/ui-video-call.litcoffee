@@ -21,10 +21,10 @@ This is the identifier of this side of the running call.
 ##call
 This is the call metadata object.
 
-    require('../elementmixin.litcoffee')
+    require('./elementmixin.litcoffee')
     rtc = require('webrtcsupport')
     buffered = require('rtc-bufferedchannel')
-    stuff = require('../../scripts/web-audio.litcoffee')
+    stuff = require('./scripts/web-audio.litcoffee')
     uuid = require('node-uuid')
     _ = require('lodash')
 
