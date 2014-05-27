@@ -1,28 +1,14 @@
-@borderRadius: 0;
-@roomBackgroundColor: fade(#333, 98%);
-@transition: 0.2s ease;
-@white: #fff;
-@black: rgba(0,0,0,0.25);
-@green:#5BBD72;
-@red: #D95C5C;
-@nearlyOpaque: 90%;
-@faded: 50%;
+@import "../../node_modules/ui-styles/variables";
 
-.icon {
-  .fa {
-    vertical-align: text-bottom;
-    font-family: FontAwesome;
-  }
+@roomBackgroundColor: fade(@black, 80%);
+
+[animated] {
+  opacity: 1.0;
+  .transition(width @transition, opacity @transition;);
 }
 
-.ui.inverted {
-  .ui.left.icon.input > .icon {
-    opacity: 1;
-    color: rgb(255,255,255);
-  }
+[animated].hide {
+  display: inline-block !important;
+  width: 0 !important;
+  opacity: 0 !important;
 }
-
-.hide {
-  display: none !important;
-}
-

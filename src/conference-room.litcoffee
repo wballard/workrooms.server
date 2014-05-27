@@ -31,8 +31,24 @@ identifiers used to data bind and generate `ui-video-call` elements.
 ##nametag
 A string that is all about who you are.
 
+      selfieon: false
+
 #Screen Sharing
 Sharing a screen -- just buffer it so we can data bind for display.
+
+      shareAScreen: ->
+        if document.getElementById('workrooms-extension-is-installed')
+          getScreenMedia (err, screenStream) =>
+            if err
+              @fire 'error', err
+            else
+              console.log screenStream
+              @screenSharing screenStream
+        else
+          chrome.webstore.install "https://chrome.google.com/webstore/detail/hndpmcmfdenfebmdoakeeeinlllkhapk", =>
+            @shareAScreen()
+          , (err) =>
+            console.log 'extension install failed', err
 
       screenSharing: (screenStream) ->
         screen =
@@ -137,19 +153,6 @@ Hello from the server! The roomChanged event handler will hook the rest of the r
 
 Screensharing, this asks for a screen to share and adds it to the room.
 
-        @addEventListener 'screenshare', =>
-          if document.getElementById('workrooms-extension-is-installed')
-            getScreenMedia (err, screenStream) =>
-              if err
-                @fire 'error', err
-              else
-                console.log screenStream
-                @screenSharing screenStream
-          else
-            chrome.webstore.install "https://chrome.google.com/webstore/detail/hndpmcmfdenfebmdoakeeeinlllkhapk", =>
-              @fire 'screenshare'
-            , (err) =>
-              console.log 'extension install failed', err
 
 ##Call Tracking
 Keeps track of all your calls, and forwards them to all connected call

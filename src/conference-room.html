@@ -5,8 +5,10 @@
 <link rel="import" href="../node_modules/ui-toolbar/build/ui-toolbar.html">
 <link rel="import" href="../node_modules/ui-toolbar-button/build/ui-toolbar-button.html">
 <link rel="import" href="../node_modules/ui-tooltip/build/ui-tooltip.html">
+<link rel="import" href="../node_modules/ui-input/build/ui-input.html">
 <link rel="import" href="../node_modules/ui-grid-tiler/build/ui-grid-tiler.html">
 <link rel="import" href="../node_modules/ui-overlay/build/ui-overlay.html">
+<link rel="import" href="../node_modules/ui-resizebar/build/ui-resizebar.html">
 <polymer-element name="conference-room" attributes="room localstream calls sharedscreens nametag audioon videoon selfieon chatbaron root signallingServer focused">
 <template>
   <link rel="stylesheet" type="text/css" href="./conference-room.css">
@@ -25,106 +27,112 @@
   <section class="main">
 
     <ui-toolbar>
-    <ui-toggle-tool icon="fa-eye" togglechanged="selfie" active="{{selfieon}}" tooltip="Video selfie (s)" hotkey="s"></ui-toggle-tool>
-    <ui-toggle-tool icon="fa-video-camera" togglechanged="video" active="{{videoon}}" tooltip="Video mute (v)" hotkey="v"></ui-toggle-tool>
-    <ui-toggle-tool icon="fa-microphone" togglechanged="audio" active="{{audioon}}" tooltip="Audio mute (spacebar)" hotkey="32"></ui-toggle-tool>
-    <ui-toggle-tool icon="fa-comments" togglechanged="chatbar" active="{{chatbaron}}" tooltip="Text chat (enter)" hotkey="13">
-    <div class="ui label red count-{{chatCount}}">{{chatCount}}</div>
-    </ui-toggle-tool>
-    <ui-command-tool icon="fa-desktop" command="screenshare" tooltip="Share your screens"></ui-command-tool>
-    <ui-toolbar-pad></ui-toolbar-pad>
-    <section class="ui form inverted">
-      <div class="ui field">
-        <div class="ui left labeled icon input">
-          <i class="fa fa-tag icon"></i>
-          <input type="text" value="{{nametag}}" placeholder="Your nickname here" />
-        </div>
-      </div>
-    </section>
+      <ui-tooltip label="Video selfie (s)">
+        <ui-toolbar-button icon="fa-eye" toggle="true" active="{{selfieon}}" hotkey="s"></ui-toolbar-button>
+      </ui-tooltip>
+      <ui-tooltip label="Video mute (v)">
+        <ui-toolbar-button icon="fa-video-camera" toggle="true" active="{{videoon}}" hotkey="v"></ui-toolbar-button>
+      </ui-tooltip>
+      <ui-tooltip label="Audio mute (spacebar)">
+        <ui-toolbar-button icon="fa-microphone" toggle="true" active="{{audioon}}" hotkey="32"></ui-toolbar-button>
+      </ui-tooltip>
+      <ui-tooltip label="Text chat (enter)">
+        <ui-toolbar-button icon="fa-comments" toggle="true" active="{{chatbaron}}" hotkey="13">
+          <span class="ui label count-{{chatCount}}">{{chatCount}}</span>
+        </ui-toolbar-button>
+      </ui-tooltip>
+      <ui-tooltip label="Share your screen">
+        <ui-toolbar-button icon="fa-desktop" on-click="{{shareAScreen}}" ></ui-toolbar-button>
+      </ui-tooltip>
+      <section class="pad"></section>
+      <ui-input value="{{nametag}}" placeholder="Your nickname here" icon="fa-tag" class="inverted"></ui-input>
     </ui-toolbar>
 
 
-    <section class="ui room-selector {{ { full: (!calls || calls.length === 0), mini: calls.length > 0 } | tokenList }}">
-      <div class="ui large form">
-        <div class="ui field">
-          <div class="ui massive icon input">
-            <input id="roomSelector" type="text" value="{{roomLabel}}" on-keyup="{{roomSelectorKeypressed}}" placeholder="Enter a workroom name to create/join" />
-            <i class="circular green checkmark icon {{ { hidden: roomLabel.length < 2 } | tokenList }}"></i>
+    <section class="main-body">
+      <section class="main-body-calls">
+        <section class="ui room-selector {{ { full: (!calls || calls.length === 0), mini: calls.length > 0 } | tokenList }}">
+          <div class="ui large form">
+            <div class="ui field">
+              <div class="ui massive icon input">
+                <input id="roomSelector" type="text" value="{{roomLabel}}" on-keyup="{{roomSelectorKeypressed}}" placeholder="Enter a workroom name to create/join" />
+                <i class="circular green checkmark icon {{ { hidden: roomLabel.length < 2 } | tokenList }}"></i>
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-      <template if="{{ !(roomLabel && roomLabel.length >= 2) }}">
-        <div class="ui notice icon signin message">
-          <i class="ui icon fa fa-users fa-4x"></i>
-          <div class="content">
-            <div class="header">Hello!</div>
-            <p>
-              Welcome to workrooms, choose a room to start collaborating.  If the room doesn't already exist, we'll create it for you so others can join you.
-            </p>
-          </div>
-        </div>
-      </template>
-      <template if="{{roomLabel && roomLabel.length >= 2}}">
-        <div class="ui notice icon signin message">
-          <i class="ui icon fa fa-eye fa-4x"></i>
-          <div class="content">
-            <div class="header">Where is Everyone?</div>
-            <p>
-              This room is currently empty, just waiting for others to show up.  You should probably share this url anyone you want to join.
-            </p>
-          </div>
-        </div>
-      </template>
-    </section>
+          <template if="{{ !(roomLabel && roomLabel.length >= 2) }}">
+            <div class="ui notice icon signin message">
+              <i class="ui icon fa fa-users fa-4x"></i>
+              <div class="content">
+                <div class="header">Hello!</div>
+                <p>
+                  Welcome to workrooms, choose a room to start collaborating.  If the room doesn't already exist, we'll create it for you so others can join you.
+                </p>
+              </div>
+            </div>
+          </template>
+          <template if="{{roomLabel && roomLabel.length >= 2}}">
+            <div class="ui notice icon signin message">
+              <i class="ui icon fa fa-eye fa-4x"></i>
+              <div class="content">
+                <div class="header">Where is Everyone?</div>
+                <p>
+                  This room is currently empty, just waiting for others to show up.  You should probably share this url anyone you want to join.
+                </p>
+              </div>
+            </div>
+          </template>
+        </section>
 
 
-    <ui-grid-tiler class="calls" aspectRatio="1.33" selector=".tile">
-    <template if="{{selfieon}}">
-      <ui-video-stream animated id="selfie" class="ui tile video" stream="{{localstream}}" selfie mirror></ui-video-stream>
-    </template>
-    <template id="calls" repeat="{{call in calls}}">
-      <ui-video-call class="ui tile video" call="{{call}}"
-      localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}"
-      remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}">
-      <ui-overlay-image image="images/loading-bars.svg" visible="{{!call.remotestream}}">
-      <ui-overlay-icon animated icon="fa-microphone-slash" visible="{{!call.remoteaudio}}">
-      <ui-overlay-image animated image="{{call.snapshot}}" muted="true" visible="{{!call.remotevideo}}">
-      <ui-video-stream animated stream="{{call.remotestream}}" snapshot="{{call.snapshot}}"></ui-video-stream>
-      </ui-overlay-image>
-      </ui-overlay-icon>
-      </ui-overlay-image>
-      </ui-video-call>
-    </template>
-    </ui-grid-tiler>
-
-
-    <ui-grid-tiler class="screens" on-screenshared="{{screenShared}}" selector=".tile">
-    <template repeat="{{screen in sharedscreens}}">
-      <ui-shared-screen class="ui tile screen" screen="{{screen}}">
-      <template if="{{screen.stream}}">
-        <ui-overlay hoverclass="overlay-command fa fa-times-circle-o" on-click="{{screenUnshared}}" detail="{{screen}}">
-        <ui-video-stream animated stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true" selfie></ui-video-stream>
-        <template repeat="{{share in screen.shares}}">
-          <ui-video-call animated class="hide" call="{{share}}"
-          localstream="{{screen.stream}}" localaudio="true" localvideo="true"
-          remotestream="{{screen.remotestream}}" remoteaudio="{{screen.remoteaudio}}" remotevideo="{{screen.remotevideo}}">
+        <ui-grid-tiler class="calls" aspectRatio="1.33" selector=".tile">
+        <ui-video-stream animated id="selfie" class="ui tile video {{ {hide: !selfieon} | tokenList }}" stream="{{localstream}}" selfie mirror></ui-video-stream>
+        <template id="calls" repeat="{{call in calls}}">
+          <ui-video-call class="ui tile video" call="{{call}}"
+          localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}"
+          remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}">
+          <ui-overlay-image image="images/loading-bars.svg" visible="{{!call.remotestream}}">
+          <ui-overlay-icon animated icon="fa-microphone-slash" visible="{{!call.remoteaudio}}">
+          <ui-overlay-image animated image="{{call.snapshot}}" muted="true" visible="{{!call.remotevideo}}">
+          <ui-video-stream animated stream="{{call.remotestream}}" snapshot="{{call.snapshot}}"></ui-video-stream>
+          </ui-overlay-image>
+          </ui-overlay-icon>
+          </ui-overlay-image>
+          </ui-video-call>
         </template>
-        </ui-overlay>
-      </template>
-      <template if="{{!screen.stream}}">
-        <a href="screen#{{screen.fromclientid}}/{{screen.screenid}}" target="_blank">
-          <ui-overlay hoverclass="overlay-command fa fa-play-circle-o">
-          <img class="snapshot" src="{{screen.snapshot}}"></img>
-          </ui-overlay>
-        </a>
-      </template>
-      </ui-shared-screen>
-    </template>
-    </ui-grid-tiler>
+        </ui-grid-tiler>
 
-    <ui-sidebar animated id="chatbar" class="ui floating right hide" visible="{{chatbaron}}">
-    <chat-box id="chat"></chat-box>
-    </ui-sidebar>
+
+        <ui-grid-tiler class="screens" on-screenshared="{{screenShared}}" selector=".tile">
+        <template repeat="{{screen in sharedscreens}}">
+          <ui-shared-screen class="ui tile screen" screen="{{screen}}">
+          <template if="{{screen.stream}}">
+            <ui-overlay hoverclass="overlay-command fa fa-times-circle-o" on-click="{{screenUnshared}}" detail="{{screen}}">
+            <ui-video-stream animated stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true" selfie></ui-video-stream>
+            <template repeat="{{share in screen.shares}}">
+              <ui-video-call animated class="hide" call="{{share}}"
+              localstream="{{screen.stream}}" localaudio="true" localvideo="true"
+              remotestream="{{screen.remotestream}}" remoteaudio="{{screen.remoteaudio}}" remotevideo="{{screen.remotevideo}}">
+            </template>
+            </ui-overlay>
+          </template>
+          <template if="{{!screen.stream}}">
+            <a href="screen#{{screen.fromclientid}}/{{screen.screenid}}" target="_blank">
+              <ui-overlay hoverclass="overlay-command fa fa-play-circle-o">
+              <img class="snapshot" src="{{screen.snapshot}}"></img>
+              </ui-overlay>
+            </a>
+          </template>
+          </ui-shared-screen>
+        </template>
+        </ui-grid-tiler>
+      </section>
+
+      <ui-resizebar left animated id="chatbar" class="main-right {{ {hide: !chatbaron} | tokenList}}">
+      things
+      <chat-box id="chat"></chat-box>
+      </ui-resizebar>
+    </section>
 
 
   </template>
