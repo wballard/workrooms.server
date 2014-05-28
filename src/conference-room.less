@@ -1,4 +1,5 @@
 @import "less/variables";
+@import "less/typography";
 
 
 :host {
@@ -6,9 +7,6 @@
   height: 100%;
   display: flex;
   flex-direction: row;
-  chat-box {
-    color: #111;
-  }
   .main {
     flex: 1;
     display: flex;
@@ -71,22 +69,24 @@
   .room-selector {
     display:none;
     position: initial;
+    ui-input {
+      background-color: @white;
+      font-size: 1.5rem;
+    }
+    .content {
+      background-color: @white;
+      padding: 1em;
+      margin-top: 1em;
+      font-size: 1.5rem;
+      h2 {
+        margin-top: 0;
+      }
+    }
   }
 
   .room-selector.full {
     display:block;
     margin: 2em 15% 0;
-    .ui.form label {
-      display:none;
-    }
-
-    .circular.checkmark.icon {
-      -webkit-transition: opacity .5s;
-      opacity: 1 !important;
-      &.hidden {
-        opacity: 0 !important;
-      }
-    }
   }
   .overlay-command {
     color: fade(@white, @nearlyOpaque);

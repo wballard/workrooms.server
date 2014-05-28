@@ -51,36 +51,23 @@
 
     <section class="main-body">
       <section class="main-body-calls">
-        <section class="ui room-selector {{ { full: (!calls || calls.length === 0), mini: calls.length > 0 } | tokenList }}">
-          <div class="ui large form">
-            <div class="ui field">
-              <div class="ui massive icon input">
-                <input id="roomSelector" type="text" value="{{roomLabel}}" on-keyup="{{roomSelectorKeypressed}}" placeholder="Enter a workroom name to create/join" />
-                <i class="circular green checkmark icon {{ { hidden: roomLabel.length < 2 } | tokenList }}"></i>
-              </div>
-            </div>
-          </div>
+        <section class="room-selector {{ { full: (!calls || calls.length === 0), mini: calls.length > 0 } | tokenList }}">
+          <ui-input id="roomSelector" value="{{roomLabel}}" on-keyup="{{roomSelectorKeypressed}}" icon="fa-users" placeholder="Enter a workroom name to create/join"></ui-input>
           <template if="{{ !(roomLabel && roomLabel.length >= 2) }}">
-            <div class="ui notice icon signin message">
-              <i class="ui icon fa fa-users fa-4x"></i>
-              <div class="content">
-                <div class="header">Hello!</div>
-                <p>
-                  Welcome to workrooms, choose a room to start collaborating.  If the room doesn't already exist, we'll create it for you so others can join you.
-                </p>
-              </div>
-            </div>
+            <section class="content">
+              <h2>Hello!</h2>
+              <p>
+                Welcome to Workrooms, choose a room to start collaborating.  If the room doesn't already exist, we'll create it for you so others can join you.
+              </p>
+            </section>
           </template>
           <template if="{{roomLabel && roomLabel.length >= 2}}">
-            <div class="ui notice icon signin message">
-              <i class="ui icon fa fa-eye fa-4x"></i>
-              <div class="content">
-                <div class="header">Where is Everyone?</div>
-                <p>
-                  This room is currently empty, just waiting for others to show up.  You should probably share this url anyone you want to join.
-                </p>
-              </div>
-            </div>
+            <section class="content">
+              <h2>Where is Everyone?</h2>
+              <p>
+                This room is currently empty, just waiting for others to show up.  You should probably share this url with anyone you want to join.
+              </p>
+            </section>
           </template>
         </section>
 

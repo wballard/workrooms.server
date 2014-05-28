@@ -15,12 +15,6 @@
   ],
   "dependencies": {
     "jquery": "~2.1.0",
-    "semantic": "~0.14.0",
-    "font-awesome": "~4.1.0",
-    "jquery-ui": "~1.10.4",
-    "chat-box": "https://github.com/wballard/chat-box.git",
-    "open-sans-fontface": "~1.0.4",
-    "polymer": "~0.2.3",
-    "ui-grid-tiler": "https://github.com/wballard/ui-grid-tiler.git"
+    "polymer": "~0.2.3"
   }
 }

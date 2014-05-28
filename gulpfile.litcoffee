@@ -15,14 +15,14 @@ build script and watch for changes.
 
     src ='src'
     dest = 'build'
-    gulp.task 'compile.js', ->
+    gulp.task 'compile js', ->
       gulp.src '**/*.litcoffee', {cwd: src, read: false}
         .pipe browserify
           transform: ['coffeeify', 'browserify-data']
           debug: true
         .pipe rename extname: '.js'
         .pipe gulp.dest dest
-    gulp.task 'compile', ['compile.js'], ->
+    gulp.task 'compile', ['compile js'], ->
       gulp.src '**/*.less', {cwd: src}
         .pipe less()
         .pipe gulp.dest dest

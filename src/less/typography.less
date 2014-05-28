@@ -1,0 +1,200 @@
+
+@import "../../node_modules/ui-styles/variables.less";
+
+html {
+  font-style: normal;
+  font-weight: normal;
+  color: #454545;
+  -webkit-font-smoothing: antialiased;
+}
+
+.lede {
+  font-size: 2.2rem;
+}
+
+.body-text {
+  font-size: 1.6rem;
+}
+
+.small-body-text {
+  font-size: 1.2rem;
+}
+
+.disclaimer-text {
+  font-size: 1.2rem;
+}
+
+a {
+  margin-top: 0;
+  margin-right: 0;
+  margin-bottom: 0;
+  margin-left: 0;
+  padding-top: 0;
+  padding-right: 0;
+  padding-bottom: 0;
+  padding-left: 0;
+  background: transparent;
+  vertical-align: baseline;
+  font-style: normal;
+  font-weight: normal;
+  font-weight: 700;
+  color: @red;
+  text-decoration: none;
+  cursor: pointer;
+}
+a img {
+  border: 0 none;
+  text-decoration: none;
+}
+a:hover {
+  color: darken(@red, 10%);
+}
+
+h1 {
+  font-size: 4.2rem;
+  font-weight: 200;
+}
+@media (max-width: 62em) {
+  h1 {
+    font-size: 3.675rem;
+  }
+}
+@media (max-width: 40em) {
+  h1 {
+    font-size: 3.15rem;
+  }
+}
+
+h2 {
+  font-size: 3.6rem;
+  font-weight: 200;
+}
+@media (max-width: 62em) {
+  h2 {
+    font-size: 3.15rem;
+  }
+}
+@media (max-width: 40em) {
+  h2 {
+    font-size: 2.7rem;
+  }
+}
+
+h3 {
+  font-size: 3rem;
+  font-weight: 700;
+}
+@media (max-width: 62em) {
+  h3 {
+    font-size: 2.625rem;
+  }
+}
+@media (max-width: 40em) {
+  h3 {
+    font-size: 2.25rem;
+  }
+}
+
+h4 {
+  font-size: 2.4rem;
+  font-weight: 200;
+}
+
+h5 {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+h6 {
+  font-size: 1.8rem;
+  font-weight: 100;
+}
+
+small {
+  display: inline-block;
+  *zoom: 1;
+  *display: inline;
+}
+
+p, h1, h2, h3, h4, h5, h6, ul, ol, dl, blockquote {
+  line-height: 1.2em;
+  letter-spacing: .035em;
+  clear: inherit;
+  margin-bottom: 0.33333em;
+  margin-top: 0.6666em;
+  vertical-align: middle;
+}
+
+p {
+  word-wrap: break-word;
+  font-weight: 200;
+}
+p:only-child {
+  margin-top: 0;
+  margin-right: 0;
+  margin-bottom: 0;
+  margin-left: 0;
+}
+
+b {
+  font-weight: 700;
+}
+
+blockquote {
+  width: 75%;
+  margin-top: 0;
+  margin-right: auto;
+  margin-bottom: 0;
+  margin-left: auto;
+  border-left: 3px solid @grey;
+  color: @grey;
+  font-style: italic;
+  padding-left: 1em;
+}
+
+q {
+  quotes: "\201C" "\201D" "\2018" "\2019";
+}
+
+abbr {
+  border-bottom: 1px dotted @grey;
+  cursor: help;
+}
+
+address {
+  font-style: normal;
+}
+
+sup {
+  vertical-align: text-top;
+}
+
+sub {
+  vertical-align: bottom;
+}
+
+mark {
+  background: yellow;
+}
+
+pre {
+  margin-top: 1em;
+  margin-right: 0;
+  margin-bottom: 0;
+  margin-left: 0;
+  background-color: @hairline-grey;
+  -webkit-background-clip: padding-box;
+  -moz-background-clip: padding-box;
+  background-clip: padding-box;
+  overflow: auto;
+  padding: 1em;
+  word-wrap: break-word;
+}
+
+kbd, samp {
+  font-family: Inconsolata, Monaco, Consolas, "Andale Mono", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace;
+}
+
+kbd, samp {
+  color: @grey
+}
