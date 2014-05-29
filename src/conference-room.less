@@ -1,5 +1,5 @@
 @import "less/variables";
-@import "less/typography";
+@import "../node_modules/ui-styles/typography";
 
 
 :host {
@@ -7,91 +7,81 @@
   height: 100%;
   display: flex;
   flex-direction: row;
-  .main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.main-body {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+}
+.main-body-calls {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.main-right {
+  width: 20em;
+  background-color: @white;
+}
+.calls {
+  flex: 1;
+  padding: 1em;
+}
+.screens {
+  height: 10%;
+  flex: 0.2;
+  .snapshot {
+    display: block;
+    width: 100%;
+    height: 100%;
   }
-  .main-body {
-    flex: 1;
-    display: flex;
-    flex-direction: row;
+}
+.notices {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  padding: 2em;
+  .ui.notice {
+    border-radius: 0;
   }
-  .main-body-calls {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-  .main-right {
-    width: 20em;
+}
+.room-selector {
+  display:none;
+  position: initial;
+  ui-input {
     background-color: @white;
+    font-size: 1.5rem;
   }
-  .calls {
-    flex: 1;
-  }
-  .screens {
-    height: 10%;
-    flex: 0.2;
-    .snapshot {
-      display: block;
-      width: 100%;
-      height: 100%;
+  .content {
+    border: 1px solid @hairline-grey;
+    background-color: @white;
+    padding: 1em;
+    margin-top: 1em;
+    font-size: 1.5rem;
+    h2 {
+      margin-top: 0;
     }
   }
-  .notices {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-    justify-content: center;
-    padding: 2em;
-    .ui.notice {
-      border-radius: 0;
-    }
-  }
-  .ui.large.form {
-    input {
-      border-radius: 0;
-    }
-  }
-  .ui.icon.signin.message {
-    text-decoration: none;
-    .icon.fa {
-      opacity: 1;
-    }
-    .header {
-      color: #ef272d;
-    }
-    .action.header {
-      text-decoration: underline;
-    }
-  }
+}
 
-  .room-selector {
-    display:none;
-    position: initial;
-    ui-input {
-      background-color: @white;
-      font-size: 1.5rem;
-    }
-    .content {
-      background-color: @white;
-      padding: 1em;
-      margin-top: 1em;
-      font-size: 1.5rem;
-      h2 {
-        margin-top: 0;
-      }
-    }
-  }
+.room-selector.full {
+  display:block;
+  margin: 2em 15% 0;
+}
 
-  .room-selector.full {
-    display:block;
-    margin: 2em 15% 0;
-  }
-  .overlay-command {
-    color: fade(@white, @nearlyOpaque);
-    background-color: fade(@black, @faded);
-  }
+.overlay-command {
+  color: fade(@white, @nearlyOpaque);
+  background-color: fade(@black, @faded);
+}
+.overlay-image {
+  width: 100%;
+  height: 100%;
 }
 
 .pad {
@@ -114,18 +104,18 @@ ui-toolbar {
     width: 15em;
     font-size: 0.85em;
   }
-}
-
-.ui.label {
-  display: inline-block;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  font-size: 0.5em;
-  background-color: transparent;
-  color: white;
-  padding: 0.125em;
-  &.count-0 {
-    display: none;
+  .label {
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 0.5em;
+    background-color: transparent;
+    color: white;
+    padding: 0.125em;
+    &.count-0 {
+      display: none;
+    }
   }
 }
+

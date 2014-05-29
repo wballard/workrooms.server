@@ -7,8 +7,17 @@
   .transition(width @transition, opacity @transition;);
 }
 
-[animated].hide {
+[animated][hide] {
   display: inline-block !important;
   width: 0 !important;
+  opacity: 0 !important;
+}
+
+[fadeout] {
+  opacity: 1.0;
+  .transition(opacity @transition);
+}
+
+[fadeout][hide] {
   opacity: 0 !important;
 }
