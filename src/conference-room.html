@@ -81,11 +81,12 @@
           remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}">
           <ui-overlay visible="{{!call.remotestream}}">
             <img overlay class="overlay-image" src="images/loading-bars.svg" fadeout hide?="{{call.remotestream}}"></img>
-            <ui-overlay-icon animated icon="fa-microphone-slash" visible="{{!call.remoteaudio}}">
-            <ui-overlay-image animated image="{{call.snapshot}}" muted="true" visible="{{!call.remotevideo}}">
-            <ui-video-stream animated stream="{{call.remotestream}}" snapshot="{{call.snapshot}}"></ui-video-stream>
-            </ui-overlay-image>
-            </ui-overlay-icon>
+            <ui-overlay animated icon="fa-microphone-slash" visible="{{!call.remoteaudio}}">
+              <i overlay class="overlay-dogear fa fa-microphone-slash" fadeout hide?="{{call.remoteaudio}}"></i>
+              <ui-overlay-image animated image="{{call.snapshotx}}" muted="true" visible="{{!call.remotevideo}}">
+              <ui-video-stream animated stream="{{call.remotestream}}" snapshot="{{call.snapshot}}"></ui-video-stream>
+              </ui-overlay-image>
+            </ui-overlay>
           </ui-overlay>
           </ui-video-call>
         </template>

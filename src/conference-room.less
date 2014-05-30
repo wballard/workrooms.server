@@ -1,5 +1,6 @@
 @import "less/variables";
 @import "../node_modules/ui-styles/typography";
+@import "../node_modules/ui-fonts/build/font-awesome";
 
 
 :host {
@@ -82,6 +83,34 @@
 .overlay-image {
   width: 100%;
   height: 100%;
+}
+.overlay-dogear {
+  color: white;
+  font-size: 0.1em;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 3em;
+  height: 3em;
+  overflow: hidden;
+  &:before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0.5em;
+  }
+  &:after {
+    display: block;
+    content: '';
+    width: 150%;
+    height: 150%;
+    background-color: @grey;
+    position: absolute;
+    top: -80%;
+    left: -80%;
+    z-index: -1;
+    .transform(rotate(-45deg));
+  }
 }
 
 .pad {
