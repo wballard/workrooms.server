@@ -19,8 +19,8 @@ pixellation.
 
     _ = require 'lodash'
     bonzo = require 'bonzo'
-    require '../elementmixin.litcoffee'
-    audio = require '../../scripts/web-audio.litcoffee'
+    require './elementmixin.litcoffee'
+    audio = require './scripts/web-audio.litcoffee'
     audioContext = audio.getContext()
 
     Polymer 'ui-video-stream',

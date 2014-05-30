@@ -1,27 +1,14 @@
 Screenshare 'room' fills up the entire tab with screen sharing.
 
-    SignallingServer = require '../../scripts/signalling-server.litcoffee'
+    SignallingServer = require './scripts/signalling-server.litcoffee'
     _ = require 'lodash'
-    bonzo = require 'bonzo'
 
     Polymer 'screenshare-room',
 
+      videoplay: ->
+        @resize()
+
 #Attributes
-##size
-Scale down the screen display so that it always fits in the available screen
-space. But never scale up, that makes fat pixels. Nobody likes fat pixels.
-
-      sizeChanged: ->
-        offset = bonzo(@).offset()
-        size = bonzo(@shadowRoot.querySelector('ui-video-stream')).offset()
-        flowWidth = Math.max size.width, @size.width
-        flowHeight = Math.max size.height, @size.height
-        scale = Math.min offset.width / flowWidth, offset.height / flowHeight, 1
-        bonzo(@shadowRoot.querySelector('ui-video-stream')).css(
-          '-webkit-transform': "scale(#{scale})"
-          '-webkit-transform-origin': '50% 0px'
-        )
-
 ##screenLink
 The screen is an encoded `client/screen` pair. When it changes, go to the
 server to signal inbound and outbound call pairs.
@@ -32,14 +19,27 @@ server to signal inbound and outbound call pairs.
           toclientid: @signallingServer.clientid
           screenid: @screenLink.split('/')[1]
 
+#Methods
+##size
+Scale down the screen display so that it always fits in the available screen
+space. But never scale up, that makes fat pixels. Nobody likes fat pixels.
+
+This is a video stream, so you work by constraining the width.
+
+      resize: ->
+        stream = @shadowRoot.querySelector('ui-video-stream')
+        aspectRatio = stream.videoSize.width / stream.videoSize.height
+        widthFromHeightConstraint = @clientHeight * aspectRatio
+        widthFromWidthConstraint = @clientWidth
+        stream.style['max-width'] = "#{Math.min widthFromHeightConstraint, widthFromWidthConstraint}px"
+
 #Polymer Lifecycle
 Main thing going on here it setting up signalling service, which isn't an
 element, it is just code.
 
       attached: ->
         window.addEventListener 'resize', =>
-          @sizeChanged()
-        @addEventListener 'sized', -> console.log 'zombies', arguments
+          @resize()
         @root = "#{document.location.origin}#{document.location.pathname}"
         if @root.slice(0,3) isnt 'https'
           window.location = "https#{@root.slice(4)}#{document.location.hash or ''}"

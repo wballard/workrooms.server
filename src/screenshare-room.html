@@ -1,6 +1,5 @@
-<link rel="import" href="../polymer/polymer.html">
-<link rel="import" href="../ui-video-call/ui-video-call.html">
-<link rel="import" href="../ui-video-stream/ui-video-stream.html">
+<link rel="import" href="./ui-video-call.html">
+<link rel="import" href="./ui-video-stream.html">
 
 <polymer-element name="screenshare-room" attributes="screenLink screen size">
 <template>
@@ -8,7 +7,7 @@
   <template if="{{screen}}">
     <ui-video-call class="ui full video" call="{{screen}}"
     localaudio="true" localvideo="true" autoconnect
-    remotestream="{{screen.remotestream}}" remoteaudio="{{screen.remoteaudio}}" remotevideo="{{screen.remotevideo}}">
+    remotestream="{{screen.remotestream}}" remoteaudio="{{screen.remoteaudio}}" remotevideo="{{screen.remotevideo}}" on-videoplay="{{videoplay}}">
     <ui-video-stream id="screenPlayer" stream="{{screen.remotestream}}" audio="{{screen.remoteaudio}}" video="{{screen.remotevideo}}" videoSize="{{size}}"></ui-video-stream>
     </ui-video-call>
   </template>

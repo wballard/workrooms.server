@@ -150,13 +150,10 @@ an 'outboundcall', the callee will set up an 'inboundcall'.
             socket.signal 'outboundcall', outboundcall
             tosocket.signal 'inboundcall', inboundcall
 
-Ping handling comes back with a version hash, allowing clients to know when they
-are out of date.
+Ping handling, nothing exiciting.
 
         socket.on 'ping', ->
-          hashes = yaml.safeLoad(fs.readFileSync(path.join(__dirname, '..', 'build', 'hashmap.json'), 'utf8'))
-          hashes.nolog = true
-          socket.signal 'pong', hashes
+          socket.signal 'pong'
 
 Handle incoming shared screens. These get registered into the room, but are removed
 when the socket goes away, so they aren't as sticky as calls, so we put them
