@@ -40,11 +40,18 @@ Vulcanize for the speed.
         .pipe shell([
           'vulcanize --inline --strip -o build/index.html build/index.html'
           ])
+        .pipe shell([
+          'vulcanize --inline --strip -o build/screen.html build/screen.html'
+          ])
 
     gulp.task 'devvulcanize', ['compile'], ->
       gulp.src ''
         .pipe shell([
           'vulcanize --inline -o build/index.html build/index.html'
+          ])
+      gulp.src ''
+        .pipe shell([
+          'vulcanize --inline -o build/screen.html build/screen.html'
           ])
       gulp.src ''
         .pipe shell([
