@@ -20,15 +20,14 @@ and using multiple contexts is generally considered inefficient
             console.error 'unable to load audio clip: #{path}'
 
       request.send()
-    
+
     getContext = ->
         return window._activeAudioContext if window._activeAudioContext?
         window._activeAudioContext = new window.webkitAudioContext()
         return window._activeAudioContext
-    
-    module.exports = 
+
+    module.exports =
       getContext: getContext
-      
       playSound: (path) =>
         loadSound path, (buffer) =>
           context = getContext()

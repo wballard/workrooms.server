@@ -15,9 +15,9 @@ Bad stuff. Fires.
 ##localstream
 Fires when a stream is available, also after then `stream` property is set.
 
-    getUserMedia = require('getusermedia')
+    getUserMedia = require 'getusermedia' 
     audioContext = require('./scripts/web-audio.litcoffee').getContext()
-
+    _ = require 'lodash'
 
     Polymer 'local-stream',
       audioChanged: ->
@@ -35,6 +35,10 @@ already has the video covered and will fade away on the far side.
           setTimeout =>
             @stream?.getVideoTracks()?.forEach (x) => x.enabled = @video
           , delay
+
+#Polymer Lifecycle
+On attach, grab access to the user camera so that we have a stream.
+
       attached: ->
         mediaConstraints =
           video:
@@ -49,32 +53,52 @@ already has the video covered and will fade away on the far side.
           else
 
 We need to filter the audio to make it a bit more easy on the ears
-so we'll get a MediaStream source that we can manipulate with the Web Audio api
+so we'll get a MediaStream source that we can manipulate with the Web Audio API
+and hook on some filters to human speech range.
 
-            console.log stream
             source = audioContext.createMediaStreamSource(stream)
             destination = audioContext.createMediaStreamDestination()
-            lowPassFilter = audioContext.createBiquadFilter()
-            lowPassFilter.type = lowPassFilter.LOWPASS
-            lowPassFilter.frequency.value = 250
-            gainFilter = audioContext.createGain()
 
-            source.connect lowPassFilter
-            lowPassFilter.connect destination
+            highPitchedHumans = 255 #Alice!
+            lowPitchedHumans = 80 #Chef!
+            humanSpeechCenter = (highPitchedHumans + lowPitchedHumans) / 2
+            filter = audioContext.createBiquadFilter()
+            filter.type = filter.BANDPASS
+            filter.frequency.value = humanSpeechCenter
+            filter.Q = humanSpeechCenter / (highPitchedHumans - lowPitchedHumans)
 
-Pull the original stream's audio and replace it with the audio from the filtered stream
+And figure the gain. We'll use this to send an event that someone is talking.
+
+            analyser = audioContext.createAnalyser()
+            analyser.fftSize = 512
+            analyser.smoothingTimeConstant = 0.5
+            fftBins = new Float32Array(analyser.fftSize)
+            @volumePoller = setInterval ->
+              analyser.getFloatFrequencyData(fftBins)
+              maxGain = _(fftBins)
+                .select (x) -> x < 0
+                .max()
+                .value()
+              console.log maxGain
+            , 100
+
+Connect the streams.
+
+            source.connect analyser
+            analyser.connect filter
+            filter.connect destination
+
+Pull the original stream's audio and replace it with the audio from the
+filtered stream, so that we send a filtered stream. Only the audio we want
+leaves the computer.
 
             console.log "Stream audio tracks originally:", stream.getAudioTracks()[0].id
 
-            #stream.removeTrack(stream.getAudioTracks()[0])
-            #stream.addTrack(destination.stream.getAudioTracks()[0])
+            stream.removeTrack(stream.getAudioTracks()[0])
+            stream.addTrack(destination.stream.getAudioTracks()[0])
 
             console.log "Stream audio tracks now set up to:", stream.getAudioTracks()[0].id
-
-Some temporary(?) helpers for adjusting the audio filtering properties while we test
-
-            window._audio = 
-              low: lowPassFilter.frequency
-              gain: gainFilter.gain
-
             @stream = stream
+
+      detached: ->
+        clearInterval @volumePoller

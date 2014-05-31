@@ -25,10 +25,15 @@ pixellation.
 
     Polymer 'ui-video-stream',
 
+Clean up polling loops.
+
+      detached: ->
+        clearInterval @volumePoller
+
 Startup audio to let you know a call is coming in.
 
       attached: ->
-        if !@hasAttribute('selfie')
+        if !@hasAttribute 'selfie'
           audio.playSound 'media/startup.ogg'
           window.focus()
 
@@ -64,12 +69,11 @@ the feedback would be brutal. Mirroing is available too, folks are used
 to seeing themselves in a mirror -- backwards.
 
       streamChanged: ->
-        if @hasAttribute('selfie')
+        if @hasAttribute 'selfie'
           @$.video.setAttribute 'muted', ''
 
         if @hasAttribute('mirror')
           @$.video.classList.add 'mirror'
-
 
         if @stream
           @$.video.classList.remove 'placeholder'
