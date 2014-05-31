@@ -79,7 +79,6 @@ And figure the gain. We'll use this to send an event that someone is talking.
                 .select (x) -> x < 0
                 .max()
                 .value()
-              console.log maxGain
             , 100
 
 Connect the streams.
