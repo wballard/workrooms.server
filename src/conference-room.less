@@ -96,6 +96,9 @@
 .overlay-image {
   width: 100%;
   height: 100%;
+  background-position: center center;
+  background-repeat: no-repeat;
+  border: 0;
 }
 .overlay-dogear {
   color: white;
@@ -126,7 +129,27 @@
   }
 }
 .overlay-muted {
-  -webkit-filter: grayscale(90%);
+  width: 100%;
+  height: 100%;
+  img {
+    .overlay-image;
+    -webkit-filter: grayscale(90%);
+  }
+  span {
+    box-sizing: border-box;
+    width: 100%;
+    color: white;
+    background-color: transparent;
+    font-size: 0.1em;
+    font-weight: 100;
+    line-height: 1em;
+    text-align: left;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    padding: 0.5em;
+  }
 }
 
 .pad {
@@ -138,6 +161,7 @@
   margin: 0;
   box-sizing: border-box;
   display: inline-block;
+  overflow: hidden;
 }
 
 .tile.screen {

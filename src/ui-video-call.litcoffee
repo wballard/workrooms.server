@@ -101,6 +101,7 @@ Set up a peer-to-peer keep alive timer.
             toclientid: @call.toclientid
             localaudio: @localaudio
             localvideo: @localvideo
+            localnametag: @localnametag
             nolog: true
         , KEEPALIVE_TIMEOUT
 
@@ -186,6 +187,7 @@ off at the source when muted.
             @querySelector('ui-video-stream').takeSnapshot()
           @remoteaudio = evt.detail.localaudio
           @remotevideo = evt.detail.localvideo
+          @remotenametag = evt.detail.localnametag
 
 When the element is removed from the DOM -- really hung up, there is no need
 to reconnect any more.

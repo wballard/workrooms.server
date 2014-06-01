@@ -77,14 +77,17 @@
         <ui-video-stream animated hide?="{{!selfieon}}" id="selfie" class="ui tile video" stream="{{localstream}}" selfie mirror></ui-video-stream>
         <template id="calls" repeat="{{call in calls}}">
           <ui-video-call class="ui tile video" call="{{call}}"
-          localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}"
-          remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}">
+          localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}" localnametag="{{nametag}}"
+          remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}" remotenametag="{{call.remotenametag}}">
           <ui-overlay>
-            <img overlay class="overlay-image" src="images/loading-bars.svg" fadeout hide?="{{call.remotestream}}"></img>
+            <img overlay class="overlay-image" border="0" src="images/loading-bars.svg" fadeout hide?="{{call.remotestream}}"></img>
             <ui-overlay>
-              <i overlay class="overlay-dogear fa fa-microphone-slash" fadeout hide?="{{call.remoteaudio || !call.remotestream}}"></i>
+              <div overlay src="{{call.snapshot}}" class="overlay-muted" fadeout hide?="{{call.remotevideo}}">
+                <img src="{{call.snapshot}}" class="overlay-muted"></img>
+                <span>{{call.remotenametag}}</span>
+              </div>
               <ui-overlay>
-                <img overlay src="{{call.snapshot}}" class="overlay-muted" fadeout hide?="{{call.remotevideo}}"></img>
+                <i overlay class="overlay-dogear fa fa-microphone-slash" fadeout hide?="{{call.remoteaudio || !call.remotestream}}"></i>
                 <ui-video-stream stream="{{call.remotestream}}" snapshot="{{call.snapshot}}"></ui-video-stream>
               </ui-overlay>
             </ui-overlay>
