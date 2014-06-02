@@ -8,7 +8,7 @@
 <link rel="import" href="../node_modules/ui-input/build/ui-input.html">
 <link rel="import" href="../node_modules/ui-grid-tiler/build/ui-grid-tiler.html">
 <link rel="import" href="../node_modules/ui-overlay/build/ui-overlay.html">
-<link rel="import" href="../node_modules/ui-resizebar/build/ui-resizebar.html">
+<link rel="import" href="../node_modules/ui-resizebox/build/ui-resizebox.html">
 <polymer-element name="conference-room" attributes="room localstream calls sharedscreens nametag audioon videoon selfieon chatbaron root signallingServer focused">
 <template>
   <link rel="stylesheet" type="text/css" href="./conference-room.css">
@@ -124,10 +124,9 @@
         </ui-grid-tiler>
       </section>
 
-      <ui-resizebar left animated id="chatbar" class="main-right {{ {hide: !chatbaron} | tokenList}}">
-      things
+      <ui-resizebox left animated id="chatbar" class="main-right {{ {hide: !chatbaron} | tokenList}}">
       <chat-box id="chat"></chat-box>
-      </ui-resizebar>
+      </ui-resizebox>
     </section>
 
 
