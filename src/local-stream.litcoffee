@@ -59,8 +59,8 @@ and hook on some filters to human speech range.
             source = audioContext.createMediaStreamSource(stream)
             destination = audioContext.createMediaStreamDestination()
 
-            highPitchedHumans = 255 #Alice!
-            lowPitchedHumans = 80 #Chef!
+            highPitchedHumans = 320
+            lowPitchedHumans = 60
             humanSpeechCenter = (highPitchedHumans + lowPitchedHumans) / 2
             filter = audioContext.createBiquadFilter()
             filter.type = filter.BANDPASS
