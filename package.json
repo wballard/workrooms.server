@@ -49,14 +49,14 @@
     "ws": "~0.4.31",
     "ui-overlay": "git+https://github.com/custom-elements/ui-overlay.git",
     "ui-toolbar": "git+https://github.com/custom-elements/ui-toolbar.git",
-    "ui-toolbar-button": "git+https://github.com/custom-elements/ui-toolbar-button.git",
     "ui-tooltip": "git+https://github.com/custom-elements/ui-tooltip.git",
-    "glg-fonts": "git+https://github.com/custom-elements/ui-fonts.git",
+    "glg-fonts": "git+https://github.com/custom-elements/glg-fonts.git",
     "ui-grid-tiler": "git+https://github.com/custom-elements/ui-grid-tiler.git",
     "ui-input": "git+https://github.com/custom-elements/ui-input.git",
     "ui-resizebar": "git+https://github.com/custom-elements/ui-resizebox.git",
     "ui-styles": "git+https://github.com/custom-elements/ui-styles.git",
-    "polymer": "git://github.com/custom-elements/polymer"
+    "polymer": "git://github.com/custom-elements/polymer",
+    "ui-resizebox": "git://github.com/custom-elements/ui-resizebox"
   },
   "scripts": {
     "install": "bin/install",
