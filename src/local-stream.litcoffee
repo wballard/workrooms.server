@@ -59,7 +59,7 @@ and hook on some filters to human speech range.
             source = audioContext.createMediaStreamSource(stream)
             destination = audioContext.createMediaStreamDestination()
 
-            highPitchedHumans = 880
+            highPitchedHumans = 3000
             lowPitchedHumans = 50
             humanSpeechCenter = (highPitchedHumans + lowPitchedHumans) / 2
             filter = audioContext.createBiquadFilter()
@@ -84,7 +84,8 @@ And figure the gain. We'll use this to send an event that someone is talking.
 Connect the streams.
 
             source.connect analyser
-            analyser.connect destination
+            analyser.connect filter
+            filter.connect destination
 
 Pull the original stream's audio and replace it with the audio from the
 filtered stream, so that we send a filtered stream. Only the audio we want
