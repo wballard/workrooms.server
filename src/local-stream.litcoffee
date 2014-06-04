@@ -15,7 +15,7 @@ Bad stuff. Fires.
 ##localstream
 Fires when a stream is available, also after then `stream` property is set.
 
-    getUserMedia = require 'getusermedia' 
+    getUserMedia = require 'getusermedia'
     audioContext = require('./scripts/web-audio.litcoffee').getContext()
     _ = require 'lodash'
 
@@ -59,7 +59,7 @@ and hook on some filters to human speech range.
             source = audioContext.createMediaStreamSource(stream)
             destination = audioContext.createMediaStreamDestination()
 
-            highPitchedHumans = 440
+            highPitchedHumans = 880
             lowPitchedHumans = 50
             humanSpeechCenter = (highPitchedHumans + lowPitchedHumans) / 2
             filter = audioContext.createBiquadFilter()

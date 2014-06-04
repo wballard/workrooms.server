@@ -114,6 +114,8 @@ element, it is just code.
           @$.chromeonly.hide()
         else
           @shadowRoot.querySelector('.main').hide()
+          @fire 'hello'
+          return
         @nametag = cache.get('nametag') or "Anonymous #{Math.floor(Math.random() * (1024 - 1 + 1)) + 1}"
         @audioon = true
         @videoon = true
