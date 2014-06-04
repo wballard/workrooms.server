@@ -44,7 +44,7 @@
   </head>
   <body unresolved>
     <div id="holder">
-      <ui-overlay>
+      <ui-overlay detail="hi">
         <div overlay class="shady"></div>
         <div class="covered">Cover Me!</div>
       </ui-overlay>
@@ -57,6 +57,9 @@
       document.addEventListener('polymer-ready', function() {
         //poke your element here
       })
+      document.querySelector("[detail='hi']").onclick = function (evt) {
+        console.log(evt);
+      }
     </script>
   </body>
 </html>

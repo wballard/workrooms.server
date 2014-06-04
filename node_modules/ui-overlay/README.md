@@ -29,7 +29,9 @@ and cover.
 
 
 ##Events
-No custom events are fired
+###click
+Click is captured and refired with `detail` so that you can easily bind
+and object to this overlay and have it handy when event processing.
 
 ##Attributes and Change Handlers
 
@@ -43,6 +45,11 @@ Set this flag attribute if you want the overlay to show and hide on hover.
 ##Methods
 
 ##Event Handlers
+Trap and re-fire clicks with the detail.
+
+
+
+
 
 
 

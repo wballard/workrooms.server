@@ -70,7 +70,7 @@ screen with an actual stream, send it along so that other room members can know.
             snapshot: screen.snapshot
 
       screenUnshared: (evt) ->
-        screen = evt.target.detail
+        screen = evt.detail
         _.remove @sharedscreens, (s) -> s.screenid is screen.screenid
         @signallingServer.send 'deletescreen',
           screenid: screen.screenid
