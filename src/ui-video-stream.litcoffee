@@ -79,6 +79,28 @@ to seeing themselves in a mirror -- backwards.
           @$.video.classList.remove 'placeholder'
           @$.video.src = URL.createObjectURL(@stream)
           @$.video.play()
+          source = audioContext.createMediaElementSource(stream)
+          highPitchedHumans = 2000
+          lowPitchedHumans = 50
+          humanSpeechCenter = (highPitchedHumans + lowPitchedHumans) / 2
+          filter = audioContext.createBiquadFilter()
+          filter.type = filter.BANDPASS
+          filter.frequency.value = humanSpeechCenter
+          filter.Q = humanSpeechCenter / (highPitchedHumans - lowPitchedHumans)
+          analyser = audioContext.createAnalyser()
+          analyser.fftSize = 512
+          analyser.smoothingTimeConstant = 0.5
+          fftBins = new Float32Array(analyser.fftSize)
+          @volumePoller = setInterval ->
+            analyser.getFloatFrequencyData(fftBins)
+            maxGain = _(fftBins)
+              .select (x) -> x < 0
+              .max()
+              .value()
+          , 100
+          source.connect analyser
+          analyser.connect filter
+          filter.connect context.destination
         else
           @$.video.classList.add 'placeholder'
           @$.video.src = ''
