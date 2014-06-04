@@ -80,7 +80,6 @@ noise.
         if @stream
           if !@hasAttribute 'selfie'
             source = audioContext.createMediaStreamSource(@stream)
-            console.log source, @stream.getAudioTracks()
             highPitchedHumans = 3000
             lowPitchedHumans = 50
             humanSpeechCenter = (highPitchedHumans + lowPitchedHumans) / 2
