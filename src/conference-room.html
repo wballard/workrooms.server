@@ -87,7 +87,10 @@
               </div>
               <ui-overlay>
                 <i overlay class="overlay-dogear fa fa-microphone-slash" fadeout hide?="{{call.remoteaudio || !call.remotestream}}"></i>
-                <ui-video-stream stream="{{call.remotestream}}" snapshot="{{call.snapshot}}"></ui-video-stream>
+                <ui-overlay>
+                  <i overlay class="overlay-dogear fa fa-microphone" fadeout hide?="{{!call.talking || !call.remotestream}}"></i>
+                  <ui-video-stream stream="{{call.remotestream}}" snapshot="{{call.snapshot}}" talking="{{call.talking}}"></ui-video-stream>
+                </ui-overlay>
               </ui-overlay>
             </ui-overlay>
           </ui-overlay>
