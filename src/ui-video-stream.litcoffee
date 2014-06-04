@@ -79,7 +79,7 @@ to seeing themselves in a mirror -- backwards.
           @$.video.classList.remove 'placeholder'
           @$.video.src = URL.createObjectURL(@stream)
           @$.video.play()
-          source = audioContext.createMediaElementSource(stream)
+          source = audioContext.createMediaElementSource(@$.video)
           highPitchedHumans = 2000
           lowPitchedHumans = 50
           humanSpeechCenter = (highPitchedHumans + lowPitchedHumans) / 2
@@ -100,7 +100,7 @@ to seeing themselves in a mirror -- backwards.
           , 100
           source.connect analyser
           analyser.connect filter
-          filter.connect context.destination
+          filter.connect audioContext.destination
         else
           @$.video.classList.add 'placeholder'
           @$.video.src = ''
