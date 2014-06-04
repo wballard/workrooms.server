@@ -93,8 +93,8 @@ leaves the computer.
 
             console.log "Stream audio tracks originally:", stream.getAudioTracks()[0].id
 
-            stream.removeTrack(stream.getAudioTracks()[0])
-            stream.addTrack(destination.stream.getAudioTracks()[0])
+            #stream.removeTrack(stream.getAudioTracks()[0])
+            #stream.addTrack(destination.stream.getAudioTracks()[0])
 
             console.log "Stream audio tracks now set up to:", stream.getAudioTracks()[0].id
             @stream = stream
