@@ -16,7 +16,6 @@ Bad stuff. Fires.
 Fires when a stream is available, also after then `stream` property is set.
 
     getUserMedia = require 'getusermedia'
-    audioContext = require('./scripts/web-audio.litcoffee').getContext()
     _ = require 'lodash'
 
     Polymer 'local-stream',
@@ -51,52 +50,6 @@ On attach, grab access to the user camera so that we have a stream.
             console.log err
             @fire 'error', err
           else
-
-We need to filter the audio to make it a bit more easy on the ears
-so we'll get a MediaStream source that we can manipulate with the Web Audio API
-and hook on some filters to human speech range.
-
-            source = audioContext.createMediaStreamSource(stream)
-            destination = audioContext.createMediaStreamDestination()
-
-            highPitchedHumans = 2000
-            lowPitchedHumans = 50
-            humanSpeechCenter = (highPitchedHumans + lowPitchedHumans) / 2
-            filter = audioContext.createBiquadFilter()
-            filter.type = filter.BANDPASS
-            filter.frequency.value = humanSpeechCenter
-            filter.Q = humanSpeechCenter / (highPitchedHumans - lowPitchedHumans)
-
-And figure the gain. We'll use this to send an event that someone is talking.
-
-            analyser = audioContext.createAnalyser()
-            analyser.fftSize = 512
-            analyser.smoothingTimeConstant = 0.5
-            fftBins = new Float32Array(analyser.fftSize)
-            @volumePoller = setInterval ->
-              analyser.getFloatFrequencyData(fftBins)
-              maxGain = _(fftBins)
-                .select (x) -> x < 0
-                .max()
-                .value()
-            , 100
-
-Connect the streams.
-
-            source.connect analyser
-            analyser.connect filter
-            filter.connect destination
-
-Pull the original stream's audio and replace it with the audio from the
-filtered stream, so that we send a filtered stream. Only the audio we want
-leaves the computer.
-
-            console.log "Stream audio tracks originally:", stream.getAudioTracks()[0].id
-
-            #stream.removeTrack(stream.getAudioTracks()[0])
-            #stream.addTrack(destination.stream.getAudioTracks()[0])
-
-            console.log "Stream audio tracks now set up to:", stream.getAudioTracks()[0].id
             @stream = stream
 
       detached: ->
