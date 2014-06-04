@@ -1,0 +1,15 @@
+<polymer-element name="ui-toolbar-button" attributes="icon active enabled toggle selected hotkey"
+on-mousedown="{{pointerdown}}" on-mouseup="{{pointerup}}" on-mouseenter="{{pointerenter}}" on-mouseleave="{{pointerleave}}" on-click="{{pointerclick}}"
+>
+<template>
+  <link rel="stylesheet" type="text/css" href="./ui-toolbar-button.css">
+  <section id="button" on-click="{{click}}">
+    <span id="selector" class="selector"></span>
+    <span id="tool" class="flipper {{ {active: active, enabled: enabled} | tokenList }}">
+      <i class="toolicon front fa {{ icon }} fa-stack-1x {{ {enabled: enabled} | tokenList }}"></i>
+      <i class="toolicon back fa {{ icon }} fa-stack-1x"></i>
+    </span>
+  </section>
+</template>
+<script src="./ui-toolbar-button.js"></script>
+</polymer-element>
