@@ -39,6 +39,9 @@ already has the video covered and will fade away on the far side.
 On attach, grab access to the user camera so that we have a stream.
 
       attached: ->
+        MediaStreamTrack.getSources (sourceInfos) ->
+          console.log sourceInfos
+
         mediaConstraints =
           video:
             mandatory:

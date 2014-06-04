@@ -78,34 +78,35 @@ noise.
           @$.video.classList.add 'mirror'
 
         if @stream
-          source = audioContext.createMediaStreamSource(@stream)
-          console.log source, @stream.getAudioTracks()
-          highPitchedHumans = 3000
-          lowPitchedHumans = 50
-          humanSpeechCenter = (highPitchedHumans + lowPitchedHumans) / 2
-          filter = audioContext.createBiquadFilter()
-          filter.type = filter.BANDPASS
-          filter.frequency.value = humanSpeechCenter
-          filter.Q = humanSpeechCenter / (highPitchedHumans - lowPitchedHumans)
-          analyser = audioContext.createAnalyser()
-          analyser.smoothingTimeConstant = 0.5
-          fftBins = new Float32Array(analyser.fftSize)
-          @talking = false
-          @volumePoller = setInterval =>
-            analyser.getFloatFrequencyData(fftBins)
-            maxGain = _(fftBins)
-              .select (x) -> x < 0
-              .max()
-              .value()
-            if maxGain > -65
-              @talking = true
-            else
-              @talking = false
-          , 100
-          source.disconnect()
-          source.connect filter
-          filter.connect analyser
-          analyser.connect audioContext.destination
+          if !@hasAttribute 'selfie'
+            source = audioContext.createMediaStreamSource(@stream)
+            console.log source, @stream.getAudioTracks()
+            highPitchedHumans = 3000
+            lowPitchedHumans = 50
+            humanSpeechCenter = (highPitchedHumans + lowPitchedHumans) / 2
+            filter = audioContext.createBiquadFilter()
+            filter.type = filter.BANDPASS
+            filter.frequency.value = humanSpeechCenter
+            filter.Q = humanSpeechCenter / (highPitchedHumans - lowPitchedHumans)
+            analyser = audioContext.createAnalyser()
+            analyser.smoothingTimeConstant = 0.5
+            fftBins = new Float32Array(analyser.fftSize)
+            @talking = false
+            @volumePoller = setInterval =>
+              analyser.getFloatFrequencyData(fftBins)
+              maxGain = _(fftBins)
+                .select (x) -> x < 0
+                .max()
+                .value()
+              if maxGain > -65
+                @talking = true
+              else
+                @talking = false
+            , 100
+            source.disconnect()
+            source.connect filter
+            filter.connect analyser
+            analyser.connect audioContext.destination
           @$.video.classList.remove 'placeholder'
           @$.video.src = URL.createObjectURL(@stream)
           @$.video.play()
