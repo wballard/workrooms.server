@@ -84,8 +84,7 @@ And figure the gain. We'll use this to send an event that someone is talking.
 Connect the streams.
 
             source.connect analyser
-            analyser.connect filter
-            filter.connect destination
+            analyser.connect destination
 
 Pull the original stream's audio and replace it with the audio from the
 filtered stream, so that we send a filtered stream. Only the audio we want
