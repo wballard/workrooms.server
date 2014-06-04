@@ -72,7 +72,8 @@ This installs a band pass filter in a valiant attempt to cut out background
 noise.
 
       streamChanged: ->
-        @$.video.setAttribute 'muted', ''
+        if @hasAttribute 'selfie'
+          @$.video.setAttribute 'muted', ''
 
         if @hasAttribute('mirror')
           @$.video.classList.add 'mirror'
@@ -105,7 +106,7 @@ noise.
             source.disconnect()
             source.connect filter
             filter.connect analyser
-            analyser.connect audioContext.destination
+            #analyser.connect audioContext.destination
           @$.video.classList.remove 'placeholder'
           @$.video.src = URL.createObjectURL(@stream)
           @$.video.play()
