@@ -28,7 +28,7 @@ pixellation.
 Clean up polling loops.
 
       detached: ->
-        clearInterval @volumePoller
+        @stream = null
 
 Startup audio to let you know a call is coming in.
 
@@ -41,10 +41,49 @@ Snapshot on play.
 
         @$.video.addEventListener 'canplay', =>
           @takeSnapshot()
+          @filterAudio()
           @videoSize =
             width: @$.video.videoWidth
             height: @$.video.videoHeight
           @fire 'videoplay'
+
+Hooking up some fun audio filtering.
+
+      filterAudio: ->
+        if !@hasAttribute 'selfie'
+          @$.video.setAttribute 'muted', ''
+          #source = audioContext.createMediaElementSource(@$.video)
+          #source = audioContext.createMediaStreamSource(@stream)
+          console.log source
+          highPitchedHumans = 3000
+          lowPitchedHumans = 50
+          humanSpeechCenter = (highPitchedHumans + lowPitchedHumans) / 2
+          filter = audioContext.createBiquadFilter()
+          filter.type = filter.BANDPASS
+          filter.frequency.value = humanSpeechCenter
+          filter.Q = humanSpeechCenter / (highPitchedHumans - lowPitchedHumans)
+
+          analyser = audioContext.createAnalyser()
+          analyser.smoothingTimeConstant = 0.5
+
+          #source.connect analyser
+          #analyser.connect audioContext.destination
+
+          ctx = @$.signal.getContext('2d')
+          ctx.fillStyle = "white"
+          analyze = =>
+            return if not @stream
+            fftBins = new Uint8Array(analyser.fftSize)
+            analyser.getByteFrequencyData(fftBins)
+            console.log  _.max(fftBins), _.min(fftBins)
+            height = @$.signal.height
+            width = @$.signal.width
+            barWidth = width / analyser.fftSize
+            ctx.clearRect(0, 0, width, height)
+            _.each fftBins, (value, i) ->
+              ctx.fillRect(i * barWidth, height, barWidth / 2, -value)
+            requestAnimationFrame analyze
+          analyze()
 
 Cool. Static snapshots to use when the video is muted.
 
@@ -69,7 +108,7 @@ the feedback would be brutal. Mirroing is available too, folks are used
 to seeing themselves in a mirror -- backwards.
 
 This installs a band pass filter in a valiant attempt to cut out background
-noise.
+noise, and a signal analyzer to display who is talking.
 
       streamChanged: ->
         if @hasAttribute 'selfie'
@@ -79,34 +118,6 @@ noise.
           @$.video.classList.add 'mirror'
 
         if @stream
-          if !@hasAttribute 'selfie'
-            source = audioContext.createMediaStreamSource(@stream)
-            highPitchedHumans = 3000
-            lowPitchedHumans = 50
-            humanSpeechCenter = (highPitchedHumans + lowPitchedHumans) / 2
-            filter = audioContext.createBiquadFilter()
-            filter.type = filter.BANDPASS
-            filter.frequency.value = humanSpeechCenter
-            filter.Q = humanSpeechCenter / (highPitchedHumans - lowPitchedHumans)
-            analyser = audioContext.createAnalyser()
-            analyser.smoothingTimeConstant = 0.5
-            fftBins = new Float32Array(analyser.fftSize)
-            @talking = false
-            @volumePoller = setInterval =>
-              analyser.getFloatFrequencyData(fftBins)
-              maxGain = _(fftBins)
-                .select (x) -> x < 0
-                .max()
-                .value()
-              if maxGain > -65
-                @talking = true
-              else
-                @talking = false
-            , 100
-            source.disconnect()
-            source.connect filter
-            filter.connect analyser
-            #analyser.connect audioContext.destination
           @$.video.classList.remove 'placeholder'
           @$.video.src = URL.createObjectURL(@stream)
           @$.video.play()

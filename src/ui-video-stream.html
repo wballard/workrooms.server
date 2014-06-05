@@ -1,8 +1,9 @@
-<polymer-element name="ui-video-stream" attributes="selfie mirror stream snapshot videoSize talking">
+<polymer-element name="ui-video-stream" attributes="selfie mirror stream snapshot videoSize">
 <template>
   <link rel="stylesheet" type="text/css" href="./ui-video-stream.css">
   <section id="main">
     <canvas id="takesnapshot"></canvas>
+    <canvas id="signal"></canvas>
     <video id="video"></video>
   </section>
 </template>

@@ -37,3 +37,4 @@ Turn all the keys into a string.
     if PolymerExpressions?
       PolymerExpressions::keyString = (obj) ->
         _.keys(obj).join(' ')
+
