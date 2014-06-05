@@ -41,49 +41,10 @@ Snapshot on play.
 
         @$.video.addEventListener 'canplay', =>
           @takeSnapshot()
-          @filterAudio()
           @videoSize =
             width: @$.video.videoWidth
             height: @$.video.videoHeight
           @fire 'videoplay'
-
-Hooking up some fun audio filtering.
-
-      filterAudio: ->
-        if !@hasAttribute 'selfie'
-          @$.video.setAttribute 'muted', ''
-          #source = audioContext.createMediaElementSource(@$.video)
-          #source = audioContext.createMediaStreamSource(@stream)
-          console.log source
-          highPitchedHumans = 3000
-          lowPitchedHumans = 50
-          humanSpeechCenter = (highPitchedHumans + lowPitchedHumans) / 2
-          filter = audioContext.createBiquadFilter()
-          filter.type = filter.BANDPASS
-          filter.frequency.value = humanSpeechCenter
-          filter.Q = humanSpeechCenter / (highPitchedHumans - lowPitchedHumans)
-
-          analyser = audioContext.createAnalyser()
-          analyser.smoothingTimeConstant = 0.5
-
-          #source.connect analyser
-          #analyser.connect audioContext.destination
-
-          ctx = @$.signal.getContext('2d')
-          ctx.fillStyle = "white"
-          analyze = =>
-            return if not @stream
-            fftBins = new Uint8Array(analyser.fftSize)
-            analyser.getByteFrequencyData(fftBins)
-            console.log  _.max(fftBins), _.min(fftBins)
-            height = @$.signal.height
-            width = @$.signal.width
-            barWidth = width / analyser.fftSize
-            ctx.clearRect(0, 0, width, height)
-            _.each fftBins, (value, i) ->
-              ctx.fillRect(i * barWidth, height, barWidth / 2, -value)
-            requestAnimationFrame analyze
-          analyze()
 
 Cool. Static snapshots to use when the video is muted.
 
