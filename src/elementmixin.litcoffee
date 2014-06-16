@@ -1,7 +1,6 @@
 Mixin methods to HTMLElement.
 
     bonzo = require('bonzo')
-    bean = require('bean')
     _ = require('lodash')
 
     ANIMATION_DURATION = 300

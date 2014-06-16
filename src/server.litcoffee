@@ -8,7 +8,6 @@ even remotely designed to scale out to multiple processes or machines.
     http = require('http')
     https = require('https')
     _ = require('lodash')
-    request = require('request')
     yaml = require('js-yaml')
     fs = require('fs')
     path = require('path')

@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-nodemon  --exec gulp dev
+polymer-build watch . src build

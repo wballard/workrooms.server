@@ -32,6 +32,10 @@ identifiers used to data bind and generate `ui-video-call` elements.
 A string that is all about who you are.
 
       selfieon: false
+      selfieonChanged: ->
+        setTimeout =>
+          @$.callTiler.resize()
+        , 300
 
 #Screen Sharing
 Sharing a screen -- just buffer it so we can data bind for display.

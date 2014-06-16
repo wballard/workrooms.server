@@ -2,22 +2,14 @@
 
 @roomBackgroundColor: @black;
 
-[animated] {
-  opacity: 1.0;
-  .transition(width @transition, opacity @transition;);
-}
-
 [animated][hide] {
-  display: inline-block !important;
+  padding: 0 !important;
+  margin: 0 !important;
   width: 0 !important;
-  opacity: 0 !important;
-}
-
-[fadeout] {
-  opacity: 1.0;
-  .transition(opacity @transition);
+  height: 0 !important;
 }
 
 [fadeout][hide] {
-  opacity: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }

@@ -3,7 +3,7 @@
 
 <polymer-element name="screenshare-room" attributes="screenLink screen size">
 <template>
-  <link rel="stylesheet" type="text/css" href="./screenshare-room.css">
+  <link rel="stylesheet" type="text/css" href="./screenshare-room.less">
   <template if="{{screen}}">
     <ui-video-call class="ui full video" call="{{screen}}"
     localaudio="true" localvideo="true" autoconnect
@@ -12,5 +12,5 @@
     </ui-video-call>
   </template>
 </template>
-<script src="./screenshare-room.js"></script>
+<script src="./screenshare-room.litcoffee"></script>
 </polymer-element>

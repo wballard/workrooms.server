@@ -1,20 +1,17 @@
-@import "less/normalize";
 @import "less/variables";
 @import "../node_modules/glg-fonts/build/glg";
 
 html,
 body {
-  font-family: "Grotesk", "Helvetica Neue", "Helvetica", Arial;
-  color: @color-text;
   margin:0;
   padding:0;
-  height:100%;
+  min-height:100%;
+  height: 100%;
   font-size: 15px;
 }
 
 body {
   background-color: @roomBackgroundColor;
-  min-height: 100%;
 }
 
 #loading {
@@ -23,5 +20,8 @@ body {
   height: 40%;
   margin-left: 30%;
   margin-top: 10%;
+  img {
+    width: 100%;
+    height: 100%;
+  }
 }
-

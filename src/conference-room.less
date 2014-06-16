@@ -1,6 +1,5 @@
 @import "less/variables";
-@import "../node_modules/ui-styles/typography";
-@import "../node_modules/glg-fonts/build/font-awesome";
+@import "../node_modules/ui-fonts/src/font-awesome-styles";
 
 
 :host {
@@ -8,6 +7,10 @@
   height: 100%;
   display: flex;
   flex-direction: row;
+}
+
+ui-toolbar {
+  position: static;
 }
 
 .main {
@@ -24,6 +27,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  padding: 2em;
 }
 .main-right {
   width: 20em;
@@ -43,11 +47,15 @@
 .screens {
   height: 10%;
   flex: 0.2;
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
   .snapshot {
     display: block;
-    width: 100%;
-    height: 100%;
+    max-width: 100%;
   }
+
 }
 .notices {
   display: flex;
@@ -164,7 +172,12 @@
   overflow: hidden;
 }
 
+.tile.video {
+  padding: 1em;
+}
+
 .tile.screen {
+  flex: 0 1 15%;
 }
 
 ui-toolbar {

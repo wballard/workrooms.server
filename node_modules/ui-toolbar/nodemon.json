@@ -1,5 +1,0 @@
-{
-  "ignore": ["build/**", ".git", "node_modules/**", "bower_components/**"],
-  "verbose": false,
-  "ext": "less html litcoffee yaml svg"
-}

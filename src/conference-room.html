@@ -2,15 +2,9 @@
 <link rel="import" href="ui-video-stream.html">
 <link rel="import" href="ui-video-call.html">
 <link rel="import" href="ui-shared-screen.html">
-<link rel="import" href="../node_modules/ui-toolbar/build/ui-toolbar.html">
-<link rel="import" href="../node_modules/ui-tooltip/build/ui-tooltip.html">
-<link rel="import" href="../node_modules/ui-input/build/ui-input.html">
-<link rel="import" href="../node_modules/ui-grid-tiler/build/ui-grid-tiler.html">
-<link rel="import" href="../node_modules/ui-overlay/build/ui-overlay.html">
-<link rel="import" href="../node_modules/ui-resizebox/build/ui-resizebox.html">
 <polymer-element name="conference-room" attributes="room localstream calls sharedscreens nametag audioon videoon selfieon chatbaron root signallingServer focused">
 <template>
-  <link rel="stylesheet" type="text/css" href="./conference-room.css">
+  <link rel="stylesheet" type="text/css" href="./conference-room.less">
   <local-stream id="local" audio="{{audioon}}" video="{{videoon}}" stream="{{localstream}}"></local-stream>
 
   <section id="chromeonly" class="ui notices">
@@ -72,14 +66,14 @@
           </template>
         </section>
 
-        <ui-grid-tiler class="calls" aspectRatio="1.33" selector=".tile">
+        <ui-grid-tiler id="callTiler" class="calls" selector=".tile">
         <ui-video-stream animated hide?="{{!selfieon}}" id="selfie" class="ui tile video" stream="{{localstream}}" selfie mirror></ui-video-stream>
         <template id="calls" repeat="{{call in calls}}">
           <ui-video-call class="ui tile video" call="{{call}}"
           localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}" localnametag="{{nametag}}"
           remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}" remotenametag="{{call.remotenametag}}">
           <ui-overlay>
-            <img overlay class="overlay-image" border="0" src="images/loading-bars.svg" fadeout hide?="{{call.remotestream}}"></img>
+            <img overlay class="overlay-image" border="0" src="../images/loading-bars.svg" fadeout hide?="{{call.remotestream}}"></img>
             <ui-overlay>
               <div overlay src="{{call.snapshot}}" class="overlay-muted" fadeout hide?="{{call.remotevideo}}">
                 <img src="{{call.snapshot}}" class="overlay-muted"></img>
@@ -99,31 +93,32 @@
         </ui-grid-tiler>
 
 
-        <ui-grid-tiler class="screens" on-screenshared="{{screenShared}}" selector=".tile">
-        <template repeat="{{screen in sharedscreens}}">
-          <ui-shared-screen class="ui tile screen" screen="{{screen}}">
-          <template if="{{screen.stream}}">
-            <ui-overlay hover on-click="{{screenUnshared}}" detail="{{screen}}">
-              <i overlay class="overlay-command fa fa-times-circle-o"></i>
-              <ui-video-stream animated stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true" selfie></ui-video-stream>
-              <template repeat="{{share in screen.shares}}">
-                <ui-video-call animated class="hide" call="{{share}}"
-                localstream="{{screen.stream}}" localaudio="true" localvideo="true"
-                remotestream="{{screen.remotestream}}" remoteaudio="{{screen.remoteaudio}}" remotevideo="{{screen.remotevideo}}">
-              </template>
-            </ui-overlay>
-          </template>
-          <template if="{{!screen.stream}}">
-            <a href="screen#{{screen.fromclientid}}/{{screen.screenid}}" target="_blank">
-              <ui-overlay hover>
-                <i overlay class="overlay-command fa fa-play-circle-o"></i>
-                <img class="snapshot" src="{{screen.snapshot}}"></img>
+        <section class="screens" on-screenshared="{{screenShared}}">
+          <template repeat="{{screen in sharedscreens}}">
+            <ui-shared-screen class="ui tile screen" screen="{{screen}}">
+            <template if="{{screen.stream}}">
+              <ui-overlay hover on-click="{{screenUnshared}}" detail="{{screen}}">
+                <i overlay class="overlay-command fa fa-times-circle-o"></i>
+                <ui-video-stream animated stream="{{screen.stream}}" snapshot="{{screen.snapshot}}" audio="false" video="true" selfie></ui-video-stream>
+                <template repeat="{{share in screen.shares}}">
+                  <ui-video-call animated class="hide" call="{{share}}"
+                  localstream="{{screen.stream}}" localaudio="true" localvideo="true"
+                  remotestream="{{screen.remotestream}}" remoteaudio="{{screen.remoteaudio}}" remotevideo="{{screen.remotevideo}}">
+                </template>
               </ui-overlay>
-            </a>
+            </template>
+            <template if="{{!screen.stream}}">
+              <a href="screen#{{screen.fromclientid}}/{{screen.screenid}}" target="_blank">
+                <ui-overlay hover>
+                  <i overlay class="overlay-command fa fa-play-circle-o"></i>
+                  <img class="snapshot" src="{{screen.snapshot}}"></img>
+                </ui-overlay>
+              </a>
+            </template>
+            </ui-shared-screen>
           </template>
-          </ui-shared-screen>
-        </template>
-        </ui-grid-tiler>
+        </section>
+
       </section>
 
       <ui-resizebox left animated id="chatbar" class="main-right {{ {hide: !chatbaron} | tokenList}}">
@@ -133,5 +128,5 @@
 
 
   </template>
-  <script src="./conference-room.js"></script>
+  <script src="./conference-room.litcoffee"></script>
   </polymer-element>

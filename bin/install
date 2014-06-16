@@ -1,4 +1,3 @@
 #!/usr/bin/env bash
 set -e
-gulp build
-
+polymer-build src/ build/
