@@ -34,8 +34,8 @@
     "ws": "~0.4.31"
   },
   "scripts": {
-    "install": "bin/install",
-    "start": "bin/serve",
-    "test": "bin/dev"
+    "install": "polymer-build src/ build/"
+    "start": "coffee ./src/server.litcoffee",
+    "test": "polymer-build watch . src/ build/"
   }
 }
