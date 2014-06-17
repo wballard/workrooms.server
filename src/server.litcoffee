@@ -24,7 +24,6 @@ Static service of the single page app, with WebSockets.
     app = express()
     app.use(express.static(path.join __dirname, "../build"))
     app.use('/node_modules', express.static(path.join __dirname, "../node_modules"))
-    app.use('/bower_components', express.static(path.join __dirname, "../bower_components"))
     app.get '/screen', (req, res, next) ->
       res.sendfile path.join __dirname, '../build/screen.html'
 
