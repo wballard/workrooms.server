@@ -37,5 +37,9 @@
     "install": "polymer-build src/ build/",
     "start": "coffee ./src/server.litcoffee",
     "test": "polymer-build watch . src/ build/"
+  },
+  "engines": {
+    "node": "0.10.28",
+    "npm": "1.4.15"
   }
 }
