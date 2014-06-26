@@ -23,7 +23,7 @@
     "kizzy": "0.0.5",
     "lodash": "~2.4.1",
     "node-uuid": "~1.4.1",
-    "polymer-tools": "git://github.com/custom-elements/polymer-tools",
+    "polymer-build": "",
     "rtc-bufferedchannel": "~0.5.0",
     "ui-fonts": "git://github.com/custom-elements/ui-fonts",
     "ui-styles": "git://github.com/custom-elements/ui-styles",
