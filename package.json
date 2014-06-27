@@ -27,7 +27,7 @@
     "rtc-bufferedchannel": "~0.5.0",
     "ui-fonts": "git://github.com/custom-elements/ui-fonts",
     "ui-styles": "git://github.com/custom-elements/ui-styles",
-    "ui-toolkit": "",
+    "ui-toolkit": "0.0.24",
     "underscore.string": "^2.3.3",
     "urlparse": "0.0.1",
     "webrtcsupport": "~0.7.1",
