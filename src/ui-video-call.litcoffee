@@ -102,6 +102,7 @@ Set up a peer-to-peer keep alive timer.
             localaudio: @localaudio
             localvideo: @localvideo
             localnametag: @localnametag
+            locallocation: @locallocation
             nolog: true
         , KEEPALIVE_TIMEOUT
 
@@ -188,6 +189,7 @@ off at the source when muted.
           @remoteaudio = evt.detail.localaudio
           @remotevideo = evt.detail.localvideo
           @remotenametag = evt.detail.localnametag
+          @remotelocation = evt.detail.locallocation
 
 When the element is removed from the DOM -- really hung up, there is no need
 to reconnect any more.
