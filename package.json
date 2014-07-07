@@ -36,7 +36,7 @@
   "scripts": {
     "install": "polymer-build src/ build/ index.html screen.html conference-room.html",
     "start": "coffee ./src/server.litcoffee",
-    "test": "polymer-build watch . src/ build/ index.html screen.html conference-room.html"
+    "test": "polymer-build watch build src/ build/ index.html screen.html conference-room.html"
   },
   "engines": {
     "node": "0.10.28",
