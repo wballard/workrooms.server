@@ -26,6 +26,8 @@ Static service of the single page app, with WebSockets.
     app.use('/node_modules', express.static(path.join __dirname, "../node_modules"))
     app.get '/screen', (req, res, next) ->
       res.sendfile path.join __dirname, '../build/screen.html'
+    app.get '/', (req, res, next) ->
+      res.sendfile path.join __dirname, '../build/index.html'
 
 HTTP + WS service, this will be proxied with HTTPS live for production.
 
@@ -46,4 +48,3 @@ saves.
     wss = new WebSocketServer(server: secureServer)
     socketserver(wss, serverConfig)
     console.log 'HTTPS listening on', "#{sslport}".blue
-
