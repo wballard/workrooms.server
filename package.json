@@ -26,6 +26,7 @@
     "polymer-build": "",
     "rtc-bufferedchannel": "~0.5.0",
     "ui-fonts": "git://github.com/custom-elements/ui-fonts",
+    "ui-font-awesome": "git://github.com/custom-elements/ui-font-awesome",
     "ui-styles": "git://github.com/custom-elements/ui-styles",
     "ui-toolkit": "0.0.24",
     "underscore.string": "^2.3.3",
