@@ -141,6 +141,35 @@ element, it is just code.
         @addEventListener 'error', (err) ->
           console.log err
 
+# Location
+
+        @location = cache.get('location') or "Undisclosed Location"
+        if navigator.geolocation
+          navigator.geolocation.getCurrentPosition (pos) =>
+            geocoder = new google.maps.Geocoder()
+            latlng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude)
+            geocoder.geocode {latLng: latlng}, (results, status) =>
+              if status is google.maps.GeocoderStatus.OK
+                result = results[0]
+
+                #look for locality tag and administrative_area_level_1
+                city = ""
+                state = ""
+                i = 0
+                len = result.address_components.length
+
+                while i < len
+                  ac = result.address_components[i]
+                  city = ac.long_name  if ac.types.indexOf("locality") >= 0
+                  state = ac.long_name  if ac.types.indexOf("administrative_area_level_1") >= 0
+                  i++
+
+                #only report if we got Good Stuff
+                if (city && state)
+                  console.log "Current location is #{city}, #{state}"
+                  @location = "#{city}, #{state}"
+
+
 ##Setting Up Signalling
 Hello from the server! The roomChanged event handler will hook the rest of the registration
 
@@ -277,4 +306,3 @@ are posted to the connected WebRTC calls on the page so everyone gets a chat.
 
         @addEventListener 'not-typing', (evt) =>
           @$.chat.typerName = ""
-

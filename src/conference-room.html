@@ -3,6 +3,8 @@
 <link rel="import" href="ui-video-stream.html">
 <link rel="import" href="ui-video-call.html">
 <link rel="import" href="ui-shared-screen.html">
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAitng5APDhtg8E-vR6SdRMCoDB4_BWBhM&sensor=true"></script>
 <polymer-element name="conference-room" attributes="room localstream calls sharedscreens nametag audioon videoon selfieon chatbaron root signallingServer focused">
 <template>
   <link rel="stylesheet" type="text/css" href="./conference-room.less">
@@ -71,7 +73,7 @@
         <ui-video-stream animated hide?="{{!selfieon}}" id="selfie" class="ui tile video" stream="{{localstream}}" selfie mirror></ui-video-stream>
         <template id="calls" repeat="{{call in calls}}">
           <ui-video-call class="ui tile video" call="{{call}}"
-          localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}" localnametag="{{nametag}}"
+          localstream="{{localstream}}" localaudio="{{audioon}}" localvideo="{{videoon}}" localnametag="{{nametag}}" locallocation="{{location}}" remotelocation="{{call.remotelocation}}"
           remotestream="{{call.remotestream}}" remoteaudio="{{call.remoteaudio}}" remotevideo="{{call.remotevideo}}" remotenametag="{{call.remotenametag}}">
           <ui-overlay>
             <div overlay class="overlay-image loading-image" border="0" fadeout hide?="{{call.remotestream}}"></div>
@@ -89,6 +91,9 @@
               </ui-overlay>
             </ui-overlay>
           </ui-overlay>
+          <div>
+            <span>{{call.remotelocation}}</span>
+          </div>
           </ui-video-call>
         </template>
         </ui-grid-tiler>
